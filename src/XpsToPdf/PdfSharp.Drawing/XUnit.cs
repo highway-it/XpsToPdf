@@ -28,6 +28,7 @@
 #endregion
 
 using System;
+using System.Diagnostics;
 using System.Globalization;
 
 namespace PdfSharp.Drawing
@@ -55,8 +56,8 @@ namespace PdfSharp.Drawing
     /// </summary>
     public XUnit(double point)
     {
-      value = point;
-      type = XGraphicsUnit.Point;
+      this.value = point;
+      this.type = XGraphicsUnit.Point;
     }
 
     /// <summary>
@@ -80,12 +81,18 @@ namespace PdfSharp.Drawing
     /// To determine the XGraphicsUnit use property <code>Type</code>.
     /// To get the value in point use the implicit conversion to double.
     /// </summary>
-    public double Value => value;
+    public double Value
+    {
+      get { return this.value; }
+    }
 
     /// <summary>
     /// Gets the unit of measure.
     /// </summary>
-    public XGraphicsUnit Type => type;
+    public XGraphicsUnit Type
+    {
+      get { return this.type; }
+    }
 
     /// <summary>
     /// Gets or sets the value in point.
@@ -97,19 +104,19 @@ namespace PdfSharp.Drawing
         switch (type)
         {
           case XGraphicsUnit.Point:
-            return value;
+            return this.value;
 
           case XGraphicsUnit.Inch:
-            return value * 72;
+            return this.value * 72;
 
           case XGraphicsUnit.Millimeter:
-            return value * 72 / 25.4;
+            return this.value * 72 / 25.4;
 
           case XGraphicsUnit.Centimeter:
-            return value * 72 / 2.54;
+            return this.value * 72 / 2.54;
 
           case XGraphicsUnit.Presentation:
-            return value * 72 / 96;
+            return this.value * 72 / 96;
 
           default:
             throw new InvalidCastException();
@@ -118,7 +125,7 @@ namespace PdfSharp.Drawing
       set
       {
         this.value = value;
-        type = XGraphicsUnit.Point;
+        this.type = XGraphicsUnit.Point;
       }
     }
 
@@ -132,19 +139,19 @@ namespace PdfSharp.Drawing
         switch (type)
         {
           case XGraphicsUnit.Point:
-            return value / 72;
+            return this.value / 72;
 
           case XGraphicsUnit.Inch:
-            return value;
+            return this.value;
 
           case XGraphicsUnit.Millimeter:
-            return value / 25.4;
+            return this.value / 25.4;
 
           case XGraphicsUnit.Centimeter:
-            return value / 2.54;
+            return this.value / 2.54;
 
           case XGraphicsUnit.Presentation:
-            return value / 96;
+            return this.value / 96;
 
           default:
             throw new InvalidCastException();
@@ -153,7 +160,7 @@ namespace PdfSharp.Drawing
       set
       {
         this.value = value;
-        type = XGraphicsUnit.Inch;
+        this.type = XGraphicsUnit.Inch;
       }
     }
 
@@ -164,22 +171,22 @@ namespace PdfSharp.Drawing
     {
       get
       {
-        switch (type)
+        switch (this.type)
         {
           case XGraphicsUnit.Point:
-            return value * 25.4 / 72;
+            return this.value * 25.4 / 72;
 
           case XGraphicsUnit.Inch:
-            return value * 25.4;
+            return this.value * 25.4;
 
           case XGraphicsUnit.Millimeter:
-            return value;
+            return this.value;
 
           case XGraphicsUnit.Centimeter:
-            return value * 10;
+            return this.value * 10;
 
           case XGraphicsUnit.Presentation:
-            return value * 25.4 / 96;
+            return this.value * 25.4 / 96;
 
           default:
             throw new InvalidCastException();
@@ -188,7 +195,7 @@ namespace PdfSharp.Drawing
       set
       {
         this.value = value;
-        type = XGraphicsUnit.Millimeter;
+        this.type = XGraphicsUnit.Millimeter;
       }
     }
 
@@ -202,19 +209,19 @@ namespace PdfSharp.Drawing
         switch (type)
         {
           case XGraphicsUnit.Point:
-            return value * 2.54 / 72;
+            return this.value * 2.54 / 72;
 
           case XGraphicsUnit.Inch:
-            return value * 2.54;
+            return this.value * 2.54;
 
           case XGraphicsUnit.Millimeter:
-            return value / 10;
+            return this.value / 10;
 
           case XGraphicsUnit.Centimeter:
-            return value;
+            return this.value;
 
           case XGraphicsUnit.Presentation:
-            return value * 2.54 / 96;
+            return this.value * 2.54 / 96;
 
           default:
             throw new InvalidCastException();
@@ -223,7 +230,7 @@ namespace PdfSharp.Drawing
       set
       {
         this.value = value;
-        type = XGraphicsUnit.Centimeter;
+        this.type = XGraphicsUnit.Centimeter;
       }
     }
 
@@ -237,19 +244,19 @@ namespace PdfSharp.Drawing
         switch (type)
         {
           case XGraphicsUnit.Point:
-            return value * 96 / 72;
+            return this.value * 96 / 72;
 
           case XGraphicsUnit.Inch:
-            return value * 96;
+            return this.value * 96;
 
           case XGraphicsUnit.Millimeter:
-            return value * 96 / 25.4;
+            return this.value * 96 / 25.4;
 
           case XGraphicsUnit.Centimeter:
-            return value * 96 / 2.54;
+            return this.value * 96 / 2.54;
 
           case XGraphicsUnit.Presentation:
-            return value;
+            return this.value;
 
           default:
             throw new InvalidCastException();
@@ -258,7 +265,7 @@ namespace PdfSharp.Drawing
       set
       {
         this.value = value;
-        type = XGraphicsUnit.Point;
+        this.type = XGraphicsUnit.Point;
       }
     }
 
@@ -269,7 +276,7 @@ namespace PdfSharp.Drawing
     public string ToString(IFormatProvider formatProvider)
     {
       string valuestring;
-      valuestring = value.ToString(formatProvider) + GetSuffix();
+      valuestring = this.value.ToString(formatProvider) + GetSuffix();
       return valuestring;
     }
 
@@ -280,7 +287,7 @@ namespace PdfSharp.Drawing
     string IFormattable.ToString(string format, IFormatProvider formatProvider)
     {
       string valuestring;
-      valuestring = value.ToString(format, formatProvider) + GetSuffix();
+      valuestring = this.value.ToString(format, formatProvider) + GetSuffix();
       return valuestring;
     }
 
@@ -290,7 +297,7 @@ namespace PdfSharp.Drawing
     public override string ToString()
     {
       string valuestring;
-      valuestring = value.ToString(CultureInfo.InvariantCulture) + GetSuffix();
+      valuestring = this.value.ToString(CultureInfo.InvariantCulture) + GetSuffix();
       return valuestring;
     }
 
@@ -543,7 +550,7 @@ namespace PdfSharp.Drawing
     /// </summary>
     public override int GetHashCode()
     {
-      return value.GetHashCode() ^ type.GetHashCode();
+      return this.value.GetHashCode() ^ this.type.GetHashCode();
     }
 
     /// <summary>
@@ -566,27 +573,27 @@ namespace PdfSharp.Drawing
       switch (type)
       {
         case XGraphicsUnit.Point:
-          value = Point;
+          this.value = Point;
           this.type = XGraphicsUnit.Point;
           break;
 
         case XGraphicsUnit.Inch:
-          value = Inch;
+          this.value = Inch;
           this.type = XGraphicsUnit.Inch;
           break;
 
         case XGraphicsUnit.Centimeter:
-          value = Centimeter;
+          this.value = Centimeter;
           this.type = XGraphicsUnit.Centimeter;
           break;
 
         case XGraphicsUnit.Millimeter:
-          value = Millimeter;
+          this.value = Millimeter;
           this.type = XGraphicsUnit.Millimeter;
           break;
 
         case XGraphicsUnit.Presentation:
-          value = Presentation;
+          this.value = Presentation;
           this.type = XGraphicsUnit.Presentation;
           break;
 

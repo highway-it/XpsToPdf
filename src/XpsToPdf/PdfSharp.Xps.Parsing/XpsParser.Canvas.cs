@@ -1,5 +1,10 @@
 ﻿using System;
 using System.Diagnostics;
+using System.Collections.Generic;
+using System.Globalization;
+using System.Text;
+using System.Xml;
+using System.IO;
 using PdfSharp.Xps.XpsModel;
 
 namespace PdfSharp.Xps.Parsing
@@ -11,69 +16,69 @@ namespace PdfSharp.Xps.Parsing
     /// </summary>
     Canvas ParseCanvas()
     {
-      Debug.Assert(reader.Name == "Canvas");
+      Debug.Assert(this.reader.Name == "Canvas");
       Canvas canvas = new Canvas();
       try
       {
-        bool isEmptyElement = reader.IsEmptyElement;
+        bool isEmptyElement = this.reader.IsEmptyElement;
         while (MoveToNextAttribute())
         {
-          switch (reader.Name)
+          switch (this.reader.Name)
           {
             case "Name":
-              canvas.Name = reader.Value;
+              canvas.Name = this.reader.Value;
               break;
 
             case "RenderTransform":
-              canvas.RenderTransform = ParseMatrixTransform(reader.Value);
+              canvas.RenderTransform = ParseMatrixTransform(this.reader.Value);
               break;
 
             case "Clip":
-              canvas.Clip = ParsePathGeometry(reader.Value);
+              canvas.Clip = ParsePathGeometry(this.reader.Value);
               break;
 
             case "Opacity":
-              canvas.Opacity = ParseDouble(reader.Value);
+              canvas.Opacity = ParseDouble(this.reader.Value);
               break;
 
             case "OpacityMask":
-              canvas.OpacityMask = ParseBrush(reader.Value);
+              canvas.OpacityMask = ParseBrush(this.reader.Value);
               break;
 
             case "RenderOptions.EdgeMode":
-              canvas.RenderOptions_EdgeMode = reader.Value;
+              canvas.RenderOptions_EdgeMode = this.reader.Value;
               break;
 
             case "FixedPage.NavigateUri":
-              canvas.FixedPage_NavigateUri = reader.Value;
+              canvas.FixedPage_NavigateUri = this.reader.Value;
               break;
 
             case "AutomationProperties.HelpText":
-              canvas.AutomationProperties_HelpText = reader.Value;
+              canvas.AutomationProperties_HelpText = this.reader.Value;
               break;
 
             case "AutomationProperties.Name":
-              canvas.AutomationProperties_Name = reader.Value;
+              canvas.AutomationProperties_Name = this.reader.Value;
               break;
 
             case "xml:lang":
-              canvas.lang = reader.Value;
+              canvas.lang = this.reader.Value;
               break;
 
             case "xmlns:x":
               break;
 
             default:
-              UnexpectedAttribute(reader.Name);
+              UnexpectedAttribute(this.reader.Name);
               break;
           }
         }
         if (!isEmptyElement)
         {
           MoveToNextElement();
-          while (reader.IsStartElement())
+          while (this.reader.IsStartElement())
           {
-            switch (reader.Name)
+            switch (this.reader.Name)
             {
               case "Canvas.Resources":
                 MoveToNextElement();
@@ -105,7 +110,7 @@ namespace PdfSharp.Xps.Parsing
 
               case "Path":
                 {
-                  XpsModel.Path path = ParsePath();
+                  PdfSharp.Xps.XpsModel.Path path = ParsePath();
 #if DEBUG
                   if (!String.IsNullOrEmpty(path.Name))
                     Debug.WriteLine("Path: " + path.Name);
@@ -117,7 +122,7 @@ namespace PdfSharp.Xps.Parsing
 
               case "Glyphs":
                 {
-                  Glyphs glyphs = ParseGlyphs();
+                  PdfSharp.Xps.XpsModel.Glyphs glyphs = ParseGlyphs();
                   canvas.Content.Add(glyphs);
                   glyphs.Parent = canvas;
                 }
@@ -125,7 +130,7 @@ namespace PdfSharp.Xps.Parsing
 
               case "Canvas":
                 {
-                  Canvas canvas2 = ParseCanvas();
+                  PdfSharp.Xps.XpsModel.Canvas canvas2 = ParseCanvas();
                   canvas.Content.Add(canvas2);
                   canvas2.Parent = canvas;
                 }
@@ -150,7 +155,7 @@ namespace PdfSharp.Xps.Parsing
         // If the current ResourceDictionary is from this Canvas, pop it.
         if (canvas != null && canvas.Resources != null)
         {
-          if (ReferenceEquals(canvas.Resources, ResourceDictionaryStack.Current))
+          if (Object.ReferenceEquals(canvas.Resources, ResourceDictionaryStack.Current))
             ResourceDictionaryStack.Pop();
         }
       }

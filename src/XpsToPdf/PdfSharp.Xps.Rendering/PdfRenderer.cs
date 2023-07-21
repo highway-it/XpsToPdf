@@ -1,7 +1,12 @@
-﻿using PdfSharp.Xps.XpsModel;
+﻿using System;
+using System.Diagnostics;
+using System.Collections.Generic;
+using System.Text;
+using PdfSharp.Xps.XpsModel;
 using PdfSharp.Pdf;
 using PdfSharp.Pdf.Advanced;
 using PdfSharp.Drawing;
+using PdfSharp.Drawing.Pdf;
 
 namespace PdfSharp.Xps.Rendering
 {
@@ -32,7 +37,8 @@ namespace PdfSharp.Xps.Rendering
     {
       this.page = page;
 
-      context = new DocumentRenderingContext(page.Owner);
+      this.reuseableTable = this.reuseableTable ?? new ReuseableTable();
+      this.context = new DocumentRenderingContext(page.Owner, reuseableTable);
 
       //this.page.Width = fixedPage.Width;
       //this.page.Height = fixedPage.Height;
@@ -55,19 +61,23 @@ namespace PdfSharp.Xps.Rendering
       //}
       page.RenderContent = content;
 
-      writer = new PdfContentWriter(context, this.page);
+      this.writer = new PdfContentWriter(this.context, this.page);
 
       //Initialize();
 
-      writer.BeginContent(false);
-      writer.WriteElements(fixedPage.Content);
-      writer.EndContent();
+      this.writer.BeginContent(false);
+      this.writer.WriteElements(fixedPage.Content);
+      this.writer.EndContent();
     }
 
-    internal PdfDocument Document => page.document;
+    internal PdfDocument Document
+    {
+      get { return this.page.document; }
+    }
 
     PdfPage page;
     PdfContentWriter writer;
     DocumentRenderingContext context;
+    ReuseableTable reuseableTable;
   }
 }

@@ -29,7 +29,10 @@
 
 using System;
 using System.Diagnostics;
+using System.Collections;
 using System.Text;
+using System.IO;
+using PdfSharp.Internal;
 using PdfSharp.Pdf.IO;
 using PdfSharp.Pdf.Internal;
 
@@ -109,7 +112,7 @@ namespace PdfSharp.Pdf
     /// </summary>
     public PdfString()
     {
-      flags = PdfStringFlags.RawEncoding;
+      this.flags = PdfStringFlags.RawEncoding;
     }
 
     /// <summary>
@@ -119,7 +122,7 @@ namespace PdfSharp.Pdf
     public PdfString(string value)
     {
       this.value = value;
-      flags = PdfStringFlags.RawEncoding;
+      this.flags = PdfStringFlags.RawEncoding;
     }
 
     /// <summary>
@@ -132,7 +135,7 @@ namespace PdfSharp.Pdf
       this.value = value;
       //if ((flags & PdfStringFlags.EncodingMask) == 0)
       //  flags |= PdfStringFlags.PDFDocEncoding;
-      flags = (PdfStringFlags)encoding;
+      this.flags = (PdfStringFlags)encoding;
     }
 
     internal PdfString(string value, PdfStringFlags flags)
@@ -146,32 +149,44 @@ namespace PdfSharp.Pdf
     /// <summary>
     /// Gets the number of characters in this string.
     /// </summary>
-    public int Length => value == null ? 0 : value.Length;
+    public int Length
+    {
+      get { return this.value == null ? 0 : this.value.Length; }
+    }
 
     /// <summary>
     /// Gets the encoding.
     /// </summary>
-    public PdfStringEncoding Encoding => (PdfStringEncoding)(flags & PdfStringFlags.EncodingMask);
+    public PdfStringEncoding Encoding
+    {
+      get { return (PdfStringEncoding)(this.flags & PdfStringFlags.EncodingMask); }
+      //set { this.flags = (this.flags & ~PdfStringFlags.EncodingMask) | ((PdfStringFlags)value & PdfStringFlags.EncodingMask);}
+    }
 
-    //set { this.flags = (this.flags & ~PdfStringFlags.EncodingMask) | ((PdfStringFlags)value & PdfStringFlags.EncodingMask);}
     /// <summary>
     /// Gets a value indicating whether the string is a hexadecimal literal.
     /// </summary>
-    public bool HexLiteral => (flags & PdfStringFlags.HexLiteral) != 0;
+    public bool HexLiteral
+    {
+      get { return (this.flags & PdfStringFlags.HexLiteral) != 0; }
+      //set { this.flags = value ? this.flags | PdfStringFlags.HexLiteral : this.flags & ~PdfStringFlags.HexLiteral;}
+    }
 
-    //set { this.flags = value ? this.flags | PdfStringFlags.HexLiteral : this.flags & ~PdfStringFlags.HexLiteral;}
-    internal PdfStringFlags Flags => flags;
-
-    //set { this.flags = value; }
+    internal PdfStringFlags Flags
+    {
+      get { return this.flags; }
+      //set { this.flags = value; }
+    }
     PdfStringFlags flags;
 
     /// <summary>
     /// Gets the string value.
     /// </summary>
-    public string Value =>
-        // This class must behave like a value type. Therefore it cannot be changed (like System.String).
-        value == null ? "" : value;
-
+    public string Value
+    {
+      // This class must behave like a value type. Therefore it cannot be changed (like System.String).
+      get { return this.value == null ? "" : this.value; }
+    }
     string value;
 
     /// <summary>
@@ -180,9 +195,9 @@ namespace PdfSharp.Pdf
     internal byte[] EncryptionValue
     {
       // TODO: Unicode case is not handled!
-      get => value == null ? new byte[0] : PdfEncoders.RawEncoding.GetBytes(value);
+      get { return this.value == null ? new byte[0] : PdfEncoders.RawEncoding.GetBytes(this.value); }
       // BUG: May lead to trouble with the value semantics of PdfString
-      set => this.value = PdfEncoders.RawEncoding.GetString(value, 0, value.Length);
+      set { this.value = PdfEncoders.RawEncoding.GetString(value, 0, value.Length); }
     }
 
     /// <summary>
@@ -190,7 +205,7 @@ namespace PdfSharp.Pdf
     /// </summary>
     public override string ToString()
     {
-      return value;
+      return this.value;
     }
 
     /// <summary>
@@ -198,11 +213,11 @@ namespace PdfSharp.Pdf
     /// </summary>
     public string ToStringFromPdfDocEncoded()
     {
-      int length = value.Length;
+      int length = this.value.Length;
       char[] bytes = new char[length];
       for (int idx = 0; idx < length; idx++)
       {
-        char ch = value[idx];
+        char ch = this.value[idx];
         if (ch <= 255)
         {
           bytes[idx] = Encode[ch];

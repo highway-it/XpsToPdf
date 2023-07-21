@@ -1,4 +1,7 @@
-﻿using PdfSharp.Drawing;
+﻿using System;
+using System.Collections.Generic;
+using System.Text;
+using PdfSharp.Drawing;
 using PdfSharp.Internal;
 using PdfSharp.Xps.Parsing;
 
@@ -50,7 +53,7 @@ namespace PdfSharp.Xps.XpsModel
 
     public override int GetHashCode()
     {
-      return X.GetHashCode() ^ Y.GetHashCode();
+      return this.X.GetHashCode() ^ this.Y.GetHashCode();
     }
 
     /// <summary>

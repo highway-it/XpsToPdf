@@ -28,6 +28,8 @@
 #endregion
 
 using System;
+using System.Diagnostics;
+using System.Collections;
 
 namespace PdfSharp.Pdf
 {

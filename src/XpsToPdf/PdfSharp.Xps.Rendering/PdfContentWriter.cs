@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Diagnostics;
+using System.Globalization;
 using System.Collections.Generic;
 using System.Text;
 using PdfSharp.Xps.XpsModel;
@@ -8,6 +9,8 @@ using PdfSharp.Pdf.Advanced;
 using PdfSharp.Pdf.Internal;
 using PdfSharp.Drawing;
 using PdfSharp.Drawing.Pdf;
+using PdfSharp.Fonts.OpenType;
+using PdfSharp.Pdf.Annotations;
 
 #pragma warning disable 414, 169, 649 // incomplete code state
 
@@ -26,11 +29,11 @@ namespace PdfSharp.Xps.Rendering
     {
       this.context = context;
       this.page = page;
-      contentStreamDictionary = page;
+      this.contentStreamDictionary = page;
       //this.colorMode = page.document.Options.ColorMode;
       //this.options = options;
-      content = new StringBuilder();
-      graphicsState = new PdfGraphicsState(this);
+      this.content = new StringBuilder();
+      this.graphicsState = new PdfGraphicsState(this);
     }
 
     /// <summary>
@@ -41,12 +44,12 @@ namespace PdfSharp.Xps.Rendering
     {
       this.context = context;
       this.form = form;
-      contentStreamDictionary = form;
+      this.contentStreamDictionary = form;
       this.renderMode = renderMode;
       //this.colorMode = page.document.Options.ColorMode;
       //this.options = options;
-      content = new StringBuilder();
-      graphicsState = new PdfGraphicsState(this);
+      this.content = new StringBuilder();
+      this.graphicsState = new PdfGraphicsState(this);
     }
 
     /// <summary>
@@ -57,12 +60,12 @@ namespace PdfSharp.Xps.Rendering
         throw new ArgumentException("contentDictionary must implement IContentStream.");
       this.context = context;
       this.contentDictionary = contentDictionary;
-      contentStreamDictionary = (IContentStream)contentDictionary;
-      renderMode = RenderMode.Default;
+      this.contentStreamDictionary = (IContentStream)contentDictionary;
+      this.renderMode = RenderMode.Default;
       //this.colorMode = page.document.Options.ColorMode;
       //this.options = options;
-      content = new StringBuilder();
-      graphicsState = new PdfGraphicsState(this);
+      this.content = new StringBuilder();
+      this.graphicsState = new PdfGraphicsState(this);
     }
 
     internal PdfPage page;
@@ -75,14 +78,16 @@ namespace PdfSharp.Xps.Rendering
     /// <summary>
     /// Gets the document rendering context this PDF contentwriter belongs to.
     /// </summary>
-    public DocumentRenderingContext Context => context;
-
+    public DocumentRenderingContext Context
+    {
+      get { return this.context; }
+    }
     DocumentRenderingContext context;
 
     internal void CreateDefaultTransparencyGroup() // HACK
     {
-      if (page != null)
-        page.transparencyUsed = true;
+      if (this.page != null)
+        this.page.transparencyUsed = true;
     }
 
     /// <summary>
@@ -348,13 +353,13 @@ namespace PdfSharp.Xps.Rendering
       WriteSaveState("begin Path", path.Name);
 
       // Transform also affects clipping and opacity mask
-      if (path.RenderTransform != null && renderMode == RenderMode.Default)
+      if (path.RenderTransform != null && this.renderMode == RenderMode.Default)
       {
         MultiplyTransform(path.RenderTransform);
         WriteRenderTransform(path.RenderTransform);
       }
 
-      if (path.Clip != null && renderMode == RenderMode.Default)
+      if (path.Clip != null && this.renderMode == RenderMode.Default)
         WriteClip(path.Clip);
 
       if (path.Opacity < 1)
@@ -519,7 +524,7 @@ namespace PdfSharp.Xps.Rendering
           xgState.SetDefault1();
 
           double opacity = Opacity * iBrush.Opacity;
-          if (opacity <= 1)
+          if (opacity < 1)
           {
             xgState.StrokeAlpha = opacity;
             xgState.NonStrokeAlpha = opacity;
@@ -569,6 +574,19 @@ namespace PdfSharp.Xps.Rendering
         }
       }
       WriteRestoreState("end Path", path.Name);
+
+      if (path.FixedPage_NavigateUri != null)
+      {
+        foreach (var figure in path.Data.Figures)
+        {
+          XRect boundingBox = figure.GetBoundingBox();
+
+          XPoint topLeft = DefaultPageTransform.Transform(boundingBox.BottomLeft);
+          XPoint bottomRight = DefaultPageTransform.Transform(boundingBox.TopRight);
+          PdfLinkAnnotation annot = this.page.AddWebLink(new PdfRectangle(topLeft, bottomRight), path.FixedPage_NavigateUri);
+          annot.Elements[PdfAnnotation.Keys.BS] = new PdfLiteral("<</W 0>>"); // erase thin border
+        }
+      }
     }
 
     /// <summary>
@@ -733,7 +751,7 @@ namespace PdfSharp.Xps.Rendering
     string GetContent()
     {
       EndContent();
-      return content.ToString();
+      return this.content.ToString();
     }
 
     //    public XGraphicsPdfPageOptions PageOptions
@@ -746,26 +764,26 @@ namespace PdfSharp.Xps.Rendering
     /// </summary>
     void Close()
     {
-      if (page != null)
+      if (this.page != null)
       {
         PdfContent content = page.RenderContent;
         content.CreateStream(PdfEncoders.RawEncoding.GetBytes(GetContent()));
 
         //this.gfx = null;
-        page.RenderContent.pdfRenderer = null;
-        page.RenderContent = null;
-        page = null;
+        this.page.RenderContent.pdfRenderer = null;
+        this.page.RenderContent = null;
+        this.page = null;
       }
-      else if (form != null)
+      else if (this.form != null)
       {
-        form.pdfForm.CreateStream(PdfEncoders.RawEncoding.GetBytes(GetContent()));
-        form.pdfRenderer = null;
-        form = null;
+        this.form.pdfForm.CreateStream(PdfEncoders.RawEncoding.GetBytes(GetContent()));
+        this.form.pdfRenderer = null;
+        this.form = null;
       }
-      else if (contentDictionary != null)
+      else if (this.contentDictionary != null)
       {
-        contentDictionary.CreateStream(PdfEncoders.RawEncoding.GetBytes(GetContent()));
-        contentDictionary = null;
+        this.contentDictionary.CreateStream(PdfEncoders.RawEncoding.GetBytes(GetContent()));
+        this.contentDictionary = null;
       }
       else
         Debug.Assert(false, "Undefined content target.");
@@ -779,7 +797,7 @@ namespace PdfSharp.Xps.Rendering
     /// </summary>
     public void BeginContent(bool hacks4softmask)
     {
-      if (!contentInitialized)
+      if (!this.contentInitialized)
       {
         //this.defaultViewMatrix = new XMatrix();  //XMatrix.Identity;
         //// Take TrimBox into account
@@ -817,11 +835,11 @@ namespace PdfSharp.Xps.Rendering
         WriteSaveState("BeginContent", null);
         // Set page transformation
         WriteRenderTransform(defaultViewMatrix);
-        graphicsState.DefaultPageTransform = defaultViewMatrix;
+        this.graphicsState.DefaultPageTransform = defaultViewMatrix;
         MultiplyTransform(defaultViewMatrix);
         if (!hacks4softmask)
           WriteLiteral("-100 Tz\n");
-        contentInitialized = true;
+        this.contentInitialized = true;
       }
     }
     bool contentInitialized;
@@ -831,11 +849,11 @@ namespace PdfSharp.Xps.Rendering
     /// </summary>
     public void BeginContentRaw()
     {
-      if (!contentInitialized)
+      if (!this.contentInitialized)
       {
         // Save initial graphic state
         WriteSaveState("BeginContent", null);
-        contentInitialized = true;
+        this.contentInitialized = true;
       }
     }
 
@@ -859,16 +877,16 @@ namespace PdfSharp.Xps.Rendering
 
     public void EndContent()
     {
-      if (!pageFinished)
+      if (!this.pageFinished)
       {
-        pageFinished = true;
-        if (streamMode == StreamMode.Text)
+        this.pageFinished = true;
+        if (this.streamMode == StreamMode.Text)
         {
           WriteLiteral("ET\n");
-          streamMode = StreamMode.Graphic;
+          this.streamMode = StreamMode.Graphic;
         }
         WriteRestoreState("EndContent", null);
-        Debug.Assert(graphicsStateStack.Count == 0);
+        Debug.Assert(this.graphicsStateStack.Count == 0);
         //while (this.graphicsStateStack.Count != 0)
         //  WriteRestoreState("EndPage");
         Close();
@@ -879,7 +897,7 @@ namespace PdfSharp.Xps.Rendering
     internal void WriteMoveStart(Point point)
     {
       WriteLiteral("{0:0.###} {1:0.###} m\n", point.X, point.Y);
-      currentPoint = point;
+      this.currentPoint = point;
     }
     Point currentPoint = new Point();
 
@@ -889,14 +907,6 @@ namespace PdfSharp.Xps.Rendering
     internal void WriteGeometry(PathGeometry geo)
     {
       BeginGraphic();
-
-      // PathGeometry itself may have its own transform
-      if (geo.Transform != null) // also check render mode?
-      {
-          MultiplyTransform(geo.Transform);
-          WriteRenderTransform(geo.Transform);
-      }
-
       foreach (PathFigure figure in geo.Figures)
       {
         PolyLineSegment pseg;
@@ -958,7 +968,7 @@ namespace PdfSharp.Xps.Rendering
       foreach (Point point in seg.Points)
       {
         WriteLiteral("{0:0.###} {1:0.###} l\n", point.X, point.Y);
-        currentPoint = point;
+        this.currentPoint = point;
       }
     }
 
@@ -973,7 +983,7 @@ namespace PdfSharp.Xps.Rendering
       {
         WriteLiteral("{0:0.###} {1:0.###} {2:0.###} {3:0.###} {4:0.###} {5:0.###} c\n",
           points[idx].X, points[idx].Y, points[idx + 1].X, points[idx + 1].Y, points[idx + 2].X, points[idx + 2].Y);
-        currentPoint = points[idx + 2];
+        this.currentPoint = points[idx + 2];
       }
     }
 
@@ -987,7 +997,7 @@ namespace PdfSharp.Xps.Rendering
       {
         int count = seg.Points.Count;
         PointStopCollection points = seg.Points;
-        Point pt0 = currentPoint;
+        Point pt0 = this.currentPoint;
         for (int idx = 0; idx < count - 1; )
         {
           Point pt1 = points[idx++];
@@ -997,12 +1007,12 @@ namespace PdfSharp.Xps.Rendering
             pt1.X - (pt1.X - pt0.X) / 3, pt1.Y - (pt1.Y - pt0.Y) / 3,
             pt1.X + (pt2.X - pt1.X) / 3, pt1.Y + (pt2.Y - pt1.Y) / 3,
             pt2.X, pt2.Y);
-          currentPoint = pt0 = pt2;
+          this.currentPoint = pt0 = pt2;
         }
       }
       else
       {
-        PolyLineSegment lseg = WpfUtils.FlattenSegment(currentPoint, seg);
+        PolyLineSegment lseg = WpfUtils.FlattenSegment(this.currentPoint, seg);
         WriteSegment(lseg);
       }
 #else
@@ -1021,13 +1031,13 @@ namespace PdfSharp.Xps.Rendering
       {
         int pieces;
         System.Windows.Media.PointCollection points =
-          GeometryHelper.ArcToBezier(currentPoint.X, currentPoint.Y, seg.Size.Width, seg.Size.Height, seg.RotationAngle, seg.IsLargeArc,
+          GeometryHelper.ArcToBezier(this.currentPoint.X, this.currentPoint.Y, seg.Size.Width, seg.Size.Height, seg.RotationAngle, seg.IsLargeArc,
             seg.SweepDirection == SweepDirection.Clockwise, seg.Point.X, seg.Point.Y, out pieces);
         if (pieces == 0)
         {
           // just draw single line
           WriteLiteral("{0:0.####} {1:0.####} l\n", seg.Point.X, seg.Point.Y);
-          currentPoint = seg.Point;
+          this.currentPoint = seg.Point;
           return;
         }
         else if (pieces < 0)
@@ -1039,12 +1049,12 @@ namespace PdfSharp.Xps.Rendering
         {
           WriteLiteral("{0:0.####} {1:0.####} {2:0.####} {3:0.####} {4:0.####} {5:0.####} c\n",
             points[idx].X, points[idx].Y, points[idx + 1].X, points[idx + 1].Y, points[idx + 2].X, points[idx + 2].Y);
-          currentPoint = new Point(points[idx + 2].X, points[idx + 2].Y);
+          this.currentPoint = new Point(points[idx + 2].X, points[idx + 2].Y);
         }
       }
       else
       {
-        PolyLineSegment lseg = WpfUtils.FlattenSegment(currentPoint, seg);
+        PolyLineSegment lseg = WpfUtils.FlattenSegment(this.currentPoint, seg);
         WriteSegment(lseg);
       }
     }
@@ -1079,12 +1089,12 @@ namespace PdfSharp.Xps.Rendering
     /// </summary>
     internal void BeginGraphic()
     {
-      if (streamMode != StreamMode.Graphic)
+      if (this.streamMode != StreamMode.Graphic)
       {
-        if (streamMode == StreamMode.Text)
+        if (this.streamMode == StreamMode.Text)
           WriteLiteral("ET\n");
 
-        streamMode = StreamMode.Graphic;
+        this.streamMode = StreamMode.Graphic;
       }
     }
 
@@ -1093,12 +1103,12 @@ namespace PdfSharp.Xps.Rendering
     /// </summary>
     internal void BeginText()
     {
-      if (streamMode != StreamMode.Text)
+      if (this.streamMode != StreamMode.Text)
       {
-        streamMode = StreamMode.Text;
+        this.streamMode = StreamMode.Text;
         WriteLiteral("BT\n");
         // Text matrix is empty after BT
-        graphicsState.realizedTextPosition = new XPoint();
+        this.graphicsState.realizedTextPosition = new XPoint();
       }
     }
     StreamMode streamMode;
@@ -1118,7 +1128,7 @@ namespace PdfSharp.Xps.Rendering
       BeginGraphic();
       WriteLiteral("{0:0.####} {1:0.####} {2:0.####} {3:0.####} {4:0.####} {5:0.####} cm\n",
         matrix.M11, matrix.M12, matrix.M21, matrix.M22, matrix.OffsetX, matrix.OffsetY);
-      graphicsState.currentTransform.Prepend(matrix);
+      this.graphicsState.currentTransform.Prepend(matrix);
     }
 
     /// <summary>
@@ -1126,7 +1136,7 @@ namespace PdfSharp.Xps.Rendering
     /// </summary>
     public void WriteTextTransform(XMatrix matrix)
     {
-      Debug.Assert(streamMode == StreamMode.Text, "Must be in text mode when setting text matrix.");
+      Debug.Assert(this.streamMode == StreamMode.Text, "Must be in text mode when setting text matrix.");
       WriteLiteral("{0:0.####} {1:0.####} {2:0.####} {3:0.####} {4:0.####} {5:0.####} Tm\n",
         matrix.M11, matrix.M12, matrix.M21, matrix.M22, matrix.OffsetX, matrix.OffsetY);
     }
@@ -1164,32 +1174,41 @@ namespace PdfSharp.Xps.Rendering
     /// <summary>
     /// Gets the default page transformation.
     /// </summary>
-    public XMatrix DefaultPageTransform => graphicsState.DefaultPageTransform;
+    public XMatrix DefaultPageTransform
+    {
+      get { return this.graphicsState.DefaultPageTransform; }
+    }
 
     /// <summary>
     /// Gets the current transformation.
     /// </summary>
-    public XMatrix Transform => graphicsState.Transform;
+    public XMatrix Transform
+    {
+      get { return this.graphicsState.Transform; }
+    }
 
     /// <summary>
     /// Muliplies the spcified transformation with the current transformation and returns the new value;
     /// </summary>
     public XMatrix MultiplyTransform(XMatrix matrix)
     {
-      return graphicsState.MultiplyTransform(matrix);
+      return this.graphicsState.MultiplyTransform(matrix);
     }
 
     /// <summary>
     /// Gets the current opacity value.
     /// </summary>
-    public double Opacity => graphicsState.Opacity;
+    public double Opacity
+    {
+      get { return this.graphicsState.Opacity; }
+    }
 
     /// <summary>
     /// Muliplies the spcified opacity with the current opacity and returns the new value;
     /// </summary>
     public double MultiplyOpacity(double opacity)
     {
-      return graphicsState.MuliplyOpacity(opacity);
+      return this.graphicsState.MuliplyOpacity(opacity);
     }
 
     ///// <summary>
@@ -1213,7 +1232,7 @@ namespace PdfSharp.Xps.Rendering
     /// </summary>
     public void RealizeFill(Brush brush, ref XForm xform, ref XImage ximage)
     {
-      graphicsState.RealizeFill(brush, 1, ref xform, ref ximage);
+      this.graphicsState.RealizeFill(brush, 1, ref xform, ref ximage);
     }
 
     /// <summary>
@@ -1221,7 +1240,7 @@ namespace PdfSharp.Xps.Rendering
     /// </summary>
     public void RealizeFillOpacity(double opacity)
     {
-      graphicsState.RealizeFillOpacity(opacity);
+      this.graphicsState.RealizeFillOpacity(opacity);
     }
 
     /// <summary>
@@ -1229,7 +1248,7 @@ namespace PdfSharp.Xps.Rendering
     /// </summary>
     public void RealizeStroke(Path path)
     {
-      graphicsState.RealizeStroke(path);
+      this.graphicsState.RealizeStroke(path);
     }
 
     /// <summary>
@@ -1237,7 +1256,7 @@ namespace PdfSharp.Xps.Rendering
     /// </summary>
     public void RealizeStrokeOpacity(double opacity)
     {
-      graphicsState.RealizeStrokeOpacity(opacity);
+      this.graphicsState.RealizeStrokeOpacity(opacity);
     }
 
     /// <summary>
@@ -1245,7 +1264,7 @@ namespace PdfSharp.Xps.Rendering
     /// </summary>
     public void RealizeExtGState(PdfExtGState xgState)
     {
-      graphicsState.RealizeExtGState(xgState);
+      this.graphicsState.RealizeExtGState(xgState);
     }
 
     /// <summary>
@@ -1253,21 +1272,21 @@ namespace PdfSharp.Xps.Rendering
     /// </summary>
     void RealizeFont(Glyphs glyphs)
     {
-      if (streamMode != StreamMode.Text)
+      if (this.streamMode != StreamMode.Text)
       {
-        streamMode = StreamMode.Text;
+        this.streamMode = StreamMode.Text;
         WriteLiteral("BT\n");
         // Text matrix is empty after BT
-        graphicsState.realizedTextPosition = new XPoint();
+        this.graphicsState.realizedTextPosition = new XPoint();
       }
-      graphicsState.RealizeFont(glyphs);
+      this.graphicsState.RealizeFont(glyphs);
     }
 
     void AdjustTextMatrix(ref XPoint pos)
     {
       XPoint posSave = pos;
-      pos = pos - new XVector(graphicsState.realizedTextPosition.x, graphicsState.realizedTextPosition.y);
-      graphicsState.realizedTextPosition = posSave;
+      pos = pos - new XVector(this.graphicsState.realizedTextPosition.x, this.graphicsState.realizedTextPosition.y);
+      this.graphicsState.realizedTextPosition = posSave;
     }
 
     //    /// <summary>
@@ -1317,12 +1336,12 @@ namespace PdfSharp.Xps.Rendering
     {
       get
       {
-        if (page != null)
-          return page.Owner;
-        else if (form != null)
-          return form.Owner;
-        else if (contentDictionary != null)
-          return contentDictionary.Owner;
+        if (this.page != null)
+          return this.page.Owner;
+        else if (this.form != null)
+          return this.form.Owner;
+        else if (this.contentDictionary != null)
+          return this.contentDictionary.Owner;
 
         Debug.Assert(false, "Undefined conent target.");
         return null;
@@ -1336,12 +1355,12 @@ namespace PdfSharp.Xps.Rendering
     {
       get
       {
-        if (page != null)
-          return page.Resources;
-        else if (form != null)
-          return form.Resources;
-        else if (contentStreamDictionary != null)
-          return contentStreamDictionary.Resources;
+        if (this.page != null)
+          return this.page.Resources;
+        else if (this.form != null)
+          return this.form.Resources;
+        else if (this.contentStreamDictionary != null)
+          return this.contentStreamDictionary.Resources;
 
         Debug.Assert(false, "Undefined conent target.");
         return null;
@@ -1355,11 +1374,11 @@ namespace PdfSharp.Xps.Rendering
     {
       get
       {
-        if (page != null)
-          return new XSize(page.Width, page.Height);
-        else if (form != null)
-          return form.Size;
-        else if (contentDictionary != null)
+        if (this.page != null)
+          return new XSize(this.page.Width, this.page.Height);
+        else if (this.form != null)
+          return this.form.Size;
+        else if (this.contentDictionary != null)
         {
           throw new NotImplementedException("Size");
         }
@@ -1375,11 +1394,11 @@ namespace PdfSharp.Xps.Rendering
     /// </summary>
     internal string GetFontName(XFont font, out PdfFont pdfFont)
     {
-      if (page != null)
-        return page.GetFontName(font, out pdfFont);
-      else if (form != null)
-        return form.GetFontName(font, out pdfFont);
-      else if (contentDictionary != null)
+      if (this.page != null)
+        return this.page.GetFontName(font, out pdfFont);
+      else if (this.form != null)
+        return this.form.GetFontName(font, out pdfFont);
+      else if (this.contentDictionary != null)
       {
         throw new NotImplementedException("GetFontName");
       }
@@ -1395,11 +1414,11 @@ namespace PdfSharp.Xps.Rendering
     /// </summary>
     internal string TryGetFontName(string idName, out PdfFont pdfFont)
     {
-      if (page != null)
-        return page.TryGetFontName(idName, out pdfFont);
-      else if (form != null)
-        return form.TryGetFontName(idName, out pdfFont);
-      else if (contentDictionary != null)
+      if (this.page != null)
+        return this.page.TryGetFontName(idName, out pdfFont);
+      else if (this.form != null)
+        return this.form.TryGetFontName(idName, out pdfFont);
+      else if (this.contentDictionary != null)
       {
         throw new NotImplementedException("GetFontName");
       }
@@ -1414,11 +1433,11 @@ namespace PdfSharp.Xps.Rendering
     /// </summary>
     internal string GetFontName(string idName, byte[] fontData, out PdfFont pdfFont)
     {
-      if (page != null)
-        return page.GetFontName(idName, fontData, out pdfFont);
-      else if (form != null)
-        return form.GetFontName(idName, fontData, out pdfFont);
-      else if (contentDictionary != null)
+      if (this.page != null)
+        return this.page.GetFontName(idName, fontData, out pdfFont);
+      else if (this.form != null)
+        return this.form.GetFontName(idName, fontData, out pdfFont);
+      else if (this.contentDictionary != null)
       {
         throw new NotImplementedException("GetFontName");
       }
@@ -1435,14 +1454,14 @@ namespace PdfSharp.Xps.Rendering
     {
       PdfFont pdfFont;
       string name = null;
-      if (page != null)
-        name = page.GetFontName(font.Name, font.FontData, out pdfFont);
-      else if (form != null)
-        name = form.GetFontName(font.Name, font.FontData, out pdfFont);
-      else if (contentDictionary != null)
+      if (this.page != null)
+        name = this.page.GetFontName(font.Name, font.FontData, out pdfFont);
+      else if (this.form != null)
+        name = this.form.GetFontName(font.Name, font.FontData, out pdfFont);
+      else if (this.contentDictionary != null)
       {
-        Debug.Assert(contentStreamDictionary != null);
-        name = contentStreamDictionary.GetFontName(font.Name, font.FontData, out pdfFont);
+        Debug.Assert(this.contentStreamDictionary != null);
+        name = this.contentStreamDictionary.GetFontName(font.Name, font.FontData, out pdfFont);
       }
       else
       {
@@ -1450,7 +1469,6 @@ namespace PdfSharp.Xps.Rendering
         pdfFont = null;  // supress compiler warning
       }
 
-      Debug.Assert(font.PdfFont == null || ReferenceEquals(font.PdfFont, pdfFont));
       if (font.PdfFont == null)
         font.PdfFont = pdfFont;
       return name;
@@ -1502,7 +1520,7 @@ namespace PdfSharp.Xps.Rendering
     {
       //Debug.Assert(this.streamMode == StreamMode.Graphic, "Cannot restore state in text mode.");
 
-      if (traceMessage == null || traceLevel == PdfTraceLevel.None)
+      if (traceMessage == null || this.traceLevel == PdfTraceLevel.None)
         WriteLiteral("q\n");
       else
       {
@@ -1510,9 +1528,9 @@ namespace PdfSharp.Xps.Rendering
           traceMessage = traceMessage + ": '" + elementName + "'";
         WriteLiteral("q % -- " + traceMessage + "\n");
       }
-      graphicsStateStack.Push(graphicsState);
-      graphicsState = graphicsState.Clone();
-      graphicsState.Level = graphicsStateStack.Count;
+      this.graphicsStateStack.Push(this.graphicsState);
+      this.graphicsState = this.graphicsState.Clone();
+      this.graphicsState.Level = this.graphicsStateStack.Count;
     }
 
     /// <summary>
@@ -1522,9 +1540,9 @@ namespace PdfSharp.Xps.Rendering
     {
       //Debug.Assert(this.streamMode == StreamMode.Graphic, "Cannot restore state in text mode.");
       BeginGraphic();
-      graphicsState = (PdfGraphicsState)graphicsStateStack.Pop();
+      this.graphicsState = (PdfGraphicsState)this.graphicsStateStack.Pop();
 
-      if (traceMessage == null || traceLevel == PdfTraceLevel.None)
+      if (traceMessage == null || this.traceLevel == PdfTraceLevel.None)
         WriteLiteral("Q\n");
       else
       {

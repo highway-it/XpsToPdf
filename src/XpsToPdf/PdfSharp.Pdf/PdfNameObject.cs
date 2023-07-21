@@ -29,6 +29,10 @@
 
 using System;
 using System.Diagnostics;
+using System.Collections;
+using System.Text;
+using System.IO;
+using PdfSharp.Internal;
 using PdfSharp.Pdf.IO;
 
 namespace PdfSharp.Pdf
@@ -46,7 +50,7 @@ namespace PdfSharp.Pdf
     /// </summary>
     public PdfNameObject()
     {
-      value = "/";  // Empty name.
+      this.value = "/";  // Empty name.
     }
 
     /// <summary>
@@ -70,7 +74,7 @@ namespace PdfSharp.Pdf
     /// </summary>
     public override bool Equals(object obj)
     {
-      return value.Equals(obj);
+      return this.value.Equals(obj);
     }
 
     /// <summary>
@@ -78,7 +82,7 @@ namespace PdfSharp.Pdf
     /// </summary>
     public override int GetHashCode()
     {
-      return value.GetHashCode();
+      return this.value.GetHashCode();
     }
 
     /// <summary>
@@ -86,8 +90,8 @@ namespace PdfSharp.Pdf
     /// </summary>
     public string Value
     {
-      get => value;
-      set => this.value = value;
+      get { return this.value; }
+      set { this.value = value; }
     }
     string value;
 
@@ -96,7 +100,7 @@ namespace PdfSharp.Pdf
     /// </summary>
     public override string ToString()
     {
-      return value;
+      return this.value;
     }
 
     /// <summary>
@@ -143,7 +147,7 @@ namespace PdfSharp.Pdf
     internal override void WriteObject(PdfWriter writer)
     {
       writer.WriteBeginObject(this);
-      writer.Write(new PdfName(value));
+      writer.Write(new PdfName(this.value));
       writer.WriteEndObject();
     }
   }

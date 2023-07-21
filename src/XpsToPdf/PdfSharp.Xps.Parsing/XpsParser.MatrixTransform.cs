@@ -1,4 +1,11 @@
-﻿using PdfSharp.Xps.XpsModel;
+﻿using System;
+using System.Diagnostics;
+using System.Collections.Generic;
+using System.Globalization;
+using System.Text;
+using System.Xml;
+using System.IO;
+using PdfSharp.Xps.XpsModel;
 
 namespace PdfSharp.Xps.Parsing
 {
@@ -13,18 +20,18 @@ namespace PdfSharp.Xps.Parsing
       MatrixTransform transform = new MatrixTransform();
       while (MoveToNextAttribute())
       {
-        switch (reader.Name)
+        switch (this.reader.Name)
         {
           case "Matrix":
-            transform.Matrix = Matrix.Parse(reader.Value);
+            transform.Matrix = Matrix.Parse(this.reader.Value);
             break;
 
           case "x:Key":
-            transform.Key = reader.Value;
+            transform.Key = this.reader.Value;
             break;
 
           default:
-            UnexpectedAttribute(reader.Name);
+            UnexpectedAttribute(this.reader.Name);
             break;
         }
       }

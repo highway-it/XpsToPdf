@@ -27,8 +27,13 @@
 // DEALINGS IN THE SOFTWARE.
 #endregion
 
+using System;
 using System.Diagnostics;
 using System.Globalization;
+using System.Collections;
+using System.Text;
+using System.IO;
+using PdfSharp.Internal;
 using PdfSharp.Pdf.IO;
 
 namespace PdfSharp.Pdf
@@ -57,10 +62,11 @@ namespace PdfSharp.Pdf
     /// <summary>
     /// Gets the value as double.
     /// </summary>
-    public double Value =>
-        // This class must behave like a value type. Therefore it cannot be changed (like System.String).
-        value;
-
+    public double Value
+    {
+      // This class must behave like a value type. Therefore it cannot be changed (like System.String).
+      get { return this.value; }
+    }
     double value;
 
     /// <summary>
@@ -68,7 +74,7 @@ namespace PdfSharp.Pdf
     /// </summary>
     public override string ToString()
     {
-      return value.ToString("0.###", CultureInfo.InvariantCulture);
+      return this.value.ToString("0.###", CultureInfo.InvariantCulture);
     }
 
     /// <summary>

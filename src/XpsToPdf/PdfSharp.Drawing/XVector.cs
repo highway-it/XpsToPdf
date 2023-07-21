@@ -33,7 +33,8 @@ using System.Runtime.InteropServices;
 using System.Drawing;
 #endif
 #if WPF
-
+using System.Windows.Media;
+using System.Globalization;
 #endif
 
 #pragma warning disable 1591
@@ -85,7 +86,7 @@ namespace PdfSharp.Drawing
 
     public override int GetHashCode()
     {
-      return x.GetHashCode() ^ y.GetHashCode();
+      return this.x.GetHashCode() ^ this.y.GetHashCode();
     }
 
     //public static XVector Parse(string source)
@@ -100,14 +101,14 @@ namespace PdfSharp.Drawing
 
     public double X
     {
-      get => x;
-      set => x = value;
+      get { return this.x; }
+      set { this.x = value; }
     }
 
     public double Y
     {
-      get => y;
-      set => y = value;
+      get { return this.y; }
+      set { this.y = value; }
     }
 
     public override string ToString()
@@ -128,16 +129,22 @@ namespace PdfSharp.Drawing
     internal string ConvertToString(string format, IFormatProvider provider)
     {
       const char numericListSeparator = ',';
-      return string.Format(provider, "{1:" + format + "}{0}{2:" + format + "}", new object[] { numericListSeparator, x, y });
+      return string.Format(provider, "{1:" + format + "}{0}{2:" + format + "}", new object[] { numericListSeparator, this.x, this.y });
     }
 
-    public double Length => Math.Sqrt((x * x) + (y * y));
+    public double Length
+    {
+      get { return Math.Sqrt((this.x * this.x) + (this.y * this.y)); }
+    }
 
-    public double LengthSquared => x * x + y * y;
+    public double LengthSquared
+    {
+      get { return this.x * this.x + this.y * this.y; }
+    }
 
     public void Normalize()
     {
-      this = this / Math.Max(Math.Abs(x), Math.Abs(y));
+      this = this / Math.Max(Math.Abs(this.x), Math.Abs(this.y));
       this = this / Length;
     }
 
@@ -160,8 +167,8 @@ namespace PdfSharp.Drawing
 
     public void Negate()
     {
-      x = -x;
-      y = -y;
+      this.x = -this.x;
+      this.y = -this.y;
     }
 
     public static XVector operator +(XVector vector1, XVector vector2)

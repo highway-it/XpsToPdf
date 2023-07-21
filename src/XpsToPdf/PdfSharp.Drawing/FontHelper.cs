@@ -29,7 +29,9 @@
 
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Globalization;
+using System.IO;
 //#if GDI
 //using System.Drawing;
 //using System.Drawing.Drawing2D;
@@ -37,9 +39,15 @@ using System.Globalization;
 //#endif
 #if WPF
 using System.Windows;
+using System.Windows.Controls;
 using System.Windows.Media;
 #endif
+using PdfSharp.Internal;
+using PdfSharp.Pdf;
+using PdfSharp.Drawing.Pdf;
 using PdfSharp.Fonts;
+using PdfSharp.Fonts.OpenType;
+using PdfSharp.Pdf.Advanced;
 
 namespace PdfSharp.Drawing
 {
@@ -103,7 +111,9 @@ namespace PdfSharp.Drawing
       //typeface = s_typefaces[0];
 
       // BUG: does not work with fonts that have others than the four default styles
+#pragma warning disable 618
       FormattedText formattedText = new FormattedText(text, new CultureInfo("en-us"), FlowDirection.LeftToRight, typeface, emSize, brush);
+#pragma warning restore 618
       //formattedText.SetFontWeight(FontWeights.Bold);
       //formattedText.SetFontStyle(FontStyles.Oblique);
       //formattedText.SetFontStretch(FontStretches.Condensed);
@@ -173,7 +183,7 @@ namespace PdfSharp.Drawing
 
     public static int GetWpfValue(XFontFamily family, XFontStyle style, GWV value)
     {
-      FontDescriptor descriptor = FontDescriptorStock.Global.CreateDescriptor(family, style);
+      FontDescriptor descriptor = FontDescriptorStock.NewInstance.CreateDescriptor(family, style);
       XFontMetrics metrics = descriptor.FontMetrics;
 
       switch (value)
@@ -212,7 +222,7 @@ namespace PdfSharp.Drawing
     {
 #if !SILVERLIGHT
       // TODOWPF: check for correctness
-      FontDescriptor descriptor = FontDescriptorStock.Global.CreateDescriptor(family, style);
+      FontDescriptor descriptor = FontDescriptorStock.NewInstance.CreateDescriptor(family, style);
       XFontMetrics metrics = descriptor.FontMetrics;
 
       style &= XFontStyle.Regular | XFontStyle.Bold | XFontStyle.Italic | XFontStyle.BoldItalic; // same as XFontStyle.BoldItalic

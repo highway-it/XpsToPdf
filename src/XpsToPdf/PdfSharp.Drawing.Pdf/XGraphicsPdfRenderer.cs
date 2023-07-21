@@ -32,6 +32,7 @@ using System.Diagnostics;
 using System.Globalization;
 using System.Collections.Generic;
 using System.Text;
+using System.IO;
 #if GDI
 using System.Drawing;
 using System.Drawing.Drawing2D;
@@ -42,6 +43,7 @@ using System.Windows.Media;
 #endif
 using PdfSharp.Internal;
 using PdfSharp.Pdf;
+using PdfSharp.Fonts;
 using PdfSharp.Fonts.OpenType;
 using PdfSharp.Pdf.Internal;
 using PdfSharp.Pdf.Advanced;
@@ -56,16 +58,16 @@ namespace PdfSharp.Drawing.Pdf
     public XGraphicsPdfRenderer(PdfPage page, XGraphics gfx, XGraphicsPdfPageOptions options)
     {
       this.page = page;
-      colorMode = page.document.Options.ColorMode;
+      this.colorMode = page.document.Options.ColorMode;
       this.options = options;
 #if MIGRADOC
       this.options = options & ~XGraphicsPdfPageOptions.PDFlibHack;
       pdflibHack = (options & XGraphicsPdfPageOptions.PDFlibHack) != 0;
 #endif
       this.gfx = gfx;
-      content = new StringBuilder();
+      this.content = new StringBuilder();
       page.RenderContent.pdfRenderer = this;
-      gfxState = new PdfGraphicsState(this);
+      this.gfxState = new PdfGraphicsState(this);
     }
 #if MIGRADOC
     bool pdflibHack;
@@ -74,11 +76,11 @@ namespace PdfSharp.Drawing.Pdf
     public XGraphicsPdfRenderer(XForm form, XGraphics gfx)
     {
       this.form = form;
-      colorMode = form.Owner.Options.ColorMode;
+      this.colorMode = form.Owner.Options.ColorMode;
       this.gfx = gfx;
-      content = new StringBuilder();
+      this.content = new StringBuilder();
       form.pdfRenderer = this;
-      gfxState = new PdfGraphicsState(this);
+      this.gfxState = new PdfGraphicsState(this);
     }
 
     /// <summary>
@@ -87,29 +89,32 @@ namespace PdfSharp.Drawing.Pdf
     string GetContent()
     {
       EndPage();
-      return content.ToString();
+      return this.content.ToString();
     }
 
-    public XGraphicsPdfPageOptions PageOptions => options;
+    public XGraphicsPdfPageOptions PageOptions
+    {
+      get { return this.options; }
+    }
 
     public void Close()
     {
-      if (page != null)
+      if (this.page != null)
       {
         PdfContent content = page.RenderContent;
         content.CreateStream(PdfEncoders.RawEncoding.GetBytes(GetContent()));
 
-        gfx = null;
-        page.RenderContent.pdfRenderer = null;
-        page.RenderContent = null;
-        page = null;
+        this.gfx = null;
+        this.page.RenderContent.pdfRenderer = null;
+        this.page.RenderContent = null;
+        this.page = null;
       }
-      else if (form != null)
+      else if (this.form != null)
       {
-        form.pdfForm.CreateStream(PdfEncoders.RawEncoding.GetBytes(GetContent()));
-        gfx = null;
-        form.pdfRenderer = null;
-        form = null;
+        this.form.pdfForm.CreateStream(PdfEncoders.RawEncoding.GetBytes(GetContent()));
+        this.gfx = null;
+        this.form.pdfRenderer = null;
+        this.form = null;
       }
     }
 
@@ -123,7 +128,7 @@ namespace PdfSharp.Drawing.Pdf
 
     public void Clear(XColor color)
     {
-      if (!gfx.transform.IsIdentity)
+      if (!this.gfx.transform.IsIdentity)
         throw new NotImplementedException("Transform must be identity to clear the canvas.");
 
       // TODO: this is implementation is bogus. Reset transformation to identity an then fill
@@ -162,7 +167,7 @@ namespace PdfSharp.Drawing.Pdf
       AppendFormat("{0:0.###} {1:0.###} m\n", points[0].X, points[0].Y);
       for (int idx = 1; idx < count; idx++)
         AppendFormat("{0:0.###} {1:0.###} l\n", points[idx].X, points[idx].Y);
-      content.Append("S\n");
+      this.content.Append("S\n");
     }
 
     // ----- DrawBezier ---------------------------------------------------------------------------
@@ -260,11 +265,11 @@ namespace PdfSharp.Drawing.Pdf
       AppendFormat("{0:0.###} {1:0.###} {2:0.###} {3:0.###} re\n", x, y, width, height);
 
       if (pen != null && brush != null)
-        content.Append("B\n");
+        this.content.Append("B\n");
       else if (pen != null)
-        content.Append("S\n");
+        this.content.Append("S\n");
       else
-        content.Append("f\n");
+        this.content.Append("f\n");
     }
 
     // ----- DrawRectangles -----------------------------------------------------------------------
@@ -416,7 +421,7 @@ namespace PdfSharp.Drawing.Pdf
       double x = rect.X;
       double y = rect.Y;
 
-      double lineSpace = font.GetHeight(gfx);
+      double lineSpace = font.GetHeight(this.gfx);
       //int cellSpace = font.cellSpace; // font.FontFamily.GetLineSpacing(font.Style);
       //int cellAscent = font.cellAscent; // font.FontFamily.GetCellAscent(font.Style);
       //int cellDescent = font.cellDescent; // font.FontFamily.GetCellDescent(font.Style);
@@ -424,7 +429,7 @@ namespace PdfSharp.Drawing.Pdf
       //double cyDescent = lineSpace * cellDescent / cellSpace;
       double cyAscent = lineSpace * font.cellAscent / font.cellSpace;
       double cyDescent = lineSpace * font.cellDescent / font.cellSpace;
-      double width = gfx.MeasureString(s, font).Width;
+      double width = this.gfx.MeasureString(s, font).Width;
 
       bool bold = (font.Style & XFontStyle.Bold) != 0;
       bool italic = (font.Style & XFontStyle.Italic) != 0;
@@ -490,7 +495,7 @@ namespace PdfSharp.Drawing.Pdf
         }
       }
 
-      PdfFont realizedFont = gfxState.realizedFont;
+      PdfFont realizedFont = this.gfxState.realizedFont;
       Debug.Assert(realizedFont != null);
       realizedFont.AddChars(s);
 
@@ -596,7 +601,7 @@ namespace PdfSharp.Drawing.Pdf
       string name = Realize(image);
       if (!(image is XForm))
       {
-        if (gfx.PageDirection == XPageDirection.Downwards)
+        if (this.gfx.PageDirection == XPageDirection.Downwards)
         {
           AppendFormat("q {2:0.####} 0 0 -{3:0.####} {0:0.####} {4:0.####} cm {5} Do Q\n",
             x, y, width, height, y + height, name);
@@ -621,7 +626,7 @@ namespace PdfSharp.Drawing.Pdf
 
         if (cx != 0 && cy != 0)
         {
-          if (gfx.PageDirection == XPageDirection.Downwards)
+          if (this.gfx.PageDirection == XPageDirection.Downwards)
           {
             AppendFormat("q {2:0.####} 0 0 -{3:0.####} {0:0.####} {4:0.####} cm 100 Tz {5} Do Q\n",
               x, y, cx, cy, y + height, name);
@@ -646,7 +651,7 @@ namespace PdfSharp.Drawing.Pdf
       string name = Realize(image);
       if (!(image is XForm))
       {
-        if (gfx.PageDirection == XPageDirection.Downwards)
+        if (this.gfx.PageDirection == XPageDirection.Downwards)
         {
           AppendFormat("q {2:0.####} 0 0 -{3:0.####} {0:0.####} {4:0.####} cm {5} Do\nQ\n",
             x, y, width, height, y + height, name);
@@ -671,7 +676,7 @@ namespace PdfSharp.Drawing.Pdf
 
         if (cx != 0 && cy != 0)
         {
-          if (gfx.PageDirection == XPageDirection.Downwards)
+          if (this.gfx.PageDirection == XPageDirection.Downwards)
           {
             AppendFormat("q {2:0.####} 0 0 -{3:0.####} {0:0.####} {4:0.####} cm 100 Tz {5} Do Q\n",
               x, y, cx, cy, y + height, name);
@@ -700,7 +705,7 @@ namespace PdfSharp.Drawing.Pdf
       BeginGraphic();
       RealizeTransform();
       // Associate the XGraphicsState with the current PdgGraphicsState.
-      gfxState.InternalState = state.InternalState;
+      this.gfxState.InternalState = state.InternalState;
       SaveState();
     }
 
@@ -715,7 +720,7 @@ namespace PdfSharp.Drawing.Pdf
       // Before saving, the current transformation matrix must be completely realized.
       BeginGraphic();
       RealizeTransform();
-      gfxState.InternalState = container.InternalState;
+      this.gfxState.InternalState = container.InternalState;
       SaveState();
       //throw new NotImplementedException("BeginContainer");
       //      PdfGraphicsState pdfstate = (PdfGraphicsState)this.gfxState.Clone();
@@ -747,7 +752,7 @@ namespace PdfSharp.Drawing.Pdf
 
     public void SetPageTransform(XPageDirection direction, XPoint origion, XGraphicsUnit unit)
     {
-      if (gfxStateStack.Count > 0)
+      if (this.gfxStateStack.Count > 0)
         throw new InvalidOperationException("PageTransformation can be modified only when the graphics stack is empty.");
 
       throw new NotImplementedException("SetPageTransform");
@@ -776,7 +781,7 @@ namespace PdfSharp.Drawing.Pdf
     public XMatrix Transform
     {
       //get {return this.gfxState.Ctm;}
-      set => gfxState.Transform = value;
+      set { this.gfxState.Transform = value; }
     }
 
     #endregion
@@ -792,30 +797,30 @@ namespace PdfSharp.Drawing.Pdf
 
       // Ensure that the graphics state stack level is at least 2, because otherwise an error
       // occurs when someone set the clip region before something was drawn.
-      if (gfxState.Level < GraphicsStackLevelWorldSpace)
+      if (this.gfxState.Level < GraphicsStackLevelWorldSpace)
         RealizeTransform();  // TODO: refactor this function
 
       if (combineMode == XCombineMode.Replace)
       {
-        if (clipLevel != 0)
+        if (this.clipLevel != 0)
         {
-          if (clipLevel != gfxState.Level)
+          if (this.clipLevel != this.gfxState.Level)
             throw new NotImplementedException("Cannot set new clip region in an inner graphic state level.");
           else
             ResetClip();
         }
-        clipLevel = gfxState.Level;
+        this.clipLevel = this.gfxState.Level;
       }
       else if (combineMode == XCombineMode.Intersect)
       {
-        if (clipLevel == 0)
-          clipLevel = gfxState.Level;
+        if (this.clipLevel == 0)
+          this.clipLevel = this.gfxState.Level;
       }
       else
       {
         Debug.Assert(false, "Invalid XCombineMode in internal function.");
       }
-      gfxState.SetAndRealizeClipPath(path);
+      this.gfxState.SetAndRealizeClipPath(path);
     }
 
     /// <summary>
@@ -825,26 +830,26 @@ namespace PdfSharp.Drawing.Pdf
     public void ResetClip()
     {
       // No clip level means no clipping occurs and nothing is to do.
-      if (clipLevel == 0)
+      if (this.clipLevel == 0)
         return;
 
       // Only at the clipLevel the clipping can be reset.
-      if (clipLevel != gfxState.Level)
+      if (this.clipLevel != this.gfxState.Level)
         throw new NotImplementedException("Cannot reset clip region in an inner graphic state level.");
 
       // Must be in graphical mode before popping the graphics state.
       BeginGraphic();
 
       // Save InternalGraphicsState and transformation of the current graphical state.
-      InternalGraphicsState state = gfxState.InternalState;
-      XMatrix ctm = gfxState.Transform;
+      InternalGraphicsState state = this.gfxState.InternalState;
+      XMatrix ctm = this.gfxState.Transform;
       // Empty clip path by switching back to the previous state.
       RestoreState();
       SaveState();
       // Save internal state
-      gfxState.InternalState = state;
+      this.gfxState.InternalState = state;
       // Restore CTM
-      gfxState.Transform = ctm;
+      this.gfxState.Transform = ctm;
     }
 
     /// <summary>
@@ -1086,8 +1091,8 @@ namespace PdfSharp.Drawing.Pdf
     }
 
 #if WPF
-    void AppendPartialArc(Point point1, Point point2, double rotationAngle,
-      Size size, bool isLargeArc, SweepDirection sweepDirection, PathStart pathStart)
+    void AppendPartialArc(System.Windows.Point point1, System.Windows.Point point2, double rotationAngle,
+      System.Windows.Size size, bool isLargeArc, System.Windows.Media.SweepDirection sweepDirection, PathStart pathStart)
     {
 #if true
       //AppendPartialArc(currentPoint, seg.Point, seg.RotationAngle, seg.Size, seg.IsLargeArc, seg.SweepDirection, PathStart.Ignore1st);
@@ -1198,7 +1203,7 @@ namespace PdfSharp.Drawing.Pdf
 #endif
       foreach (PathFigure figure in geometry.Figures)
       {
-        Point currentPoint = new Point();
+        System.Windows.Point currentPoint = new System.Windows.Point();
 
         // Move to start point
         currentPoint = figure.StartPoint;
@@ -1210,7 +1215,7 @@ namespace PdfSharp.Drawing.Pdf
           if (type == typeof(LineSegment))
           {
             // Draw a single line
-            Point point = ((LineSegment)segment).Point;
+            System.Windows.Point point = ((LineSegment)segment).Point;
             currentPoint = point;
             AppendFormat("{0:0.####} {1:0.####} l\n", point.X, point.Y);
           }
@@ -1218,7 +1223,7 @@ namespace PdfSharp.Drawing.Pdf
           {
             // Draw connected lines
             PointCollection points = ((PolyLineSegment)segment).Points;
-            foreach (Point point in points)
+            foreach (System.Windows.Point point in points)
             {
               currentPoint = point; // I forced myself not to optimize this assignment
               AppendFormat("{0:0.####} {1:0.####} l\n", point.X, point.Y);
@@ -1228,9 +1233,9 @@ namespace PdfSharp.Drawing.Pdf
           {
             // Draw Bézier curve
             BezierSegment seg = (BezierSegment)segment;
-            Point point1 = seg.Point1;
-            Point point2 = seg.Point2;
-            Point point3 = seg.Point3;
+            System.Windows.Point point1 = seg.Point1;
+            System.Windows.Point point2 = seg.Point2;
+            System.Windows.Point point3 = seg.Point3;
             AppendFormat("{0:0.####} {1:0.####} {2:0.####} {3:0.####} {4:0.####} {5:0.####} c\n",
               point1.X, point1.Y, point2.X, point2.Y, point3.X, point3.Y);
             currentPoint = point3;
@@ -1245,9 +1250,9 @@ namespace PdfSharp.Drawing.Pdf
               Debug.Assert(count % 3 == 0, "Number of Points in PolyBezierSegment are not a multiple of 3.");
               for (int idx = 0; idx < count - 2; idx += 3)
               {
-                Point point1 = points[idx];
-                Point point2 = points[idx + 1];
-                Point point3 = points[idx + 2];
+                System.Windows.Point point1 = points[idx];
+                System.Windows.Point point2 = points[idx + 1];
+                System.Windows.Point point3 = points[idx + 2];
                 AppendFormat("{0:0.####} {1:0.####} {2:0.####} {3:0.####} {4:0.####} {5:0.####} c\n",
                   point1.X, point1.Y, point2.X, point2.Y, point3.X, point3.Y);
               }
@@ -1284,36 +1289,36 @@ namespace PdfSharp.Drawing.Pdf
 
     internal void Append(string value)
     {
-      content.Append(value);
+      this.content.Append(value);
     }
 
     internal void AppendFormat(string format, params object[] args)
     {
-      content.AppendFormat(CultureInfo.InvariantCulture, format, args);
+      this.content.AppendFormat(CultureInfo.InvariantCulture, format, args);
     }
 
     void AppendStrokeFill(XPen pen, XBrush brush, XFillMode fillMode, bool closePath)
     {
       if (closePath)
-        content.Append("h ");
+        this.content.Append("h ");
 
       if (fillMode == XFillMode.Winding)
       {
         if (pen != null && brush != null)
-          content.Append("B\n");
+          this.content.Append("B\n");
         else if (pen != null)
-          content.Append("S\n");
+          this.content.Append("S\n");
         else
-          content.Append("f\n");
+          this.content.Append("f\n");
       }
       else
       {
         if (pen != null && brush != null)
-          content.Append("B*\n");
+          this.content.Append("B*\n");
         else if (pen != null)
-          content.Append("S\n");
+          this.content.Append("S\n");
         else
-          content.Append("f*\n");
+          this.content.Append("f*\n");
       }
     }
     #endregion
@@ -1328,12 +1333,12 @@ namespace PdfSharp.Drawing.Pdf
     /// </summary>
     void BeginPage()
     {
-      if (gfxState.Level == GraphicsStackLevelInitial)
+      if (this.gfxState.Level == GraphicsStackLevelInitial)
       {
         // Flip page horizontaly and mirror text.
         // TODO: Is PageOriging and PageScale (== Viewport) useful? Or just public DefaultViewMatrix (like Presentation Manager has had)
-        defaultViewMatrix = new XMatrix();  //XMatrix.Identity;
-        if (gfx.PageDirection == XPageDirection.Downwards)
+        this.defaultViewMatrix = new XMatrix();  //XMatrix.Identity;
+        if (this.gfx.PageDirection == XPageDirection.Downwards)
         {
 #if MIGRADOC
           if (this.pdflibHack)
@@ -1351,13 +1356,13 @@ namespace PdfSharp.Drawing.Pdf
             // Take TrimBox into account
             double pageHeight = Size.Height;
             XPoint trimOffset = new XPoint();
-            if (page != null && page.TrimMargins.AreSet)
+            if (this.page != null && this.page.TrimMargins.AreSet)
             {
-              pageHeight += page.TrimMargins.Top.Point + page.TrimMargins.Bottom.Point;
-              trimOffset = new XPoint(page.TrimMargins.Left.Point, page.TrimMargins.Top.Point);
+              pageHeight += this.page.TrimMargins.Top.Point + this.page.TrimMargins.Bottom.Point;
+              trimOffset = new XPoint(this.page.TrimMargins.Left.Point, this.page.TrimMargins.Top.Point);
             }
 
-            if (page != null && page.Elements.GetInteger("/Rotate") == 90)  // HACK for InDesign flyer
+            if (this.page != null && this.page.Elements.GetInteger("/Rotate") == 90)  // HACK for InDesign flyer
             {
               defaultViewMatrix.RotatePrepend(90);
               defaultViewMatrix.ScalePrepend(1, -1);
@@ -1370,7 +1375,7 @@ namespace PdfSharp.Drawing.Pdf
             }
 
             // Scale with page units
-            switch (gfx.PageUnit)
+            switch (this.gfx.PageUnit)
             {
               case XGraphicsUnit.Inch:
                 defaultViewMatrix.ScalePrepend(XUnit.InchFactor);
@@ -1387,7 +1392,7 @@ namespace PdfSharp.Drawing.Pdf
 
             if (trimOffset != new XPoint())
             {
-              Debug.Assert(gfx.PageUnit == XGraphicsUnit.Point, "With TrimMargins set the page units must be Point. Ohter cases nyi.");
+              Debug.Assert(this.gfx.PageUnit == XGraphicsUnit.Point, "With TrimMargins set the page units must be Point. Ohter cases nyi.");
               defaultViewMatrix.TranslatePrepend(trimOffset.x, trimOffset.y);
             }
 
@@ -1403,7 +1408,7 @@ namespace PdfSharp.Drawing.Pdf
         else
         {
           // Scale with page units
-          switch (gfx.PageUnit)
+          switch (this.gfx.PageUnit)
           {
             case XGraphicsUnit.Inch:
               defaultViewMatrix.ScalePrepend(XUnit.InchFactor);
@@ -1433,13 +1438,13 @@ namespace PdfSharp.Drawing.Pdf
     /// </summary>
     void EndPage()
     {
-      if (streamMode == StreamMode.Text)
+      if (this.streamMode == StreamMode.Text)
       {
-        content.Append("ET\n");
-        streamMode = StreamMode.Graphic;
+        this.content.Append("ET\n");
+        this.streamMode = StreamMode.Graphic;
       }
 
-      while (gfxStateStack.Count != 0)
+      while (this.gfxStateStack.Count != 0)
         RestoreState();
     }
 
@@ -1448,12 +1453,12 @@ namespace PdfSharp.Drawing.Pdf
     /// </summary>
     internal void BeginGraphic()
     {
-      if (streamMode != StreamMode.Graphic)
+      if (this.streamMode != StreamMode.Graphic)
       {
-        if (streamMode == StreamMode.Text)
-          content.Append("ET\n");
+        if (this.streamMode == StreamMode.Text)
+          this.content.Append("ET\n");
 
-        streamMode = StreamMode.Graphic;
+        this.streamMode = StreamMode.Graphic;
       }
     }
     StreamMode streamMode;
@@ -1468,10 +1473,10 @@ namespace PdfSharp.Drawing.Pdf
       RealizeTransform();
 
       if (pen != null)
-        gfxState.RealizePen(pen, colorMode); // this.page.document.Options.ColorMode);
+        this.gfxState.RealizePen(pen, this.colorMode); // this.page.document.Options.ColorMode);
 
       if (brush != null)
-        gfxState.RealizeBrush(brush, colorMode); // this.page.document.Options.ColorMode);
+        this.gfxState.RealizeBrush(brush, this.colorMode); // this.page.document.Options.ColorMode);
     }
 
     /// <summary>
@@ -1498,21 +1503,21 @@ namespace PdfSharp.Drawing.Pdf
       BeginPage();
       RealizeTransform();
 
-      if (streamMode != StreamMode.Text)
+      if (this.streamMode != StreamMode.Text)
       {
-        streamMode = StreamMode.Text;
-        content.Append("BT\n");
+        this.streamMode = StreamMode.Text;
+        this.content.Append("BT\n");
         // Text matrix is empty after BT
-        gfxState.realizedTextPosition = new XPoint();
+        this.gfxState.realizedTextPosition = new XPoint();
       }
-      gfxState.RealizeFont(font, brush, renderMode);
+      this.gfxState.RealizeFont(font, brush, renderMode);
     }
 
     void AdjustTextMatrix(ref XPoint pos)
     {
       XPoint posSave = pos;
-      pos = pos - new XVector(gfxState.realizedTextPosition.x, gfxState.realizedTextPosition.y);
-      gfxState.realizedTextPosition = posSave;
+      pos = pos - new XVector(this.gfxState.realizedTextPosition.x, this.gfxState.realizedTextPosition.y);
+      this.gfxState.realizedTextPosition = posSave;
     }
 
     /// <summary>
@@ -1539,7 +1544,7 @@ namespace PdfSharp.Drawing.Pdf
     {
       BeginPage();
 
-      if (gfxState.Level == GraphicsStackLevelPageSpace)
+      if (this.gfxState.Level == GraphicsStackLevelPageSpace)
       {
         BeginGraphic();
         SaveState();
@@ -1548,7 +1553,7 @@ namespace PdfSharp.Drawing.Pdf
       if (gfxState.MustRealizeCtm)
       {
         BeginGraphic();
-        gfxState.RealizeCtm();
+        this.gfxState.RealizeCtm();
       }
     }
 
@@ -1574,14 +1579,17 @@ namespace PdfSharp.Drawing.Pdf
     {
       get
       {
-        if (page != null)
-          return page.Owner;
+        if (this.page != null)
+          return this.page.Owner;
         else
-          return form.Owner;
+          return this.form.Owner;
       }
     }
 
-    internal XGraphics Gfx => gfx;
+    internal XGraphics Gfx
+    {
+      get { return this.gfx; }
+    }
 
     /// <summary>
     /// Gets the PdfResources of this page or form.
@@ -1590,10 +1598,10 @@ namespace PdfSharp.Drawing.Pdf
     {
       get
       {
-        if (page != null)
-          return page.Resources;
+        if (this.page != null)
+          return this.page.Resources;
         else
-          return form.Resources;
+          return this.form.Resources;
       }
     }
 
@@ -1604,10 +1612,10 @@ namespace PdfSharp.Drawing.Pdf
     {
       get
       {
-        if (page != null)
-          return new XSize(page.Width, page.Height);
+        if (this.page != null)
+          return new XSize(this.page.Width, this.page.Height);
         else
-          return form.Size;
+          return this.form.Size;
       }
     }
 
@@ -1616,10 +1624,10 @@ namespace PdfSharp.Drawing.Pdf
     /// </summary>
     internal string GetFontName(XFont font, out PdfFont pdfFont)
     {
-      if (page != null)
-        return page.GetFontName(font, out pdfFont);
+      if (this.page != null)
+        return this.page.GetFontName(font, out pdfFont);
       else
-        return form.GetFontName(font, out pdfFont);
+        return this.form.GetFontName(font, out pdfFont);
     }
 
     /// <summary>
@@ -1627,10 +1635,10 @@ namespace PdfSharp.Drawing.Pdf
     /// </summary>
     internal string GetImageName(XImage image)
     {
-      if (page != null)
-        return page.GetImageName(image);
+      if (this.page != null)
+        return this.page.GetImageName(image);
       else
-        return form.GetImageName(image);
+        return this.form.GetImageName(image);
     }
 
     /// <summary>
@@ -1638,8 +1646,8 @@ namespace PdfSharp.Drawing.Pdf
     /// </summary>
     internal string GetFormName(XForm form)
     {
-      if (page != null)
-        return page.GetFormName(form);
+      if (this.page != null)
+        return this.page.GetFormName(form);
       else
         return this.form.GetFormName(form);
     }
@@ -1673,11 +1681,11 @@ namespace PdfSharp.Drawing.Pdf
     /// </summary>
     void SaveState()
     {
-      Debug.Assert(streamMode == StreamMode.Graphic, "Cannot save state in text mode.");
+      Debug.Assert(this.streamMode == StreamMode.Graphic, "Cannot save state in text mode.");
 
-      gfxStateStack.Push(gfxState);
-      gfxState = gfxState.Clone();
-      gfxState.Level = gfxStateStack.Count;
+      this.gfxStateStack.Push(this.gfxState);
+      this.gfxState = this.gfxState.Clone();
+      this.gfxState.Level = this.gfxStateStack.Count;
       Append("q\n");
     }
 
@@ -1686,24 +1694,24 @@ namespace PdfSharp.Drawing.Pdf
     /// </summary>
     void RestoreState()
     {
-      Debug.Assert(streamMode == StreamMode.Graphic, "Cannot restore state in text mode.");
+      Debug.Assert(this.streamMode == StreamMode.Graphic, "Cannot restore state in text mode.");
 
-      gfxState = (PdfGraphicsState)gfxStateStack.Pop();
+      this.gfxState = (PdfGraphicsState)this.gfxStateStack.Pop();
       Append("Q\n");
     }
 
     PdfGraphicsState RestoreState(InternalGraphicsState state)
     {
       int count = 1;
-      PdfGraphicsState top = (PdfGraphicsState)gfxStateStack.Pop();
+      PdfGraphicsState top = (PdfGraphicsState)this.gfxStateStack.Pop();
       while (top.InternalState != state)
       {
         Append("Q\n");
         count++;
-        top = (PdfGraphicsState)gfxStateStack.Pop();
+        top = (PdfGraphicsState)this.gfxStateStack.Pop();
       }
       Append("Q\n");
-      gfxState = top;
+      this.gfxState = top;
       return top;
     }
 

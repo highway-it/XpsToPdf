@@ -1,4 +1,14 @@
-﻿using PdfSharp.Drawing;
+﻿using System;
+using System.Diagnostics;
+using System.Collections.Generic;
+using System.Text;
+using PdfSharp.Xps.XpsModel;
+using PdfSharp.Pdf;
+using PdfSharp.Pdf.Advanced;
+using PdfSharp.Pdf.Internal;
+using PdfSharp.Drawing;
+using PdfSharp.Drawing.Pdf;
+
 using BitmapSource = System.Windows.Media.Imaging.BitmapSource;
 
 namespace PdfSharp.Xps.Rendering
@@ -7,10 +17,13 @@ namespace PdfSharp.Xps.Rendering
   {
     public XPImage(BitmapSource bitmapSource)
     {
-      xImage = XImage.FromBitmapSource(bitmapSource);
+      this.xImage = XImage.FromBitmapSource(bitmapSource);
     }
 
-    public XImage XImage => xImage;
+    public XImage XImage
+    {
+      get { return this.xImage; }
+    }
     XImage xImage;
   }
 }

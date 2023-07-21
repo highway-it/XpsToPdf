@@ -27,6 +27,13 @@
 // DEALINGS IN THE SOFTWARE.
 #endregion
 
+using System;
+using System.Diagnostics;
+using System.Collections;
+using System.Text;
+using System.IO;
+using PdfSharp.Internal;
+
 namespace PdfSharp.Pdf
 {
   /// <summary>
@@ -45,8 +52,8 @@ namespace PdfSharp.Pdf
     /// </summary>
     public PdfColorMode ColorMode
     {
-      get => colorMode;
-      set => colorMode = value;
+      get { return this.colorMode; }
+      set { this.colorMode = value; }
     }
     PdfColorMode colorMode;
 
@@ -55,8 +62,8 @@ namespace PdfSharp.Pdf
     /// </summary>
     public bool CompressContentStreams
     {
-      get => compressContentStreams;
-      set => compressContentStreams = value;
+      get { return this.compressContentStreams; }
+      set { this.compressContentStreams = value; }
     }
 #if DEBUG
     bool compressContentStreams = false;
@@ -69,9 +76,20 @@ namespace PdfSharp.Pdf
     /// </summary>
     public bool NoCompression
     {
-      get => noCompression;
-      set => noCompression = value;
+      get { return this.noCompression; }
+      set { this.noCompression = value; }
     }
     bool noCompression;
+
+    /// <summary>
+    /// Gets or sets the flate encode mode. Besides the balanced default mode you can set modes for best compression (slower) or best speed (larger files).
+    /// </summary>
+    public PdfFlateEncodeMode FlateEncodeMode
+    {
+      get { return _flateEncodeMode; }
+      set { _flateEncodeMode = value; }
+    }
+    PdfFlateEncodeMode _flateEncodeMode = PdfFlateEncodeMode.Default;
+
   }
 }

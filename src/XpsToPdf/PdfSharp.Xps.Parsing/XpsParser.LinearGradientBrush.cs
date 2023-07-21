@@ -1,4 +1,10 @@
-﻿using System.Diagnostics;
+﻿using System;
+using System.Diagnostics;
+using System.Collections.Generic;
+using System.Globalization;
+using System.Text;
+using System.Xml;
+using System.IO;
 using PdfSharp.Xps.XpsModel;
 
 namespace PdfSharp.Xps.Parsing
@@ -10,43 +16,43 @@ namespace PdfSharp.Xps.Parsing
     /// </summary>
     LinearGradientBrush ParseLinearGradientBrush()
     {
-      Debug.Assert(reader.Name == "LinearGradientBrush");
-      bool isEmptyElement = reader.IsEmptyElement;
+      Debug.Assert(this.reader.Name == "LinearGradientBrush");
+      bool isEmptyElement = this.reader.IsEmptyElement;
       LinearGradientBrush brush = new LinearGradientBrush();
       while (MoveToNextAttribute())
       {
-        switch (reader.Name)
+        switch (this.reader.Name)
         {
           case "Opacity":
-            brush.Opacity = ParseDouble(reader.Value);
+            brush.Opacity = ParseDouble(this.reader.Value);
             break;
 
           case "Transform":
-            brush.Transform = ParseMatrixTransform(reader.Value);
+            brush.Transform = ParseMatrixTransform(this.reader.Value);
             break;
 
           case "ColorInterpolationMode":
-            brush.ColorInterpolationMode = ParseEnum<ClrIntMode>(reader.Value);
+            brush.ColorInterpolationMode = ParseEnum<ClrIntMode>(this.reader.Value);
             break;
 
           case "SpreadMethod":
-            brush.SpreadMethod = ParseEnum<SpreadMethod>(reader.Value);
+            brush.SpreadMethod = ParseEnum<SpreadMethod>(this.reader.Value);
             break;
 
           case "MappingMode":
-            brush.MappingMode = ParseEnum<MappingMode>(reader.Value);
+            brush.MappingMode = ParseEnum<MappingMode>(this.reader.Value);
             break;
 
           case "StartPoint":
-            brush.StartPoint = Point.Parse(reader.Value);
+            brush.StartPoint = Point.Parse(this.reader.Value);
             break;
 
           case "EndPoint":
-            brush.EndPoint = Point.Parse(reader.Value);
+            brush.EndPoint = Point.Parse(this.reader.Value);
             break;
 
           case "x:Key":
-            brush.Key = reader.Value;
+            brush.Key = this.reader.Value;
             break;
 
           default:
@@ -57,9 +63,9 @@ namespace PdfSharp.Xps.Parsing
       if (!isEmptyElement)
       {
         MoveToNextElement();
-        while (reader.IsStartElement())
+        while (this.reader.IsStartElement())
         {
-          switch (reader.Name)
+          switch (this.reader.Name)
           {
             case "LinearGradientBrush.Transform":
               MoveToNextElement();

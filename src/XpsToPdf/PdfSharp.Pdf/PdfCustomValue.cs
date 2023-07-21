@@ -27,6 +27,10 @@
 // DEALINGS IN THE SOFTWARE.
 #endregion
 
+using System;
+using System.Diagnostics;
+using System.Collections;
+
 namespace PdfSharp.Pdf
 {
   /// <summary>
@@ -72,8 +76,8 @@ namespace PdfSharp.Pdf
     /// </summary>
     public byte[] Value
     {
-      get => Stream.Value;
-      set => Stream.Value = value;
+      get { return Stream.Value; }
+      set { Stream.Value = value; }
     }
   }
 }

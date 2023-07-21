@@ -29,6 +29,10 @@
 
 using System;
 using System.Diagnostics;
+using System.Runtime.InteropServices;
+using PdfSharp.Drawing;
+using PdfSharp.Internal;
+
 using Fixed = System.Int32;
 using FWord = System.Int16;
 using UFWord = System.UInt16;
@@ -44,10 +48,10 @@ namespace PdfSharp.Fonts.OpenType
     {
       this.fontData = fontData;
       if (fontData != null && fontData.tableDictionary.ContainsKey(tag))
-        DirectoryEntry = fontData.tableDictionary[tag];
+        this.DirectoryEntry = fontData.tableDictionary[tag];
       else
-        DirectoryEntry = new TableDirectoryEntry(tag);
-      DirectoryEntry.FontTable = this;
+        this.DirectoryEntry = new TableDirectoryEntry(tag);
+      this.DirectoryEntry.FontTable = this;
     }
 
     /// <summary>
@@ -69,8 +73,10 @@ namespace PdfSharp.Fonts.OpenType
     /// <summary>
     /// Gets the font image the table belongs to.
     /// </summary>
-    public FontData FontData => fontData;
-
+    public FontData FontData
+    {
+      get { return this.fontData; }
+    }
     internal FontData fontData;
 
     public TableDirectoryEntry DirectoryEntry;

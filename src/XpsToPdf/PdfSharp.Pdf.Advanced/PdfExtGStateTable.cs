@@ -27,8 +27,14 @@
 // DEALINGS IN THE SOFTWARE.
 #endregion
 
+using System;
+using System.Diagnostics;
 using System.Collections.Generic;
 using System.Globalization;
+using System.Text;
+using System.IO;
+using PdfSharp.Drawing;
+using PdfSharp.Internal;
 
 namespace PdfSharp.Pdf.Advanced
 {
@@ -51,13 +57,13 @@ namespace PdfSharp.Pdf.Advanced
     {
       string key = MakeKey(alpha);
       PdfExtGState extGState;
-      if (!alphaValues.TryGetValue(key, out extGState))
+      if (!this.alphaValues.TryGetValue(key, out extGState))
       {
-        extGState = new PdfExtGState(owner);
+        extGState = new PdfExtGState(this.owner);
         extGState.Elements[PdfExtGState.Keys.CA] = new PdfReal(alpha);
         extGState.Elements[PdfExtGState.Keys.ca] = new PdfReal(alpha);
 
-        alphaValues[key] = extGState;
+        this.alphaValues[key] = extGState;
       }
       return extGState;
     }
@@ -69,12 +75,12 @@ namespace PdfSharp.Pdf.Advanced
     {
       string key = MakeKey(alpha);
       PdfExtGState extGState;
-      if (!strokeAlphaValues.TryGetValue(key, out extGState))
+      if (!this.strokeAlphaValues.TryGetValue(key, out extGState))
       {
-        extGState = new PdfExtGState(owner);
+        extGState = new PdfExtGState(this.owner);
         extGState.Elements[PdfExtGState.Keys.CA] = new PdfReal(alpha);
 
-        strokeAlphaValues[key] = extGState;
+        this.strokeAlphaValues[key] = extGState;
       }
       return extGState;
     }
@@ -86,12 +92,12 @@ namespace PdfSharp.Pdf.Advanced
     {
       string key = MakeKey(alpha);
       PdfExtGState extGState; ;
-      if (!nonStrokeAlphaValues.TryGetValue(key, out extGState))
+      if (!this.nonStrokeAlphaValues.TryGetValue(key, out extGState))
       {
-        extGState = new PdfExtGState(owner);
+        extGState = new PdfExtGState(this.owner);
         extGState.Elements[PdfExtGState.Keys.ca] = new PdfReal(alpha);
 
-        nonStrokeAlphaValues[key] = extGState;
+        this.nonStrokeAlphaValues[key] = extGState;
       }
       return extGState;
     }
@@ -126,7 +132,7 @@ namespace PdfSharp.Pdf.Advanced
 
     static string MakeKey(double alpha)
     {
-      return ((int)(1000 * alpha)).ToString(CultureInfo.InvariantCulture);
+      return ((int)(1000 * alpha)).ToString();
     }
 
     /// <summary>

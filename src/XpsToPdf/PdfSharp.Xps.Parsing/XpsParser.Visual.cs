@@ -1,4 +1,10 @@
-﻿using System.Diagnostics;
+﻿using System;
+using System.Diagnostics;
+using System.Collections.Generic;
+using System.Globalization;
+using System.Text;
+using System.Xml;
+using System.IO;
 using PdfSharp.Xps.XpsModel;
 
 namespace PdfSharp.Xps.Parsing
@@ -10,24 +16,24 @@ namespace PdfSharp.Xps.Parsing
     /// </summary>
     Visual ParseVisual()
     {
-      bool isEmptyElement = reader.IsEmptyElement;
+      bool isEmptyElement = this.reader.IsEmptyElement;
       Visual visual = new Visual();
       while (MoveToNextAttribute())
       {
-        switch (reader.Name)
+        switch (this.reader.Name)
         {
           default:
-            UnexpectedAttribute(reader.Name);
+            UnexpectedAttribute(this.reader.Name);
             break;
         }
       }
       if (!isEmptyElement)
       {
         MoveToNextElement();
-        while (reader.IsStartElement())
+        while (this.reader.IsStartElement())
         {
           XpsElement element = null;
-          switch (reader.Name)
+          switch (this.reader.Name)
           {
             case "Canvas":
               element = ParseCanvas();

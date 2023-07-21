@@ -125,7 +125,7 @@ namespace PdfSharp.SharpZipLib.Checksums
 		
 		internal static uint ComputeCrc32(uint oldCrc, byte bval)
 		{
-			return (uint)(CrcTable[(oldCrc ^ bval) & 0xFF] ^ (oldCrc >> 8));
+			return (uint)(Crc32.CrcTable[(oldCrc ^ bval) & 0xFF] ^ (oldCrc >> 8));
 		}
 		
 		/// <summary>
@@ -137,9 +137,13 @@ namespace PdfSharp.SharpZipLib.Checksums
 		/// Returns the CRC32 data checksum computed so far.
 		/// </summary>
 		public long Value {
-			get => (long)crc;
-            set => crc = (uint)value;
-        }
+			get {
+				return (long)crc;
+			}
+			set {
+				crc = (uint)value;
+			}
+		}
 		
 		/// <summary>
 		/// Resets the CRC32 data checksum as if no update was ever called.

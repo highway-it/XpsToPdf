@@ -29,9 +29,12 @@
 
 using System;
 using System.Diagnostics;
+using System.Collections;
 using System.Reflection;
 using System.Text;
 using System.IO;
+using PdfSharp.Internal;
+using PdfSharp.Pdf;
 using PdfSharp.Pdf.IO;
 
 namespace PdfSharp.Pdf.Advanced
@@ -53,28 +56,34 @@ namespace PdfSharp.Pdf.Advanced
     /// </summary>
     public string FirstDocumentID
     {
-      get => document.trailer.GetDocumentID(0);
-      set => document.trailer.SetDocumentID(0, value);
+      get { return this.document.trailer.GetDocumentID(0); }
+      set { this.document.trailer.SetDocumentID(0, value); }
     }
 
     /// <summary>
     /// Gets the first document identifier as GUID.
     /// </summary>
-    public Guid FirstDocumentGuid => GuidFromString(document.trailer.GetDocumentID(0));
+    public Guid FirstDocumentGuid
+    {
+      get { return GuidFromString(this.document.trailer.GetDocumentID(0)); }
+    }
 
     /// <summary>
     /// Gets or sets the second document identifier.
     /// </summary>
     public string SecondDocumentID
     {
-      get => document.trailer.GetDocumentID(1);
-      set => document.trailer.SetDocumentID(1, value);
+      get { return this.document.trailer.GetDocumentID(1); }
+      set { this.document.trailer.SetDocumentID(1, value); }
     }
 
     /// <summary>
     /// Gets the first document identifier as GUID.
     /// </summary>
-    public Guid SecondDocumentGuid => GuidFromString(document.trailer.GetDocumentID(0));
+    public Guid SecondDocumentGuid
+    {
+      get { return GuidFromString(this.document.trailer.GetDocumentID(0)); }
+    }
 
     Guid GuidFromString(string id)
     {
@@ -91,7 +100,10 @@ namespace PdfSharp.Pdf.Advanced
     /// <summary>
     /// Gets the catalog dictionary.
     /// </summary>
-    public PdfCatalog Catalog => document.Catalog;
+    public PdfCatalog Catalog
+    {
+      get { return this.document.Catalog; }
+    }
 
     /// <summary>
     /// Returns the object with the specified Identifier, or null, if no such object exists.
@@ -147,7 +159,7 @@ namespace PdfSharp.Pdf.Advanced
     /// </summary>
     public PdfObject[] GetAllObjects()
     {
-      PdfReference[] irefs = document.irefTable.AllReferences;
+      PdfReference[] irefs = this.document.irefTable.AllReferences;
       int count = irefs.Length;
       PdfObject[] objects = new PdfObject[count];
       for (int idx = 0; idx < count; idx++)
@@ -159,7 +171,10 @@ namespace PdfSharp.Pdf.Advanced
     /// Gets all indirect objects ordered by their object identifier.
     /// </summary>
     [Obsolete("Use GetAllObjects.")]  // Properties should not return arrays
-    public PdfObject[] AllObjects => GetAllObjects();
+    public PdfObject[] AllObjects
+    {
+      get { return GetAllObjects(); }
+    }
 
     /// <summary>
     /// Creates the indirect object of the specified type, adds it to the document, and
@@ -172,7 +187,7 @@ namespace PdfSharp.Pdf.Advanced
         null, new Type[] { typeof(PdfDocument) }, null);
       if (ctorInfo != null)
       {
-        result = (T)ctorInfo.Invoke(new object[] { document });
+        result = (T)ctorInfo.Invoke(new object[] { this.document });
         Debug.Assert(result != null);
         AddObject(result);
       }
@@ -189,10 +204,10 @@ namespace PdfSharp.Pdf.Advanced
       if (obj == null)
         throw new ArgumentNullException("obj");
       if (obj.Owner == null)
-        obj.Document = document;
-      else if (obj.Owner != document)
+        obj.Document = this.document;
+      else if (obj.Owner != this.document)
         throw new InvalidOperationException("Object does not belong to this document.");
-      document.irefTable.Add(obj);
+      this.document.irefTable.Add(obj);
     }
 
     /// <summary>
@@ -204,10 +219,10 @@ namespace PdfSharp.Pdf.Advanced
         throw new ArgumentNullException("obj");
       if (obj.Reference == null)
         throw new InvalidOperationException("Only indirect objects can be removed.");
-      if (obj.Owner != document)
+      if (obj.Owner != this.document)
         throw new InvalidOperationException("Object does not belong to this document.");
 
-      document.irefTable.Remove(obj.Reference);
+      this.document.irefTable.Remove(obj.Reference);
     }
 
     /// <summary>
@@ -228,7 +243,7 @@ namespace PdfSharp.Pdf.Advanced
     /// </summary>
     public PdfObject[] GetClosure(PdfObject obj, int depth)
     {
-      PdfReference[] references = document.irefTable.TransitiveClosure(obj, depth);
+      PdfReference[] references = this.document.irefTable.TransitiveClosure(obj, depth);
       int count = references.Length + 1;
       PdfObject[] objects = new PdfObject[count];
       objects[0] = obj;

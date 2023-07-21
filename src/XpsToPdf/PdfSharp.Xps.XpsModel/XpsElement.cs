@@ -1,4 +1,9 @@
-﻿namespace PdfSharp.Xps.XpsModel
+﻿using System;
+using System.Collections.Generic;
+using System.Text;
+using PdfSharp.Xps.Rendering;
+
+namespace PdfSharp.Xps.XpsModel
 {
   /// <summary>
   /// Base class for all XPS elements.
@@ -10,8 +15,8 @@
     /// </summary>
     public XpsElement Parent
     {
-      get => parent;
-      set => parent = value;
+      get { return this.parent; }
+      set { this.parent = value; }
     }
     XpsElement parent;
 

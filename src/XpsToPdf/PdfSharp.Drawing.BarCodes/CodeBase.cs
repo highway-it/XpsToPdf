@@ -27,6 +27,11 @@
 // DEALINGS IN THE SOFTWARE.
 #endregion
 
+using System;
+using System.Diagnostics;
+using System.ComponentModel;
+using PdfSharp.Drawing;
+
 namespace PdfSharp.Drawing.BarCodes
 {
   /// <summary>
@@ -79,8 +84,8 @@ namespace PdfSharp.Drawing.BarCodes
     /// </summary>
     public XSize Size
     {
-      get => size;
-      set => size = value;
+      get { return this.size; }
+      set { this.size = value; }
     }
     internal XSize size;
 
@@ -89,11 +94,11 @@ namespace PdfSharp.Drawing.BarCodes
     /// </summary>
     public string Text
     {
-      get => text;
+      get { return this.text; }
       set
       {
         CheckCode(value);
-        text = value;
+        this.text = value;
       }
     }
     internal string text;
@@ -103,8 +108,8 @@ namespace PdfSharp.Drawing.BarCodes
     /// </summary>
     public AnchorType Anchor
     {
-      get => anchor;
-      set => anchor = value;
+      get { return this.anchor; }
+      set { this.anchor = value; }
     }
     internal AnchorType anchor;
 
@@ -113,8 +118,8 @@ namespace PdfSharp.Drawing.BarCodes
     /// </summary>
     public CodeDirection Direction
     {
-      get => direction;
-      set => direction = value;
+      get { return this.direction; }
+      set { this.direction = value; }
     }
     internal CodeDirection direction;
 
@@ -138,7 +143,7 @@ namespace PdfSharp.Drawing.BarCodes
         return new XVector();
 
       XVector result;
-      Delta delta = deltas[(int)oldType, (int)newType];
+      Delta delta = CodeBase.deltas[(int)oldType, (int)newType];
       result = new XVector(size.width / 2 * delta.x, size.height / 2 * delta.y);
       return result;
     }

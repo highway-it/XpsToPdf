@@ -37,6 +37,7 @@ using System.Drawing;
 #if WPF
 using System.Windows.Media;
 #endif
+using PdfSharp.Internal;
 
 namespace PdfSharp.Drawing
 {
@@ -48,48 +49,48 @@ namespace PdfSharp.Drawing
   {
     XColor(uint argb)
     {
-      cs = XColorSpace.Rgb;
-      a = (byte)((argb >> 24) & 0xff) / 255f;
-      r = (byte)((argb >> 16) & 0xff);
-      g = (byte)((argb >> 8) & 0xff);
-      b = (byte)(argb & 0xff);
-      c = 0;
-      m = 0;
-      y = 0;
-      k = 0;
-      gs = 0;
+      this.cs = XColorSpace.Rgb;
+      this.a = (byte)((argb >> 24) & 0xff) / 255f;
+      this.r = (byte)((argb >> 16) & 0xff);
+      this.g = (byte)((argb >> 8) & 0xff);
+      this.b = (byte)(argb & 0xff);
+      this.c = 0;
+      this.m = 0;
+      this.y = 0;
+      this.k = 0;
+      this.gs = 0;
       RgbChanged();
       cs.GetType(); // Suppress warning
     }
 
     XColor(byte alpha, byte red, byte green, byte blue)
     {
-      cs = XColorSpace.Rgb;
-      a = alpha / 255f;
-      r = red;
-      g = green;
-      b = blue;
-      c = 0;
-      m = 0;
-      y = 0;
-      k = 0;
-      gs = 0;
+      this.cs = XColorSpace.Rgb;
+      this.a = alpha / 255f;
+      this.r = red;
+      this.g = green;
+      this.b = blue;
+      this.c = 0;
+      this.m = 0;
+      this.y = 0;
+      this.k = 0;
+      this.gs = 0;
       RgbChanged();
       cs.GetType(); // Suppress warning
     }
 
     XColor(double alpha, double cyan, double magenta, double yellow, double black)
     {
-      cs = XColorSpace.Cmyk;
-      a = (float)(alpha > 1 ? 1 : (alpha < 0 ? 0 : alpha));
-      c = (float)(cyan > 1 ? 1 : (cyan < 0 ? 0 : cyan));
-      m = (float)(magenta > 1 ? 1 : (magenta < 0 ? 0 : magenta));
-      y = (float)(yellow > 1 ? 1 : (yellow < 0 ? 0 : yellow));
-      k = (float)(black > 1 ? 1 : (black < 0 ? 0 : black));
-      r = 0;
-      g = 0;
-      b = 0;
-      gs = 0f;
+      this.cs = XColorSpace.Cmyk;
+      this.a = (float)(alpha > 1 ? 1 : (alpha < 0 ? 0 : alpha));
+      this.c = (float)(cyan > 1 ? 1 : (cyan < 0 ? 0 : cyan));
+      this.m = (float)(magenta > 1 ? 1 : (magenta < 0 ? 0 : magenta));
+      this.y = (float)(yellow > 1 ? 1 : (yellow < 0 ? 0 : yellow));
+      this.k = (float)(black > 1 ? 1 : (black < 0 ? 0 : black));
+      this.r = 0;
+      this.g = 0;
+      this.b = 0;
+      this.gs = 0f;
       CmykChanged();
     }
 
@@ -99,21 +100,21 @@ namespace PdfSharp.Drawing
 
     XColor(double gray)
     {
-      cs = XColorSpace.GrayScale;
+      this.cs = XColorSpace.GrayScale;
       if (gray < 0)
-        gs = 0;
+        this.gs = 0;
       else if (gray > 1)
-        gs = 1;
-      gs = (float)gray;
+        this.gs = 1;
+      this.gs = (float)gray;
 
-      a = 1;
-      r = 0;
-      g = 0;
-      b = 0;
-      c = 0;
-      m = 0;
-      y = 0;
-      k = 0;
+      this.a = 1;
+      this.r = 0;
+      this.g = 0;
+      this.b = 0;
+      this.c = 0;
+      this.m = 0;
+      this.y = 0;
+      this.k = 0;
       GrayChanged();
     }
 
@@ -124,7 +125,7 @@ namespace PdfSharp.Drawing
 #endif
 
 #if WPF
-    XColor(Color color)
+    XColor(System.Windows.Media.Color color)
       : this(color.A, color.R, color.G, color.B)
     { }
 #endif
@@ -200,7 +201,7 @@ namespace PdfSharp.Drawing
     /// <summary>
     /// Creates an XColor structure from the specified System.Drawing.Color.
     /// </summary>
-    public static XColor FromArgb(Color color)
+    public static XColor FromArgb(System.Windows.Media.Color color)
     {
       return new XColor(color);
     }
@@ -229,7 +230,7 @@ namespace PdfSharp.Drawing
     /// <summary>
     /// Creates an XColor structure from the specified alpha value and color.
     /// </summary>
-    public static XColor FromArgb(int alpha, Color color)
+    public static XColor FromArgb(int alpha, System.Windows.Media.Color color)
     {
       return new XColor(alpha, color.R, color.G, color.B);
     }
@@ -292,7 +293,7 @@ namespace PdfSharp.Drawing
       }
       catch { }
 #endif
-      return Empty;
+      return XColor.Empty;
     }
 
     /// <summary>
@@ -300,19 +301,22 @@ namespace PdfSharp.Drawing
     /// </summary>
     public XColorSpace ColorSpace
     {
-      get => cs;
+      get { return this.cs; }
       set
       {
         if (!Enum.IsDefined(typeof(XColorSpace), value))
           throw new InvalidEnumArgumentException("value", (int)value, typeof(XColorSpace));
-        cs = value;
+        this.cs = value;
       }
     }
 
     /// <summary>
     /// Indicates whether this XColor structure is uninitialized.
     /// </summary>
-    public bool IsEmpty => this == Empty;
+    public bool IsEmpty
+    {
+      get { return this == XColor.Empty; }
+    }
 
 #if GDI
 #if UseGdiObjects
@@ -338,9 +342,9 @@ namespace PdfSharp.Drawing
     ///<summary>
     /// Creates a System.Windows.Media.Color object from this color.
     /// </summary>
-    public Color ToWpfColor()
+    public System.Windows.Media.Color ToWpfColor()
     {
-      return Color.FromArgb((byte)(a * 255), r, g, b);
+      return System.Windows.Media.Color.FromArgb((byte)(this.a * 255), this.r, this.g, this.b);
     }
 #endif
 
@@ -353,11 +357,11 @@ namespace PdfSharp.Drawing
       if (obj is XColor)
       {
         XColor color = (XColor)obj;
-        if (r == color.r && g == color.g && b == color.b &&
-          c == color.c && m == color.m && y == color.y && k == color.k &&
-          gs == color.gs)
+        if (this.r == color.r && this.g == color.g && this.b == color.b &&
+          this.c == color.c && this.m == color.m && this.y == color.y && this.k == color.k &&
+          this.gs == color.gs)
         {
-          return a == color.a;
+          return this.a == color.a;
         }
       }
       return false;
@@ -368,7 +372,7 @@ namespace PdfSharp.Drawing
     /// </summary>
     public override int GetHashCode()
     {
-      return ((byte)(a * 255)) ^ r ^ g ^ b;
+      return ((byte)(this.a * 255)) ^ this.r ^ this.g ^ this.b;
       // ^ *(int*)&this.c ^ *(int*)&this.m ^ *(int*)&this.y ^ *(int*)&this.k;
     }
 
@@ -397,7 +401,10 @@ namespace PdfSharp.Drawing
     /// <summary>
     /// Gets a value indicating whether this color is a known color.
     /// </summary>
-    public bool IsKnownColor => XKnownColorTable.IsKnownColor(Argb);
+    public bool IsKnownColor
+    {
+      get { return XKnownColorTable.IsKnownColor(Argb); }
+    }
 
     //public bool IsNamedColor { get; }
     //public bool IsSystemColor { get; }
@@ -408,12 +415,12 @@ namespace PdfSharp.Drawing
     /// <returns>The hue, in degrees, of this color. The hue is measured in degrees, ranging from 0 through 360, in HSB color space.</returns>
     public double GetHue()
     {
-      if ((r == g) && (g == b))
+      if ((this.r == this.g) && (this.g == this.b))
         return 0;
 
-      double value1 = r / 255.0;
-      double value2 = g / 255.0;
-      double value3 = b / 255.0;
+      double value1 = this.r / 255.0;
+      double value2 = this.g / 255.0;
+      double value3 = this.b / 255.0;
       double value7 = 0;
       double value4 = value1;
       double value5 = value1;
@@ -449,9 +456,9 @@ namespace PdfSharp.Drawing
     /// <returns>The saturation of this color. The saturation ranges from 0 through 1, where 0 is grayscale and 1 is the most saturated.</returns>
     public double GetSaturation()
     {
-      double value1 = r / 255.0;
-      double value2 = g / 255.0;
-      double value3 = b / 255.0;
+      double value1 = this.r / 255.0;
+      double value2 = this.g / 255.0;
+      double value3 = this.b / 255.0;
       double value7 = 0;
       double value4 = value1;
       double value5 = value1;
@@ -482,9 +489,9 @@ namespace PdfSharp.Drawing
     /// <returns>The brightness of this color. The brightness ranges from 0 through 1, where 0 represents black and 1 represents white.</returns>
     public double GetBrightness()
     {
-      double value1 = r / 255.0;
-      double value2 = g / 255.0;
-      double value3 = b / 255.0;
+      double value1 = this.r / 255.0;
+      double value2 = this.g / 255.0;
+      double value3 = this.b / 255.0;
       double value4 = value1;
       double value5 = value1;
       if (value2 > value4)
@@ -508,10 +515,10 @@ namespace PdfSharp.Drawing
     void RgbChanged()
     {
       // ReSharper disable LocalVariableHidesMember
-      cs = XColorSpace.Rgb;
-      int c = 255 - r;
-      int m = 255 - g;
-      int y = 255 - b;
+      this.cs = XColorSpace.Rgb;
+      int c = 255 - this.r;
+      int m = 255 - this.g;
+      int y = 255 - this.b;
       int k = Math.Min(c, Math.Min(m, y));
       if (k == 255)
         this.c = this.m = this.y = 0;
@@ -522,7 +529,7 @@ namespace PdfSharp.Drawing
         this.m = (m - k) / black;
         this.y = (y - k) / black;
       }
-      this.k = gs = k / 255f;
+      this.k = this.gs = k / 255f;
       // ReSharper restore LocalVariableHidesMember
     }
 
@@ -531,13 +538,13 @@ namespace PdfSharp.Drawing
     /// </summary>
     void CmykChanged()
     {
-      cs = XColorSpace.Cmyk;
-      float black = k * 255;
+      this.cs = XColorSpace.Cmyk;
+      float black = this.k * 255;
       float factor = 255f - black;
-      r = (byte)(255 - Math.Min(255f, c * factor + black));
-      g = (byte)(255 - Math.Min(255f, m * factor + black));
-      b = (byte)(255 - Math.Min(255f, y * factor + black));
-      gs = (float)(1 - Math.Min(1.0, 0.3f * c + 0.59f * m + 0.11 * y + k));
+      this.r = (byte)(255 - Math.Min(255f, this.c * factor + black));
+      this.g = (byte)(255 - Math.Min(255f, this.m * factor + black));
+      this.b = (byte)(255 - Math.Min(255f, this.y * factor + black));
+      this.gs = (float)(1 - Math.Min(1.0, 0.3f * this.c + 0.59f * this.m + 0.11 * this.y + this.k));
     }
 
     ///<summary>
@@ -545,14 +552,14 @@ namespace PdfSharp.Drawing
     /// </summary>
     void GrayChanged()
     {
-      cs = XColorSpace.GrayScale;
-      r = (byte)(gs * 255);
-      g = (byte)(gs * 255);
-      b = (byte)(gs * 255);
-      c = 0;
-      m = 0;
-      y = 0;
-      k = 1 - gs;
+      this.cs = XColorSpace.GrayScale;
+      this.r = (byte)(this.gs * 255);
+      this.g = (byte)(this.gs * 255);
+      this.b = (byte)(this.gs * 255);
+      this.c = 0;
+      this.m = 0;
+      this.y = 0;
+      this.k = 1 - this.gs;
     }
 
     // Properties
@@ -563,15 +570,15 @@ namespace PdfSharp.Drawing
     /// </summary>
     public double A
     {
-      get => a;
+      get { return this.a; }
       set
       {
         if (value < 0)
-          a = 0;
+          this.a = 0;
         else if (value > 1)
-          a = 1;
+          this.a = 1;
         else
-          a = (float)value;
+          this.a = (float)value;
       }
     }
 
@@ -580,8 +587,8 @@ namespace PdfSharp.Drawing
     /// </summary>
     public byte R
     {
-      get => r;
-      set { r = value; RgbChanged(); }
+      get { return this.r; }
+      set { this.r = value; RgbChanged(); }
     }
 
     /// <summary>
@@ -589,8 +596,8 @@ namespace PdfSharp.Drawing
     /// </summary>
     public byte G
     {
-      get => g;
-      set { g = value; RgbChanged(); }
+      get { return this.g; }
+      set { this.g = value; RgbChanged(); }
     }
 
     /// <summary>
@@ -598,34 +605,40 @@ namespace PdfSharp.Drawing
     /// </summary>
     public byte B
     {
-      get => b;
-      set { b = value; RgbChanged(); }
+      get { return this.b; }
+      set { this.b = value; RgbChanged(); }
     }
 
     /// <summary>
     /// Gets the RGB part value of the color. Internal helper function.
     /// </summary>
-    internal uint Rgb => ((uint)r << 16) | ((uint)g << 8) | b;
+    internal uint Rgb
+    {
+      get { return ((uint)this.r << 16) | ((uint)this.g << 8) | this.b; }
+    }
 
     /// <summary>
     /// Gets the ARGB part value of the color. Internal helper function.
     /// </summary>
-    internal uint Argb => ((uint)(a * 255) << 24) | ((uint)r << 16) | ((uint)g << 8) | b;
+    internal uint Argb
+    {
+      get { return ((uint)(this.a * 255) << 24) | ((uint)this.r << 16) | ((uint)this.g << 8) | this.b; }
+    }
 
     /// <summary>
     /// Gets or sets the cyan value.
     /// </summary>
     public double C
     {
-      get => c;
+      get { return this.c; }
       set
       {
         if (value < 0)
-          c = 0;
+          this.c = 0;
         else if (value > 1)
-          c = 1;
+          this.c = 1;
         else
-          c = (float)value;
+          this.c = (float)value;
         CmykChanged();
       }
     }
@@ -635,15 +648,15 @@ namespace PdfSharp.Drawing
     /// </summary>
     public double M
     {
-      get => m;
+      get { return this.m; }
       set
       {
         if (value < 0)
-          m = 0;
+          this.m = 0;
         else if (value > 1)
-          m = 1;
+          this.m = 1;
         else
-          m = (float)value;
+          this.m = (float)value;
         CmykChanged();
       }
     }
@@ -653,15 +666,15 @@ namespace PdfSharp.Drawing
     /// </summary>
     public double Y
     {
-      get => y;
+      get { return this.y; }
       set
       {
         if (value < 0)
-          y = 0;
+          this.y = 0;
         else if (value > 1)
-          y = 1;
+          this.y = 1;
         else
-          y = (float)value;
+          this.y = (float)value;
         CmykChanged();
       }
     }
@@ -671,15 +684,15 @@ namespace PdfSharp.Drawing
     /// </summary>
     public double K
     {
-      get => k;
+      get { return this.k; }
       set
       {
         if (value < 0)
-          k = 0;
+          this.k = 0;
         else if (value > 1)
-          k = 1;
+          this.k = 1;
         else
-          k = (float)value;
+          this.k = (float)value;
         CmykChanged();
       }
     }
@@ -689,15 +702,15 @@ namespace PdfSharp.Drawing
     /// </summary>
     public double GS
     {
-      get => gs;
+      get { return this.gs; }
       set
       {
         if (value < 0)
-          gs = 0;
+          this.gs = 0;
         else if (value > 1)
-          gs = 1;
+          this.gs = 1;
         else
-          gs = (float)value;
+          this.gs = (float)value;
         GrayChanged();
       }
     }
@@ -712,21 +725,23 @@ namespace PdfSharp.Drawing
     /// </summary>
     public string RgbCmykG
     {
-      get =>
-          String.Format(CultureInfo.InvariantCulture,
-              "{0};{1};{2};{3};{4};{5};{6};{7};{8}", r, g, b, c, m, y, k, gs, a);
+      get
+      {
+        return String.Format(CultureInfo.InvariantCulture,
+          "{0};{1};{2};{3};{4};{5};{6};{7};{8}", this.r, this.g, this.b, this.c, this.m, this.y, this.k, this.gs, this.a);
+      }
       set
       {
         string[] values = value.Split(';');
-        r = byte.Parse(values[0], CultureInfo.InvariantCulture);
-        g = byte.Parse(values[1], CultureInfo.InvariantCulture);
-        b = byte.Parse(values[2], CultureInfo.InvariantCulture);
-        c = float.Parse(values[3], CultureInfo.InvariantCulture);
-        m = float.Parse(values[4], CultureInfo.InvariantCulture);
-        y = float.Parse(values[5], CultureInfo.InvariantCulture);
-        k = float.Parse(values[6], CultureInfo.InvariantCulture);
-        gs = float.Parse(values[7], CultureInfo.InvariantCulture);
-        a = float.Parse(values[8], CultureInfo.InvariantCulture);
+        this.r = byte.Parse(values[0], CultureInfo.InvariantCulture);
+        this.g = byte.Parse(values[1], CultureInfo.InvariantCulture);
+        this.b = byte.Parse(values[2], CultureInfo.InvariantCulture);
+        this.c = float.Parse(values[3], CultureInfo.InvariantCulture);
+        this.m = float.Parse(values[4], CultureInfo.InvariantCulture);
+        this.y = float.Parse(values[5], CultureInfo.InvariantCulture);
+        this.k = float.Parse(values[6], CultureInfo.InvariantCulture);
+        this.gs = float.Parse(values[7], CultureInfo.InvariantCulture);
+        this.a = float.Parse(values[8], CultureInfo.InvariantCulture);
       }
     }
 

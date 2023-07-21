@@ -1,4 +1,8 @@
-﻿using PdfSharp.Xps.XpsModel;
+﻿using System;
+using System.Diagnostics;
+using System.Collections.Generic;
+using System.Text;
+using PdfSharp.Xps.XpsModel;
 
 namespace PdfSharp.Xps.Rendering
 {

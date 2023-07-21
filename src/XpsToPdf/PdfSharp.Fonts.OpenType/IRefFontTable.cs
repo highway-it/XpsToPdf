@@ -28,6 +28,11 @@
 #endregion
 
 using System;
+using System.Diagnostics;
+using System.Runtime.InteropServices;
+using PdfSharp.Drawing;
+using PdfSharp.Internal;
+
 using Fixed = System.Int32;
 using FWord = System.Int16;
 using UFWord = System.UInt16;
@@ -44,7 +49,7 @@ namespace PdfSharp.Fonts.OpenType
       : base(null, fontTable.DirectoryEntry.Tag)
     {
       this.fontData = fontData;
-      irefDirectoryEntry = fontTable.DirectoryEntry;
+      this.irefDirectoryEntry = fontTable.DirectoryEntry;
     }
 
     TableDirectoryEntry irefDirectoryEntry;
@@ -55,14 +60,14 @@ namespace PdfSharp.Fonts.OpenType
     public override void PrepareForCompilation()
     {
       base.PrepareForCompilation();
-      DirectoryEntry.Length = irefDirectoryEntry.Length;
-      DirectoryEntry.CheckSum = irefDirectoryEntry.CheckSum;
+      DirectoryEntry.Length = this.irefDirectoryEntry.Length;
+      DirectoryEntry.CheckSum = this.irefDirectoryEntry.CheckSum;
 #if DEBUG
       // Check the checksum algorithm
       if (DirectoryEntry.Tag != TableTagNames.Head)
       {
         byte[] bytes = new byte[DirectoryEntry.PaddedLength];
-        Buffer.BlockCopy(irefDirectoryEntry.FontTable.fontData.Data, irefDirectoryEntry.Offset, bytes, 0, DirectoryEntry.PaddedLength);
+        Buffer.BlockCopy(this.irefDirectoryEntry.FontTable.fontData.Data, this.irefDirectoryEntry.Offset, bytes, 0, DirectoryEntry.PaddedLength);
         uint checkSum1 = DirectoryEntry.CheckSum;
         uint checkSum2 = CalcChecksum(bytes);
         // TODO: Sometimes this Assert fails,
@@ -76,7 +81,7 @@ namespace PdfSharp.Fonts.OpenType
     /// </summary>
     public override void Write(OpenTypeFontWriter writer)
     {
-      writer.Write(irefDirectoryEntry.FontTable.fontData.Data, irefDirectoryEntry.Offset, irefDirectoryEntry.PaddedLength);
+      writer.Write(this.irefDirectoryEntry.FontTable.fontData.Data, this.irefDirectoryEntry.Offset, this.irefDirectoryEntry.PaddedLength);
     }
   }
 }

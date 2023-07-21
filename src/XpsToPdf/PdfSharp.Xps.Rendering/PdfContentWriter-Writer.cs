@@ -1,10 +1,14 @@
-﻿using System.Diagnostics;
+﻿using System;
+using System.Diagnostics;
 using System.Globalization;
+using System.Collections.Generic;
 using System.Text;
 using PdfSharp.Xps.XpsModel;
+using PdfSharp.Pdf;
 using PdfSharp.Pdf.Advanced;
 using PdfSharp.Pdf.Internal;
 using PdfSharp.Drawing;
+using PdfSharp.Drawing.Pdf;
 
 namespace PdfSharp.Xps.Rendering
 {
@@ -16,7 +20,7 @@ namespace PdfSharp.Xps.Rendering
     public void WriteLiteral(string value)
     {
       WriteIndent();
-      content.Append(value);
+      this.content.Append(value);
     }
 
     /// <summary>
@@ -25,7 +29,7 @@ namespace PdfSharp.Xps.Rendering
     public void WriteLiteral(string format, params object[] args)
     {
       WriteIndent();
-      content.AppendFormat(CultureInfo.InvariantCulture, format, args);
+      this.content.AppendFormat(CultureInfo.InvariantCulture, format, args);
     }
 
     //internal void AppendRgb(float r, float g, float b, string op)
@@ -36,13 +40,13 @@ namespace PdfSharp.Xps.Rendering
     public void WriteRgb(Color color, string op)
     {
       WriteIndent();
-      content.AppendFormat(CultureInfo.InvariantCulture, "{0:0.###} {1:0.###} {2:0.###} {3}", color.R / 255.0, color.G / 255.0, color.B / 255.0, op);
+      this.content.AppendFormat(CultureInfo.InvariantCulture, "{0:0.###} {1:0.###} {2:0.###} {3}", color.R / 255.0, color.G / 255.0, color.B / 255.0, op);
     }
 
     public void WriteMatrix(XMatrix matrix)
     {
       WriteIndent();
-      content.Append(PdfEncoders.ToString(matrix) + " cm\n");
+      this.content.Append(PdfEncoders.ToString(matrix) + " cm\n");
     }
 
     public void WriteGraphicsState(PdfExtGState extGState)
@@ -63,7 +67,7 @@ namespace PdfSharp.Xps.Rendering
     [Conditional("DEBUG")]
     void WriteIndent()
     {
-      content.Append(new string(' ', 2 * graphicsState.Level));
+      this.content.Append(new string(' ', 2 * this.graphicsState.Level));
     }
 
     StringBuilder content;

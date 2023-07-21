@@ -27,7 +27,13 @@
 // DEALINGS IN THE SOFTWARE.
 #endregion
 
+using System;
 using System.Diagnostics;
+using System.Collections;
+using System.Reflection;
+using System.Text;
+using System.IO;
+using PdfSharp.Pdf;
 using PdfSharp.Pdf.Advanced;
 using PdfSharp.Pdf.Content.Objects;
 
@@ -46,15 +52,18 @@ namespace PdfSharp.Pdf.Content
       this.page = page;
       PdfContent content = page.Contents.CreateSingleContent();
       byte[] bytes = content.Stream.Value;
-      lexer = new CLexer(bytes);
+      this.lexer = new CLexer(bytes);
     }
 
     public CParser(byte[] content)
     {
-      lexer = new CLexer(content);
+      this.lexer = new CLexer(content);
     }
 
-    public CSymbol Symbol => lexer.Symbol;
+    public CSymbol Symbol
+    {
+      get { return this.lexer.Symbol; }
+    }
 
     public CSequence ReadContent()
     {
@@ -83,14 +92,14 @@ namespace PdfSharp.Pdf.Content
 
           case CSymbol.Integer:
             CInteger n = new CInteger();
-            n.Value = lexer.TokenToInteger;
-            operands.Add(n);
+            n.Value = this.lexer.TokenToInteger;
+            this.operands.Add(n);
             break;
 
           case CSymbol.Real:
             CReal r = new CReal();
-            r.Value = lexer.TokenToReal;
-            operands.Add(r);
+            r.Value = this.lexer.TokenToReal;
+            this.operands.Add(r);
             break;
 
           case CSymbol.String:
@@ -98,29 +107,29 @@ namespace PdfSharp.Pdf.Content
           case CSymbol.UnicodeString:
           case CSymbol.UnicodeHexString:
             CString s = new CString();
-            s.Value = lexer.Token;
-            operands.Add(s);
+            s.Value = this.lexer.Token;
+            this.operands.Add(s);
             break;
 
           case CSymbol.Name:
             CName name = new CName();
-            name.Name = lexer.Token;
-            operands.Add(name);
+            name.Name = this.lexer.Token;
+            this.operands.Add(name);
             break;
 
           case CSymbol.Operator:
             COperator op = CreateOperator();
-            operands.Clear();
+            this.operands.Clear();
             sequence.Add(op);
             break;
 
           case CSymbol.BeginArray:
             CArray array = new CArray();
-            Debug.Assert(operands.Count == 0, "Array within array...");
+            Debug.Assert(this.operands.Count == 0, "Array within array...");
             ParseObject(array, CSymbol.EndArray);
-            array.Add(operands);
-            operands.Clear();
-            operands.Add((CObject)array);
+            array.Add(this.operands);
+            this.operands.Clear();
+            this.operands.Add((CObject)array);
             break;
 
           case CSymbol.EndArray:
@@ -131,15 +140,15 @@ namespace PdfSharp.Pdf.Content
 
     COperator CreateOperator()
     {
-      string name = lexer.Token;
+      string name = this.lexer.Token;
       COperator op = OpCodes.OperatorFromName(name);
       if (op.OpCode.OpCodeName== OpCodeName.ID)
       {
-        lexer.ScanInlineImage();
+        this.lexer.ScanInlineImage();
       }
 
 #if DEBUG
-      if (op.OpCode.Operands != -1 && op.OpCode.Operands != operands.Count)
+      if (op.OpCode.Operands != -1 && op.OpCode.Operands != this.operands.Count)
       {
         if (op.OpCode.OpCodeName != OpCodeName.ID)
         {
@@ -148,19 +157,19 @@ namespace PdfSharp.Pdf.Content
         }
       }
 #endif
-      op.Operands.Add(operands);
+      op.Operands.Add(this.operands);
       return op;
     }
 
     CSymbol ScanNextToken()
     {
-      return lexer.ScanNextToken();
+      return this.lexer.ScanNextToken();
     }
 
     CSymbol ScanNextToken(out string token)
     {
-      CSymbol symbol = lexer.ScanNextToken();
-      token = lexer.Token;
+      CSymbol symbol = this.lexer.ScanNextToken();
+      token = this.lexer.Token;
       return symbol;
     }
 
@@ -169,9 +178,9 @@ namespace PdfSharp.Pdf.Content
     /// </summary>
     CSymbol ReadSymbol(CSymbol symbol)
     {
-      CSymbol current = lexer.ScanNextToken();
+      CSymbol current = this.lexer.ScanNextToken();
       if (symbol != current)
-        throw new ContentReaderException(PSSR.UnexpectedToken(lexer.Token));
+        throw new ContentReaderException(PSSR.UnexpectedToken(this.lexer.Token));
       return current;
     }
 

@@ -28,6 +28,9 @@
 #endregion
 
 using System;
+using System.Diagnostics;
+using System.Collections;
+using PdfSharp.Pdf.Internal;
 
 namespace PdfSharp.Pdf.AcroForms
 {
@@ -55,7 +58,7 @@ namespace PdfSharp.Pdf.AcroForms
     { 
       get
       {
-        string value = Elements.GetString(PdfAcroField.Keys.V);
+        string value = Elements.GetString(Keys.V);
         return IndexInOptStrings(value);
       }
       set 
@@ -66,7 +69,7 @@ namespace PdfSharp.Pdf.AcroForms
           int count = opt.Elements.Count;
           if (value < 0 || value >= count)
             throw new ArgumentOutOfRangeException("value");
-          Elements.SetName(PdfAcroField.Keys.V, opt.Elements[value].ToString());
+          Elements.SetName(Keys.V, opt.Elements[value].ToString());
         }
       }
     }
@@ -113,9 +116,9 @@ namespace PdfSharp.Pdf.AcroForms
       {
         get
         {
-          if (meta == null)
-            meta = CreateMeta(typeof(Keys));
-          return meta;
+          if (Keys.meta == null)
+            Keys.meta = CreateMeta(typeof(Keys));
+          return Keys.meta;
         }
       }
       static DictionaryMeta meta;
@@ -124,6 +127,9 @@ namespace PdfSharp.Pdf.AcroForms
     /// <summary>
     /// Gets the KeysMeta of this dictionary type.
     /// </summary>
-    internal override DictionaryMeta Meta => Keys.Meta;
+    internal override DictionaryMeta Meta
+    {
+      get {return Keys.Meta;}
+    }
   }
 }

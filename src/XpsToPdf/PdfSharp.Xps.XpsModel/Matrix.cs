@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Globalization;
+using System.Collections.Generic;
+using System.Text;
 using PdfSharp.Internal;
 using PdfSharp.Drawing;
 

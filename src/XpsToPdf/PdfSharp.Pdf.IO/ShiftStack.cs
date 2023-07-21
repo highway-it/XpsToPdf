@@ -30,6 +30,10 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Collections;
+using System.Text;
+using System.IO;
+using PdfSharp.Pdf;
 
 namespace PdfSharp.Pdf.IO
 {
@@ -43,7 +47,7 @@ namespace PdfSharp.Pdf.IO
 
     public ShiftStack()
     {
-      items = new List<PdfItem>();
+      this.items = new List<PdfItem>();
     }
 
     public PdfItem[] ToArray(int start, int length)
@@ -57,7 +61,10 @@ namespace PdfSharp.Pdf.IO
     /// <summary>
     /// Gets the stack pointer index.
     /// </summary>
-    public int SP => sp;
+    public int SP
+    {
+      get {return this.sp;}
+    }
 
     /// <summary>
     /// Gets the value at the specified index. Valid index is in range 0 up to sp-1.
@@ -66,9 +73,9 @@ namespace PdfSharp.Pdf.IO
     {
       get 
       {
-        if (index >= sp)
+        if (index >= this.sp)
           throw new ArgumentOutOfRangeException("index", index, "Value greater than stack index.");
-        return (PdfItem)items[index];
+        return (PdfItem)this.items[index];
       }
     }
 
@@ -77,9 +84,9 @@ namespace PdfSharp.Pdf.IO
     /// </summary>
     public PdfItem GetItem(int relativeIndex)
     {
-      if (relativeIndex >= 0 || -relativeIndex > sp)
+      if (relativeIndex >= 0 || -relativeIndex > this.sp)
         throw new ArgumentOutOfRangeException("index", relativeIndex, "Value out of stack range.");
-      return (PdfItem)items[sp + relativeIndex];
+      return (PdfItem)this.items[this.sp + relativeIndex];
     }
 
     /// <summary>
@@ -87,9 +94,9 @@ namespace PdfSharp.Pdf.IO
     /// </summary>
     public int GetInteger(int relativeIndex)
     {
-      if (relativeIndex >= 0 || -relativeIndex > sp)
+      if (relativeIndex >= 0 || -relativeIndex > this.sp)
         throw new ArgumentOutOfRangeException("index", relativeIndex, "Value out of stack range.");
-      return ((PdfInteger)items[sp + relativeIndex]).Value;
+      return ((PdfInteger)this.items[this.sp + relativeIndex]).Value;
     }
 
     /// <summary>
@@ -98,8 +105,8 @@ namespace PdfSharp.Pdf.IO
     public void Shift(PdfItem item)
     {
       Debug.Assert(item != null);
-      items.Add(item);
-      sp++;
+      this.items.Add(item);
+      this.sp++;
     }
 
     /// <summary>
@@ -107,10 +114,10 @@ namespace PdfSharp.Pdf.IO
     /// </summary>
     public void Reduce(int count)
     {
-      if (count > sp)
+      if (count > this.sp)
         throw new ArgumentException("count causes stack underflow.");
-      items.RemoveRange(sp - count, count);
-      sp -= count;
+      this.items.RemoveRange(this.sp - count, count);
+      this.sp -= count;
     }
 
     /// <summary>
@@ -120,8 +127,8 @@ namespace PdfSharp.Pdf.IO
     {
       Debug.Assert(item != null);
       Reduce(count);
-      items.Add(item);
-      sp++;
+      this.items.Add(item);
+      this.sp++;
     }
 
     /// <summary>

@@ -2,11 +2,14 @@
 using System.Diagnostics;
 using System.Collections.Generic;
 using System.Globalization;
+using System.Text;
 using System.IO;
 using System.IO.Packaging;
 using System.Xml;
+using PdfSharp.Drawing;
 using PdfSharp.Pdf.Advanced;
 using PdfSharp.Xps.Parsing;
+using PdfSharp.Xps.Rendering;
 using System.Windows.Media.Imaging;
 using IOPath = System.IO.Path;
 
@@ -20,7 +23,7 @@ namespace PdfSharp.Xps.XpsModel
   {
     public FixedPayload(XpsDocument document)
     {
-      resMngr = new ResourceManager(this);
+      this.resMngr = new ResourceManager(this);
       this.document = document;
 
       // HACK: find fdseq
@@ -40,41 +43,74 @@ namespace PdfSharp.Xps.XpsModel
       }
       Debug.Assert(fdseqString != null);
 
-      fdseq = XpsParser.Parse(GetPartAsXmlReader(fdseqString)) as FixedDocumentSequence;
-      fdocs = new FixedDocument[fdseq.DocumentReferences.Count];
+      var xpsElement = XpsParser.Parse(GetPartAsXmlReader(fdseqString));
+      var fdseq = xpsElement as FixedDocumentSequence;
+      if (fdseq != null)
+      {
+        this.fdseq = fdseq;
+        this.fdocs = new FixedDocument[this.fdseq.DocumentReferences.Count];
+        isSingleDocumentMode = false;
+      }
+      else
+      {
+        var fdoc = xpsElement as FixedDocument;
+        if (fdoc != null)
+        {
+          this.fdseq = null;
+          this.fdocs = new FixedDocument[] { fdoc };
+          fdoc.Payload = this;
+          fdoc.UriString = GetParentPackageOf(fdseqString);
+          isSingleDocumentMode = true;
+        }
+        else
+        {
+          throw new ArgumentException($"Payload '{fdseqString}' needs to be either FixedDocumentSequence or FixedDocument");
+        }
+      }
+    }
+
+    private static string GetParentPackageOf(string source)
+    {
+      source = IOPath.GetDirectoryName(source);
+      source = source.Replace('\\', '/');
+      if (!source.StartsWith("/"))
+        source = "/" + source;
+      return source;
     }
 
     /// <summary>
     /// Gets the XPS document that owns this payload.
     /// </summary>
-    public XpsDocument XpsDocument => document;
-
+    public XpsDocument XpsDocument
+    {
+      get { return this.document; }
+    }
     XpsDocument document;
 
     /// <summary>
     /// Gets the number of fixed documents in this payload.
     /// </summary>
-    public int DocumentCount => fdseq.DocumentReferences.Count;
+    public int DocumentCount
+    {
+      get { return isSingleDocumentMode ? 1 : this.fdseq.DocumentReferences.Count; }
+    }
 
     /// <summary>
     /// Gets the document with the specified index.
     /// </summary>
     public FixedDocument GetDocument(int index)
     {
-      if (index < 0 || index > fdocs.Length - 1)
+      var numDocs = isSingleDocumentMode ? 1 : this.fdocs.Length;
+      if (index < 0 || index > numDocs - 1)
         throw new ArgumentOutOfRangeException("index");
-      FixedDocument fdoc = fdocs[index];
+      FixedDocument fdoc = this.fdocs[index];
       if (fdoc == null)
       {
-        string source = fdseq.DocumentReferences[index].Source;
-        fdoc = XpsParser.Parse(GetPartAsXmlReader(source)) as FixedDocument;
+        string source = this.fdseq.DocumentReferences[index].Source;
+        fdoc = Parsing.XpsParser.Parse(GetPartAsXmlReader(source)) as FixedDocument;
         fdoc.Payload = this;
-        source = IOPath.GetDirectoryName(source);
-        source = source.Replace('\\', '/');
-        if (!source.StartsWith("/"))
-          source = "/" + source;
-        fdoc.UriString = source;
-        fdocs[index] = fdoc;
+        fdoc.UriString = GetParentPackageOf(source);
+        this.fdocs[index] = fdoc;
       }
       return fdoc;
     }
@@ -82,7 +118,10 @@ namespace PdfSharp.Xps.XpsModel
     /// <summary>
     /// Gets the underlying ZIP package.
     /// </summary>
-    public ZipPackage Package => document.Package;
+    public ZipPackage Package
+    {
+      get { return this.document.Package; }
+    }
 
     /// <summary>
     /// Gets the font data from the resource package part.
@@ -218,12 +257,12 @@ namespace PdfSharp.Xps.XpsModel
 
     XmlTextReader GetPartAsXmlReader(string uriString)
     {
-      return document.GetPartAsXmlReader(uriString);
+      return this.document.GetPartAsXmlReader(uriString);
     }
 
     byte[] GetPartAsBytes(string uriString)
     {
-      return document.GetPartAsBytes(uriString);
+      return this.document.GetPartAsBytes(uriString);
     }
 
     /// <summary>
@@ -231,6 +270,7 @@ namespace PdfSharp.Xps.XpsModel
     /// </summary>
     FixedDocumentSequence fdseq;
     FixedDocument[] fdocs;
+    bool isSingleDocumentMode;
 
     //public string GetFontName(string uriString, PdfContentWriter writer, out PdfFont pdfFont)
     //{
@@ -248,12 +288,12 @@ namespace PdfSharp.Xps.XpsModel
 
     public Font GetFont(string uriString)
     {
-      return resMngr.GetFont(uriString);
+      return this.resMngr.GetFont(uriString);
     }
 
     public BitmapSource GetImage(string uriString)
     {
-      return resMngr.GetImage(uriString);
+      return this.resMngr.GetImage(uriString);
     }
     ResourceManager resMngr;
 
@@ -269,16 +309,16 @@ namespace PdfSharp.Xps.XpsModel
       {
         string baseName = IOPath.GetFileNameWithoutExtension(uriString);
         Font font;
-        if (fonts.TryGetValue(baseName, out font))
+        if (this.fonts.TryGetValue(baseName, out font))
           return font;
 
-        byte[] fontData = payload.GetFontData(uriString);
+        byte[] fontData = this.payload.GetFontData(uriString);
 
         // Create helper name if font data does not contain a name table.
         string name = String.Format("XPS-Font-{0:00}", ++fontCount);
         name = PdfFont.CreateEmbeddedFontSubsetName(name);
         font = new Font(name, fontData);
-        fonts.Add(baseName, font);
+        this.fonts.Add(baseName, font);
         return font;
       }
       Dictionary<string, Font> fonts = new Dictionary<string, Font>();
@@ -288,7 +328,7 @@ namespace PdfSharp.Xps.XpsModel
       {
         string baseName = IOPath.GetFileNameWithoutExtension(uriString);
 
-        byte[] imageData = payload.GetImageData(uriString);
+        byte[] imageData = this.payload.GetImageData(uriString);
 
         MemoryStream stream = new MemoryStream(imageData);
         BitmapDecoder decoder = BitmapDecoder.Create(stream, BitmapCreateOptions.None, BitmapCacheOption.Default);

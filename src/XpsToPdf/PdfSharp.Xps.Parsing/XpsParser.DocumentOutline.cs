@@ -1,4 +1,10 @@
-﻿using System.Diagnostics;
+﻿using System;
+using System.Diagnostics;
+using System.Collections.Generic;
+using System.Globalization;
+using System.Text;
+using System.Xml;
+using System.IO;
 using PdfSharp.Xps.XpsModel;
 
 namespace PdfSharp.Xps.Parsing
@@ -10,19 +16,19 @@ namespace PdfSharp.Xps.Parsing
     /// </summary>
     DocumentOutline ParseDocumentOutline()
     {
-      Debug.Assert(reader.Name == "DocumentOutline");
-      bool isEmptyElement = reader.IsEmptyElement;
+      Debug.Assert(this.reader.Name == "DocumentOutline");
+      bool isEmptyElement = this.reader.IsEmptyElement;
       DocumentOutline documentOutline = new DocumentOutline();
       while (MoveToNextAttribute())
       {
-        switch (reader.Name)
+        switch (this.reader.Name)
         {
           case "xml:lang":
-            documentOutline.lang = reader.Value;
+            documentOutline.lang = this.reader.Value;
             break;
 
           default:
-            UnexpectedAttribute(reader.Name);
+            UnexpectedAttribute(this.reader.Name);
             break;
         }
       }

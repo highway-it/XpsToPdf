@@ -1,4 +1,10 @@
-﻿using System.Diagnostics;
+﻿using System;
+using System.Diagnostics;
+using System.Collections.Generic;
+using System.Globalization;
+using System.Text;
+using System.Xml;
+using System.IO;
 using PdfSharp.Xps.XpsModel;
 
 namespace PdfSharp.Xps.Parsing
@@ -10,35 +16,35 @@ namespace PdfSharp.Xps.Parsing
     /// </summary>
     FixedPage ParseFixedPage()
     {
-      Debug.Assert(reader.Name == "FixedPage");
+      Debug.Assert(this.reader.Name == "FixedPage");
       FixedPage fpage = new FixedPage();
       try
       {
-        bool isEmptyElement = reader.IsEmptyElement;
+        bool isEmptyElement = this.reader.IsEmptyElement;
         Debug.Assert(this.fpage == null);
         this.fpage = fpage;
-        while (reader.MoveToNextAttribute())
+        while (this.reader.MoveToNextAttribute())
         {
-          switch (reader.Name)
+          switch (this.reader.Name)
           {
             case "Name":
-              fpage.Name = reader.Value;
+              fpage.Name = this.reader.Value;
               break;
 
             case "Width":
-              fpage.Width = ParseDouble(reader.Value);
+              fpage.Width = ParseDouble(this.reader.Value);
               break;
 
             case "Height":
-              fpage.Height = ParseDouble(reader.Value);
+              fpage.Height = ParseDouble(this.reader.Value);
               break;
 
             case "ContentBox":
-              fpage.ContentBox = Rect.Parse(reader.Value);
+              fpage.ContentBox = Rect.Parse(this.reader.Value);
               break;
 
             case "BleedBox":
-              fpage.BleedBox = Rect.Parse(reader.Value);
+              fpage.BleedBox = Rect.Parse(this.reader.Value);
               break;
 
             case "xmlns":
@@ -66,7 +72,7 @@ namespace PdfSharp.Xps.Parsing
               break;
 
             case "xml:lang":
-              fpage.Lang = reader.Value;
+              fpage.Lang = this.reader.Value;
               break;
 
             case "xml:space":
@@ -79,14 +85,14 @@ namespace PdfSharp.Xps.Parsing
               break;
 
             default:
-              UnexpectedAttribute(reader.Name);
+              UnexpectedAttribute(this.reader.Name);
               break;
           }
         }
         if (!isEmptyElement)
         {
           MoveToNextElement();
-          while (reader.IsStartElement())
+          while (this.reader.IsStartElement())
           {
             XpsElement element = null;
             switch (reader.Name)
@@ -118,14 +124,17 @@ namespace PdfSharp.Xps.Parsing
                 break;
 
               case "FixedPage.Resources":
-                MoveToNextElement();
-                ResourceDictionary rd = new ResourceDictionary();
-                fpage.Resources = rd;
-                rd.Parent = fpage;
-                rd.ResourceParent = ResourceDictionaryStack.Current;
-                ResourceDictionaryStack.Push(rd);
-                ParseResourceDictionary(rd);
-                MoveToNextElement();
+                if (MoveToNextElement())
+                {
+                  ResourceDictionary rd = new ResourceDictionary();
+                  fpage.Resources = rd;
+                  rd.Parent = fpage;
+                  rd.ResourceParent = ResourceDictionaryStack.Current;
+                  ResourceDictionaryStack.Push(rd);
+                  ParseResourceDictionary(rd);
+
+                  MoveToNextElement();
+                }
                 break;
 
               case "mc:AlternateContent":
@@ -161,7 +170,7 @@ namespace PdfSharp.Xps.Parsing
         // If the current ResourceDictionary is from this FixedPage, pop it.
         if (fpage != null && fpage.Resources != null)
         {
-          if (ReferenceEquals(fpage.Resources, ResourceDictionaryStack.Current))
+          if (Object.ReferenceEquals(fpage.Resources, ResourceDictionaryStack.Current))
             ResourceDictionaryStack.Pop();
         }
       }

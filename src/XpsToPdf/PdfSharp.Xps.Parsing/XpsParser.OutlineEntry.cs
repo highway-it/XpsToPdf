@@ -1,4 +1,10 @@
-﻿using System.Diagnostics;
+﻿using System;
+using System.Diagnostics;
+using System.Collections.Generic;
+using System.Globalization;
+using System.Text;
+using System.Xml;
+using System.IO;
 using PdfSharp.Xps.XpsModel;
 
 namespace PdfSharp.Xps.Parsing
@@ -10,31 +16,31 @@ namespace PdfSharp.Xps.Parsing
     /// </summary>
     OutlineEntry ParseOutlineEntry()
     {
-      Debug.Assert(reader.Name == "");
-      bool isEmptyElement = reader.IsEmptyElement;
+      Debug.Assert(this.reader.Name == "");
+      bool isEmptyElement = this.reader.IsEmptyElement;
       OutlineEntry outlineEntry = new OutlineEntry();
       while (MoveToNextAttribute())
       {
-        switch (reader.Name)
+        switch (this.reader.Name)
         {
           case "OutlineLevel":
-            outlineEntry.OutlineLevel = int.Parse(reader.Value);
+            outlineEntry.OutlineLevel = int.Parse(this.reader.Value);
             break;
 
           case "OutlineTarget":
-            outlineEntry.OutlineTarget = reader.Value;
+            outlineEntry.OutlineTarget = this.reader.Value;
             break;
 
           case "Description":
-            outlineEntry.Description = reader.Value;
+            outlineEntry.Description = this.reader.Value;
             break;
 
           case "xml:lang":
-            outlineEntry.lang = reader.Value;
+            outlineEntry.lang = this.reader.Value;
             break;
           
           default:
-            UnexpectedAttribute(reader.Name);
+            UnexpectedAttribute(this.reader.Name);
             break;
         }
       }

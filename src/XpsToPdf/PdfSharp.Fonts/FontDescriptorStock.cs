@@ -28,6 +28,7 @@
 #endregion
 
 using System;
+using System.Diagnostics;
 using System.Collections.Generic;
 using PdfSharp.Drawing;
 using PdfSharp.Fonts.OpenType;
@@ -42,7 +43,7 @@ namespace PdfSharp.Fonts
   {
     FontDescriptorStock()
     {
-      table = new Dictionary<FontSelector, FontDescriptor>();
+      this.table = new Dictionary<FontSelector, FontDescriptor>();
     }
 
     /// <summary>
@@ -54,7 +55,7 @@ namespace PdfSharp.Fonts
       if (selector == null)
         return null;
 
-      FontDescriptor descriptor = table[selector] as FontDescriptor;
+      FontDescriptor descriptor = this.table[selector] as FontDescriptor;
       return descriptor;
     }
 
@@ -87,15 +88,15 @@ namespace PdfSharp.Fonts
 
       FontSelector selector = new FontSelector(font);
       FontDescriptor descriptor;
-      if (!table.TryGetValue(selector, out descriptor))
+      if (!this.table.TryGetValue(selector, out descriptor))
       {
         lock (typeof(FontDescriptorStock))
         {
           // may be created by other thread meanwhile
-          if (!table.TryGetValue(selector, out descriptor))
+          if (!this.table.TryGetValue(selector, out descriptor))
           {
             descriptor = new OpenTypeDescriptor(font);
-            table.Add(selector, descriptor);
+            this.table.Add(selector, descriptor);
           }
         }
       }
@@ -113,19 +114,19 @@ namespace PdfSharp.Fonts
 
       FontSelector selector = new FontSelector(family, style);
       FontDescriptor descriptor;
-      if (!table.TryGetValue(selector, out descriptor))
+      if (!this.table.TryGetValue(selector, out descriptor))
       {
         lock (typeof(FontDescriptorStock))
         {
           // may be created by other thread meanwhile
-          if (!table.TryGetValue(selector, out descriptor))
+          if (!this.table.TryGetValue(selector, out descriptor))
           {
             XFont font = new XFont(family.Name, 10, style);
             descriptor = new OpenTypeDescriptor(font);
-            if (table.ContainsKey(selector))
+            if (this.table.ContainsKey(selector))
               GetType();
             else
-              table.Add(selector, descriptor);
+              this.table.Add(selector, descriptor);
           }
         }
       }
@@ -136,15 +137,15 @@ namespace PdfSharp.Fonts
     {
       FontSelector selector = new FontSelector(idName);
       FontDescriptor descriptor;
-      if (!table.TryGetValue(selector, out descriptor))
+      if (!this.table.TryGetValue(selector, out descriptor))
       {
         lock (typeof(FontDescriptorStock))
         {
           // may be created by other thread meanwhile
-          if (!table.TryGetValue(selector, out descriptor))
+          if (!this.table.TryGetValue(selector, out descriptor))
           {
             descriptor = new OpenTypeDescriptor(idName, fontData);
-            table.Add(selector, descriptor);
+            this.table.Add(selector, descriptor);
           }
         }
       }
@@ -220,6 +221,14 @@ namespace PdfSharp.Fonts
     }
     static FontDescriptorStock global;
 
+    public static FontDescriptorStock NewInstance
+    {
+      get
+      {
+        return new FontDescriptorStock();
+      }
+    }
+
     Dictionary<FontSelector, FontDescriptor> table;
 
     /// <summary>
@@ -231,26 +240,32 @@ namespace PdfSharp.Fonts
     {
       public FontSelector(XFont font)
       {
-        name = font.Name;
-        style = font.Style;
+        this.name = font.Name;
+        this.style = font.Style;
       }
 
       public FontSelector(XFontFamily family, XFontStyle style)
       {
-        name = family.Name;
+        this.name = family.Name;
         this.style = style;
       }
 
       public FontSelector(string idName)
       {
-        name = idName;
-        style = XFontStyle.Regular;
+        this.name = idName;
+        this.style = XFontStyle.Regular;
       }
 
-      public string Name => name;
+      public string Name
+      {
+        get { return this.name; }
+      }
       string name;
 
-      public XFontStyle Style => style;
+      public XFontStyle Style
+      {
+        get { return this.style; }
+      }
       XFontStyle style;
 
       public static bool operator ==(FontSelector selector1, FontSelector selector2)
@@ -271,13 +286,13 @@ namespace PdfSharp.Fonts
           return false;
         FontSelector selector = obj as FontSelector;
         if (!Equals(selector, null))
-          return name == selector.name && style == selector.style;
+          return this.name == selector.name && this.style == selector.style;
         return false;
       }
 
       public override int GetHashCode()
       {
-        return name.GetHashCode() ^ style.GetHashCode();
+        return this.name.GetHashCode() ^ this.style.GetHashCode();
       }
 
       /// <summary>
@@ -286,7 +301,7 @@ namespace PdfSharp.Fonts
       public override string ToString()
       {
         string variation = "";
-        switch (style)
+        switch (this.style)
         {
           case XFontStyle.Regular:
             variation = "(Regular)";
@@ -304,7 +319,7 @@ namespace PdfSharp.Fonts
             variation = "(BoldItalic)";
             break;
         }
-        return name + variation;
+        return this.name + variation;
       }
     }
   }

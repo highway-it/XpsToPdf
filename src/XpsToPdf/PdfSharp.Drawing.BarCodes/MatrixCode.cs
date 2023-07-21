@@ -29,6 +29,9 @@
 #endregion
 
 using System;
+using System.Diagnostics;
+using System.ComponentModel;
+using PdfSharp.Drawing;
 
 namespace PdfSharp.Drawing.BarCodes
 {
@@ -58,7 +61,7 @@ namespace PdfSharp.Drawing.BarCodes
         this.rows = rows;
       }
 
-      Text = text;
+      this.Text = text;
     }
 
     /// <summary>
@@ -66,11 +69,11 @@ namespace PdfSharp.Drawing.BarCodes
     /// </summary>
     public string Encoding
     {
-      get => encoding;
+      get { return this.encoding; }
       set
       {
-        encoding = value;
-        matrixImage = null;
+        this.encoding = value;
+        this.matrixImage = null;
       }
     }
     internal string encoding;
@@ -80,11 +83,11 @@ namespace PdfSharp.Drawing.BarCodes
     /// </summary>
     public int Columns
     {
-      get => columns;
+      get { return this.columns; }
       set
       {
-        columns = value;
-        matrixImage = null;
+        this.columns = value;
+        this.matrixImage = null;
       }
     }
     internal int columns;
@@ -94,11 +97,11 @@ namespace PdfSharp.Drawing.BarCodes
     /// </summary>
     public int Rows
     {
-      get => rows;
+      get { return this.rows; }
       set
       {
-        rows = value;
-        matrixImage = null;
+        this.rows = value;
+        this.matrixImage = null;
       }
     }
     internal int rows;
@@ -108,11 +111,11 @@ namespace PdfSharp.Drawing.BarCodes
     /// </summary>
     public new string Text
     {
-      get => base.Text;
+      get { return base.Text; }
       set
       {
         base.Text = value;
-        matrixImage = null;
+        this.matrixImage = null;
       }
     }
 

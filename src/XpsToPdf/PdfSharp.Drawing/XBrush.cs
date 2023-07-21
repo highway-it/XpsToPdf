@@ -27,6 +27,8 @@
 // DEALINGS IN THE SOFTWARE.
 #endregion
 
+using System;
+using System.IO;
 #if GDI
 using System.Drawing;
 using System.Drawing.Drawing2D;
@@ -34,6 +36,7 @@ using System.Drawing.Drawing2D;
 #if WPF
 using System.Windows.Media;
 #endif
+using PdfSharp.Internal;
 
 namespace PdfSharp.Drawing
 {
@@ -73,7 +76,7 @@ namespace PdfSharp.Drawing
 #endif
 #endif
 #if WPF
-    internal abstract Brush RealizeWpfBrush();
+    internal abstract System.Windows.Media. Brush RealizeWpfBrush();
 #endif
   }
 }

@@ -27,12 +27,14 @@
 // DEALINGS IN THE SOFTWARE.
 #endregion
 
+using System;
+using System.Text;
 #if GDI
 using System.Drawing;
 using System.Drawing.Drawing2D;
 #endif
 #if WPF
-
+using System.Windows.Media;
 #endif
 
 namespace PdfSharp.Drawing
@@ -46,7 +48,7 @@ namespace PdfSharp.Drawing
     public XGraphicsPathItem(XGraphicsPathItemType type)
     {
       this.type   = type;
-      points = null;
+      this.points = null;
     }
 
 #if GDI
@@ -66,7 +68,7 @@ namespace PdfSharp.Drawing
     public XGraphicsPathItem Clone()
     {
       XGraphicsPathItem item = MemberwiseClone() as XGraphicsPathItem;
-      item.points = points.Clone() as XPoint[];
+      item.points = this.points.Clone() as XPoint[];
       return item;
     }
 

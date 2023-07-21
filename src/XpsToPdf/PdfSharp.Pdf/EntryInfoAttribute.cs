@@ -28,6 +28,8 @@
 #endregion
 
 using System;
+using System.Diagnostics;
+using System.Collections;
 
 namespace PdfSharp.Pdf
 {
@@ -81,54 +83,54 @@ namespace PdfSharp.Pdf
     public KeyInfoAttribute(KeyType keyType)
     {
       //this.version = version;
-      KeyType = keyType;
+      this.KeyType = keyType;
     }
 
     public KeyInfoAttribute(string version, KeyType keyType)
     {
       this.version = version;
-      KeyType = keyType;
+      this.KeyType = keyType;
     }
 
     public KeyInfoAttribute(KeyType keyType, Type objectType)
     {
       //this.version = version;
-      KeyType = keyType;
+      this.KeyType = keyType;
       this.objectType = objectType;
     }
 
     public KeyInfoAttribute(string version, KeyType keyType, Type objectType)
     {
       //this.version = version;
-      KeyType = keyType;
+      this.KeyType = keyType;
       this.objectType = objectType;
     }
 
     public string Version
     {
-      get => version;
-      set => version = value;
+      get { return this.version; }
+      set { this.version = value; }
     }
     string version = "1.0";
 
     public KeyType KeyType
     {
-      get => entryType;
-      set => entryType = value;
+      get { return this.entryType; }
+      set { this.entryType = value; }
     }
     KeyType entryType;
 
     public Type ObjectType
     {
-      get => objectType;
-      set => objectType = value;
+      get { return this.objectType; }
+      set { this.objectType = value; }
     }
     Type objectType;
 
     public string FixedValue
     {
-      get => fixedValue;
-      set => fixedValue = value;
+      get { return this.fixedValue; }
+      set { this.fixedValue = value; }
     }
     string fixedValue;
   }

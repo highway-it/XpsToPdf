@@ -27,6 +27,11 @@
 // DEALINGS IN THE SOFTWARE.
 #endregion
 
+using System;
+using System.Diagnostics;
+using System.Collections;
+using PdfSharp.Pdf.Internal;
+
 namespace PdfSharp.Pdf.AcroForms
 {
   /// <summary>
@@ -60,7 +65,7 @@ namespace PdfSharp.Pdf.AcroForms
 
       /// <summary>
       /// (Required; inheritable) The name of the signature handler to be used for
-      /// authenticating the field’s contents, such as Adobe.PPKLite, Entrust.PPKEF,
+      /// authenticating the fieldâ€™s contents, such as Adobe.PPKLite, Entrust.PPKEF,
       /// CICI.SignIt, or VeriSign.PPKVS.
       /// </summary>
       [KeyInfo(KeyType.Name | KeyType.Required)]
@@ -108,7 +113,7 @@ namespace PdfSharp.Pdf.AcroForms
       public const string Location = "/Location";
 
       /// <summary>
-      /// (Optional) The reason for the signing, such as (I agree…).
+      /// (Optional) The reason for the signing, such as (I agreeâ€¦).
       /// </summary>
       [KeyInfo(KeyType.TextString| KeyType.Optional)]
       public const string Reason = "/Reason";
@@ -120,9 +125,9 @@ namespace PdfSharp.Pdf.AcroForms
       {
         get
         {
-          if (meta == null)
-            meta = CreateMeta(typeof(Keys));
-          return meta;
+          if (Keys.meta == null)
+            Keys.meta = CreateMeta(typeof(Keys));
+          return Keys.meta;
         }
       }
       static DictionaryMeta meta;
@@ -131,6 +136,9 @@ namespace PdfSharp.Pdf.AcroForms
     /// <summary>
     /// Gets the KeysMeta of this dictionary type.
     /// </summary>
-    internal override DictionaryMeta Meta => Keys.Meta;
+    internal override DictionaryMeta Meta
+    {
+      get {return Keys.Meta;}
+    }
   }
 }

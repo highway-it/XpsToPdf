@@ -31,6 +31,7 @@ using System;
 using System.Diagnostics;
 using System.Collections.Generic;
 using System.Reflection;
+using PdfSharp.Pdf.IO;
 
 namespace PdfSharp.Pdf
 {
@@ -46,12 +47,12 @@ namespace PdfSharp.Pdf
     /// </summary>
     public KeyDescriptor(KeyInfoAttribute attribute)
     {
-      version = attribute.Version;
-      keyType = attribute.KeyType;
-      fixedValue = attribute.FixedValue;
-      objectType = attribute.ObjectType;
+      this.version = attribute.Version;
+      this.keyType = attribute.KeyType;
+      this.fixedValue = attribute.FixedValue;
+      this.objectType = attribute.ObjectType;
 
-      if (version == "")
+      if (this.version == "")
         version = "1.0";
     }
 
@@ -60,47 +61,53 @@ namespace PdfSharp.Pdf
     /// </summary>
     public string Version
     {
-      get => version;
-      set => version = value;
+      get { return this.version; }
+      set { this.version = value; }
     }
     string version;
 
     public KeyType KeyType
     {
-      get => keyType;
-      set => keyType = value;
+      get { return this.keyType; }
+      set { this.keyType = value; }
     }
     KeyType keyType;
 
     public string KeyValue
     {
-      get => keyValue;
-      set => keyValue = value;
+      get { return this.keyValue; }
+      set { this.keyValue = value; }
     }
     string keyValue;
 
-    public string FixedValue => fixedValue;
+    public string FixedValue
+    {
+      get { return this.fixedValue; }
+    }
     string fixedValue;
 
     public Type ObjectType
     {
-      get => objectType;
-      set => objectType = value;
+      get { return this.objectType; }
+      set { this.objectType = value; }
     }
     Type objectType;
 
-    public bool CanBeIndirect => (keyType & KeyType.MustNotBeIndirect) == 0;
+    public bool CanBeIndirect
+    {
+      get { return (this.keyType & KeyType.MustNotBeIndirect) == 0; }
+    }
 
     /// <summary>
     /// Returns the type of the object to be created as value for the described key.
     /// </summary>
     public Type GetValueType()
     {
-      Type type = objectType;
+      Type type = this.objectType;
       if (type == null)
       {
         // If we have no ObjectType specified, use the KeyType enumeration.
-        switch (keyType & KeyType.TypeMask)
+        switch (this.keyType & KeyType.TypeMask)
         {
           case KeyType.Name:
             type = typeof(PdfName);
@@ -160,7 +167,7 @@ namespace PdfSharp.Pdf
             throw new NotImplementedException("KeyType.ArrayOrNameOrString");
 
           default:
-            Debug.Assert(false, "Invalid KeyType: " + keyType);
+            Debug.Assert(false, "Invalid KeyType: " + this.keyType);
             break;
         }
       }
@@ -184,12 +191,15 @@ namespace PdfSharp.Pdf
           KeyInfoAttribute attribute = (KeyInfoAttribute)attributes[0];
           KeyDescriptor descriptor = new KeyDescriptor(attribute);
           descriptor.KeyValue = (string)field.GetValue(null);
-          keyDescriptors[descriptor.KeyValue] = descriptor;
+          this.keyDescriptors[descriptor.KeyValue] = descriptor;
         }
       }
     }
 
-    public KeyDescriptor this[string key] => keyDescriptors[key];
+    public KeyDescriptor this[string key]
+    {
+      get { return this.keyDescriptors[key]; }
+    }
 
     readonly Dictionary<string, KeyDescriptor> keyDescriptors = new Dictionary<string, KeyDescriptor>();
   }

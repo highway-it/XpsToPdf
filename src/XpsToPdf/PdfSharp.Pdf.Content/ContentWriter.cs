@@ -27,8 +27,12 @@
 // DEALINGS IN THE SOFTWARE.
 #endregion
 
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Collections;
+using System.Globalization;
+using System.Text;
 using System.IO;
 using PdfSharp.Pdf.Internal;
 using PdfSharp.Pdf.Content.Objects;
@@ -42,7 +46,7 @@ namespace PdfSharp.Pdf.Content
   {
     public ContentWriter(Stream contentStream)
     {
-      stream = contentStream;
+      this.stream = contentStream;
 #if DEBUG
       //layout = PdfWriterLayout.Verbose;
 #endif
@@ -50,10 +54,10 @@ namespace PdfSharp.Pdf.Content
 
     public void Close(bool closeUnderlyingStream)
     {
-      if (stream != null && closeUnderlyingStream)
+      if (this.stream != null && closeUnderlyingStream)
       {
-        stream.Close();
-        stream = null;
+        this.stream.Close();
+        this.stream = null;
       }
     }
 
@@ -62,7 +66,10 @@ namespace PdfSharp.Pdf.Content
       Close(true);
     }
 
-    public int Position => (int)stream.Position;
+    public int Position
+    {
+      get { return (int)this.stream.Position; }
+    }
 
     //public PdfWriterLayout Layout
     //{
@@ -408,7 +415,7 @@ namespace PdfSharp.Pdf.Content
         WriteRaw(" >>\nstream\n");
 
       if (omitStream)
-        WriteRaw("  «...stream content omitted...»\n");  // useful for debugging only
+        WriteRaw("  Â«...stream content omitted...Â»\n");  // useful for debugging only
       else
       {
         byte[] bytes = value.Stream.Value;
@@ -473,8 +480,8 @@ namespace PdfSharp.Pdf.Content
         return;
       //AppendBlank(rawString[0]);
       byte[] bytes = PdfEncoders.RawEncoding.GetBytes(rawString);
-      stream.Write(bytes, 0, bytes.Length);
-      lastCat = GetCategory((char)bytes[bytes.Length - 1]);
+      this.stream.Write(bytes, 0, bytes.Length);
+      this.lastCat = GetCategory((char)bytes[bytes.Length - 1]);
     }
 
     public void WriteLineRaw(string rawString)
@@ -483,17 +490,17 @@ namespace PdfSharp.Pdf.Content
         return;
       //AppendBlank(rawString[0]);
       byte[] bytes = PdfEncoders.RawEncoding.GetBytes(rawString);
-      stream.Write(bytes, 0, bytes.Length);
-      stream.Write(new byte[] { (byte)'\n' }, 0, 1);
-      lastCat = GetCategory((char)bytes[bytes.Length - 1]);
+      this.stream.Write(bytes, 0, bytes.Length);
+      this.stream.Write(new byte[] { (byte)'\n' }, 0, 1);
+      this.lastCat = GetCategory((char)bytes[bytes.Length - 1]);
     }
 
     public void WriteRaw(char ch)
     {
       Debug.Assert((int)ch < 256, "Raw character greater than 255 dedected.");
       //AppendBlank(ch);
-      stream.WriteByte((byte)ch);
-      lastCat = GetCategory(ch);
+      this.stream.WriteByte((byte)ch);
+      this.lastCat = GetCategory(ch);
     }
 
     /// <summary>
@@ -501,8 +508,8 @@ namespace PdfSharp.Pdf.Content
     /// </summary>
     internal int Indent
     {
-      get => indent;
-      set => indent = value;
+      get { return this.indent; }
+      set { this.indent = value; }
     }
     protected int indent = 2;
     protected int writeIndent = 0;
@@ -512,7 +519,7 @@ namespace PdfSharp.Pdf.Content
     /// </summary>
     void IncreaseIndent()
     {
-      writeIndent += indent;
+      this.writeIndent += indent;
     }
 
     /// <summary>
@@ -520,22 +527,25 @@ namespace PdfSharp.Pdf.Content
     /// </summary>
     void DecreaseIndent()
     {
-      writeIndent -= indent;
+      this.writeIndent -= indent;
     }
 
     /// <summary>
     /// Gets an indent string of current indent.
     /// </summary>
-    string IndentBlanks => new string(' ', writeIndent);
+    string IndentBlanks
+    {
+      get { return new string(' ', this.writeIndent); }
+    }
 
     void WriteIndent()
     {
-      WriteRaw(IndentBlanks);
+      this.WriteRaw(IndentBlanks);
     }
 
     void WriteSeparator(CharCat cat, char ch)
     {
-      switch (lastCat)
+      switch (this.lastCat)
       {
         //case CharCat.NewLine:
         //  if (this.layout == PdfWriterLayout.Verbose)
@@ -591,8 +601,10 @@ namespace PdfSharp.Pdf.Content
     /// <summary>
     /// Gets the underlying stream.
     /// </summary>
-    internal Stream Stream => stream;
-
+    internal Stream Stream
+    {
+      get { return this.stream; }
+    }
     Stream stream;
 
 

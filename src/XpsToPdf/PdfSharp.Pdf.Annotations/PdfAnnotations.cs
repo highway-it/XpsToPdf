@@ -30,7 +30,10 @@
 using System;
 using System.Diagnostics;
 using System.Collections;
+using System.Text;
+using System.IO;
 using PdfSharp.Pdf.Advanced;
+using PdfSharp.Pdf.IO;
 using System.Collections.Generic;
 
 namespace PdfSharp.Pdf.Annotations
@@ -56,8 +59,8 @@ namespace PdfSharp.Pdf.Annotations
     /// <param name="annotation">The annotation.</param>
     public void Add(PdfAnnotation annotation)
     {
-      annotation.Document = Owner;
-      Owner.irefTable.Add(annotation);
+      annotation.Document = this.Owner;
+      this.Owner.irefTable.Add(annotation);
       Elements.Add(annotation.Reference);
     }
 
@@ -91,7 +94,10 @@ namespace PdfSharp.Pdf.Annotations
     /// <summary>
     /// Gets the number of annotations in this collection.
     /// </summary>
-    public int Count => Elements.Count;
+    public int Count
+    {
+      get { return Elements.Count; }
+    }
 
     /// <summary>
     /// Gets the <see cref="PdfSharp.Pdf.Annotations.PdfAnnotation"/> at the specified index.
@@ -145,8 +151,8 @@ namespace PdfSharp.Pdf.Annotations
     /// </summary>
     internal PdfPage Page
     {
-      get => page;
-      set => page = value;
+      get { return this.page; }
+      set { this.page = value; }
     }
     PdfPage page;
 
@@ -184,21 +190,27 @@ namespace PdfSharp.Pdf.Annotations
       public AnnotationsIterator(PdfAnnotations annotations)
       {
         this.annotations = annotations;
-        index = -1;
+        this.index = -1;
       }
 
-      public PdfAnnotation Current => annotations[index];
+      public PdfAnnotation Current
+      {
+        get { return this.annotations[this.index]; }
+      }
 
-      object IEnumerator.Current => Current;
+      object IEnumerator.Current
+      {
+        get { return Current; }
+      }
 
       public bool MoveNext()
       {
-        return ++index < annotations.Count;
+        return ++this.index < this.annotations.Count;
       }
 
       public void Reset()
       {
-        index = -1;
+        this.index = -1;
       }
 
       public void Dispose()

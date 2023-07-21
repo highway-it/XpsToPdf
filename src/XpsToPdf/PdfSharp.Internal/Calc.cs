@@ -32,6 +32,7 @@ using System;
 using System.Drawing;
 #endif
 #if WPF
+using System.Windows;
 #endif
 using PdfSharp.Drawing;
 
@@ -51,7 +52,6 @@ namespace PdfSharp.Internal
     /// Half of pi.
     /// </summary>
     public const double πHalf = Math.PI / 2;
-    // α - β κ
 
     /// <summary>
     /// Get page size in point from specified PageSize.

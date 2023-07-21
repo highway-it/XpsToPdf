@@ -28,7 +28,10 @@
 #endregion
 
 using System;
+using System.Diagnostics;
+using System.Collections;
 using PdfSharp.Drawing;
+using PdfSharp.Internal;
 
 namespace PdfSharp.Pdf
 {
@@ -46,13 +49,13 @@ namespace PdfSharp.Pdf
     /// </summary>
     public XPrivateFontCollection PrivateFontCollection
     {
-      internal get { return privateFontCollection; }
+      internal get { return this.privateFontCollection; }
       set
       {
-        if (privateFontCollection != null)
+        if (this.privateFontCollection != null)
           throw new InvalidOperationException("PrivateFontCollection can only be set once.");
 
-        privateFontCollection = value;
+        this.privateFontCollection = value;
       }
     }
     private XPrivateFontCollection privateFontCollection;
@@ -65,23 +68,23 @@ namespace PdfSharp.Pdf
     {
       get
       {
-        if (trimMargins == null)
-          trimMargins = new TrimMargins();
-        return trimMargins;
+        if (this.trimMargins == null)
+          this.trimMargins = new TrimMargins();
+        return this.trimMargins;
       }
       set
       {
-        if (trimMargins == null)
-          trimMargins = new TrimMargins();
+        if (this.trimMargins == null)
+          this.trimMargins = new TrimMargins();
         if (value != null)
         {
-          trimMargins.Left = value.Left;
-          trimMargins.Right = value.Right;
-          trimMargins.Top = value.Top;
-          trimMargins.Bottom = value.Bottom;
+          this.trimMargins.Left = value.Left;
+          this.trimMargins.Right = value.Right;
+          this.trimMargins.Top = value.Top;
+          this.trimMargins.Bottom = value.Bottom;
         }
         else
-          trimMargins.All = 0;
+          this.trimMargins.All = 0;
       }
     }
     TrimMargins trimMargins = new TrimMargins();

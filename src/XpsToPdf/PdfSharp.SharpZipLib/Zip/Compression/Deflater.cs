@@ -232,17 +232,35 @@ namespace PdfSharp.SharpZipLib.Zip.Compression
     /// <summary>
     /// Gets the current adler checksum of the data that was processed so far.
     /// </summary>
-    public int Adler => engine.Adler;
+    public int Adler
+    {
+      get
+      {
+        return engine.Adler;
+      }
+    }
 
     /// <summary>
     /// Gets the number of input bytes processed so far.
     /// </summary>
-    public int TotalIn => engine.TotalIn;
+    public int TotalIn
+    {
+      get
+      {
+        return engine.TotalIn;
+      }
+    }
 
     /// <summary>
     /// Gets the number of output bytes so far.
     /// </summary>
-    public long TotalOut => totalOut;
+    public long TotalOut
+    {
+      get
+      {
+        return totalOut;
+      }
+    }
 
     /// <summary>
     /// Flushes the current input block.  Further calls to deflate() will
@@ -270,7 +288,13 @@ namespace PdfSharp.SharpZipLib.Zip.Compression
     /// Returns true if the stream was finished and no more output bytes
     /// are available.
     /// </summary>
-    public bool IsFinished => state == FINISHED_STATE && pending.IsFlushed;
+    public bool IsFinished
+    {
+      get
+      {
+        return state == FINISHED_STATE && pending.IsFlushed;
+      }
+    }
 
     /// <summary>
     /// Returns true, if the input buffer is empty.
@@ -278,7 +302,13 @@ namespace PdfSharp.SharpZipLib.Zip.Compression
     /// NOTE: This method can also return true when the stream
     /// was finished.
     /// </summary>
-    public bool IsNeedingInput => engine.NeedsInput();
+    public bool IsNeedingInput
+    {
+      get
+      {
+        return engine.NeedsInput();
+      }
+    }
 
     /// <summary>
     /// Sets the data which should be compressed next.  This should be only

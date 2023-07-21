@@ -29,7 +29,13 @@
 
 using System;
 using System.Diagnostics;
+using System.Collections;
+using System.Globalization;
+using System.Text;
+using System.IO;
+using PdfSharp.Internal;
 using PdfSharp.Pdf.Advanced;
+using PdfSharp.Pdf.Internal;
 using PdfSharp.Pdf.IO;
 
 namespace PdfSharp.Pdf
@@ -63,7 +69,7 @@ namespace PdfSharp.Pdf
       // set the value of the reference to this.
       if (obj.iref != null)
         obj.iref.Value = this;
-#if DEBUG_
+#if DEBUG
       else
       {
         // If this occurs it is an internal error
@@ -132,15 +138,15 @@ namespace PdfSharp.Pdf
       PdfObjectID objectID = new PdfObjectID(objectNumber, generationNumber);
 
       // TODO: check imported
-      if (iref == null)
-        iref = document.irefTable[objectID];
-      if (iref == null)
+      if (this.iref == null)
+        this.iref = this.document.irefTable[objectID];
+      if (this.iref == null)
       {
-        iref = new PdfReference(this);
-        iref.ObjectID = objectID;
+        this.iref = new PdfReference(this);
+        this.iref.ObjectID = objectID;
       }
-      iref.Value = this;
-      iref.Document = document;
+      this.iref.Value = this;
+      this.iref.Document = this.document;
     }
 
     //internal void SetObjectID2(PdfObjectID objectID)
@@ -155,7 +161,10 @@ namespace PdfSharp.Pdf
     /// <summary>
     /// Gets the PdfDocument this object belongs to.
     /// </summary>
-    public virtual PdfDocument Owner => document;
+    public virtual PdfDocument Owner
+    {
+      get { return this.document; }
+    }
 
     /// <summary>
     /// Gets or sets the PdfDocument this object belongs to.
@@ -164,13 +173,13 @@ namespace PdfSharp.Pdf
     {
       set
       {
-        if (!ReferenceEquals(document, value))
+        if (!ReferenceEquals(this.document, value))
         {
-          if (document != null)
+          if (this.document != null)
             throw new InvalidOperationException("Cannot change document.");
-          document = value;
-          if (iref != null)
-            iref.Document = value;
+          this.document = value;
+          if (this.iref != null)
+            this.iref.Document = value;
         }
       }
     }
@@ -179,9 +188,11 @@ namespace PdfSharp.Pdf
     /// <summary>
     /// Indicates whether the object is an indirect object.
     /// </summary>
-    public bool IsIndirect =>
-        // An object is an indirect object if and only if is has an indirect reference value.
-        iref != null;
+    public bool IsIndirect
+    {
+      // An object is an indirect object if and only if is has an indirect reference value.
+      get { return this.iref != null; }
+    }
 
     /// <summary>
     /// Gets the PdfInternals object of this document, that grants access to some internal structures
@@ -191,9 +202,9 @@ namespace PdfSharp.Pdf
     {
       get
       {
-        if (internals == null)
-          internals = new PdfObjectInternals(this);
-        return internals;
+        if (this.internals == null)
+          this.internals = new PdfObjectInternals(this);
+        return this.internals;
       }
     }
     PdfObjectInternals internals;
@@ -229,17 +240,26 @@ namespace PdfSharp.Pdf
     /// <summary>
     /// Gets the object identifier. Returns PdfObjectID.Empty for direct objects.
     /// </summary>
-    internal PdfObjectID ObjectID => iref != null ? iref.ObjectID : PdfObjectID.Empty;
+    internal PdfObjectID ObjectID
+    {
+      get { return this.iref != null ? this.iref.ObjectID : PdfObjectID.Empty; }
+    }
 
     /// <summary>
     /// Gets the object number.
     /// </summary>
-    internal int ObjectNumber => ObjectID.ObjectNumber;
+    internal int ObjectNumber
+    {
+      get { return ObjectID.ObjectNumber; }
+    }
 
     /// <summary>
     /// Gets the generation number.
     /// </summary>
-    internal int GenerationNumber => ObjectID.GenerationNumber;
+    internal int GenerationNumber
+    {
+      get { return ObjectID.GenerationNumber; }
+    }
 
     ///// <summary>
     ///// Creates a deep copy of the specified value and its transitive closure and adds the
@@ -503,10 +523,12 @@ namespace PdfSharp.Pdf
     /// </summary>
     public PdfReference Reference
     {
-      get => iref;
-      set =>
-          //Debug.Assert(value.Value == null);
-          iref = value;
+      get { return this.iref; }
+      set
+      {
+        //Debug.Assert(value.Value == null);
+        this.iref = value;
+      }
     }
     internal PdfReference iref;
   }

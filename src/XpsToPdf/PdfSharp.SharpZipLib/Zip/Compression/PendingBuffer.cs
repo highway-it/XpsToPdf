@@ -149,14 +149,20 @@ namespace PdfSharp.SharpZipLib.Zip.Compression
       {
         throw new SharpZipBaseException();
       }
-      Array.Copy(block, offset, buf, end, len);
+      System.Array.Copy(block, offset, buf, end, len);
       end += len;
     }
 
     /// <summary>
     /// The number of bits written to the buffer
     /// </summary>
-    public int BitCount => bitCount;
+    public int BitCount
+    {
+      get
+      {
+        return bitCount;
+      }
+    }
 
     /// <summary>
     /// Align internal buffer on a byte boundary
@@ -221,7 +227,13 @@ namespace PdfSharp.SharpZipLib.Zip.Compression
     /// <summary>
     /// Indicates if buffer has been flushed
     /// </summary>
-    public bool IsFlushed => end == 0;
+    public bool IsFlushed
+    {
+      get
+      {
+        return end == 0;
+      }
+    }
 
     /// <summary>
     /// Flushes the pending buffer into the given output array.  If the
@@ -250,13 +262,13 @@ namespace PdfSharp.SharpZipLib.Zip.Compression
       if (length > end - start)
       {
         length = end - start;
-        Array.Copy(buf, start, output, offset, length);
+        System.Array.Copy(buf, start, output, offset, length);
         start = 0;
         end = 0;
       }
       else
       {
-        Array.Copy(buf, start, output, offset, length);
+        System.Array.Copy(buf, start, output, offset, length);
         start += length;
       }
       return length;
@@ -272,7 +284,7 @@ namespace PdfSharp.SharpZipLib.Zip.Compression
     public byte[] ToByteArray()
     {
       byte[] ret = new byte[end - start];
-      Array.Copy(buf, start, ret, 0, ret.Length);
+      System.Array.Copy(buf, start, ret, 0, ret.Length);
       start = 0;
       end = 0;
       return ret;

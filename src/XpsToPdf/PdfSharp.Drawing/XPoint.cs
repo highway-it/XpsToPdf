@@ -75,10 +75,10 @@ namespace PdfSharp.Drawing
     /// <summary>
     /// Initializes a new instance of the XPoint class with the specified point.
     /// </summary>
-    public XPoint(Point point)
+    public XPoint(System.Windows.Point point)
     {
-      x = point.X;
-      y = point.Y;
+      this.x = point.X;
+      this.y = point.Y;
     }
 #endif
 
@@ -179,8 +179,8 @@ namespace PdfSharp.Drawing
     /// </summary>
     public double X
     {
-      get => x;
-      set => x = value;
+      get { return this.x; }
+      set { this.x = value; }
     }
 
     /// <summary>
@@ -188,8 +188,8 @@ namespace PdfSharp.Drawing
     /// </summary>
     public double Y
     {
-      get => y;
-      set => y = value;
+      get { return this.y; }
+      set { this.y = value; }
     }
 
 #if GDI
@@ -206,9 +206,9 @@ namespace PdfSharp.Drawing
     /// <summary>
     /// Converts this XPoint to a System.Windows.Point.
     /// </summary>
-    public Point ToPoint()
+    public System.Windows.Point ToPoint()
     {
-      return new Point(x, y);
+      return new System.Windows.Point(this.x, this.y);
     }
 #endif
 
@@ -217,7 +217,7 @@ namespace PdfSharp.Drawing
     /// </summary>
     public override string ToString()
     {
-      return ConvertToString(null, null);
+      return this.ConvertToString(null, null);
     }
 
     /// <summary>
@@ -225,7 +225,7 @@ namespace PdfSharp.Drawing
     /// </summary>
     public string ToString(IFormatProvider provider)
     {
-      return ConvertToString(null, provider);
+      return this.ConvertToString(null, provider);
     }
 
     /// <summary>
@@ -233,7 +233,7 @@ namespace PdfSharp.Drawing
     /// </summary>
     string IFormattable.ToString(string format, IFormatProvider provider)
     {
-      return ConvertToString(format, provider);
+      return this.ConvertToString(format, provider);
     }
 
     /// <summary>
@@ -242,7 +242,7 @@ namespace PdfSharp.Drawing
     internal string ConvertToString(string format, IFormatProvider provider)
     {
       char numericListSeparator = TokenizerHelper.GetNumericListSeparator(provider);
-      return string.Format(provider, "{1:" + format + "}{0}{2:" + format + "}", new object[] { numericListSeparator, x, y });
+      return string.Format(provider, "{1:" + format + "}{0}{2:" + format + "}", new object[] { numericListSeparator, this.x, this.y });
     }
 
     /// <summary>
@@ -250,8 +250,8 @@ namespace PdfSharp.Drawing
     /// </summary>
     public void Offset(double offsetX, double offsetY)
     {
-      x += offsetX;
-      y += offsetY;
+      this.x += offsetX;
+      this.y += offsetY;
     }
 
     /// <summary>
@@ -259,7 +259,10 @@ namespace PdfSharp.Drawing
     /// </summary>
     [Browsable(false)]
     [Obsolete("Use '== new XPoint()'")]
-    public bool IsEmpty => x == 0 && y == 0; // DELETE: 09-12-31
+    public bool IsEmpty // DELETE: 09-12-31
+    {
+      get { return this.x == 0 && this.y == 0; }
+    }
 
     /// <summary>
     /// Adds a point and a vector.
@@ -390,15 +393,15 @@ namespace PdfSharp.Drawing
     /// <summary>
     /// Performs an implicit conversion from XPoint to Point.
     /// </summary>
-    public static implicit operator Point(XPoint point)
+    public static implicit operator System.Windows.Point(XPoint point)
     {
-      return new Point(point.x, point.y);
+      return new System.Windows.Point(point.x, point.y);
     }
 
     /// <summary>
     /// Performs an implicit conversion from Point to XPoint.
     /// </summary>
-    public static implicit operator XPoint(Point point)
+    public static implicit operator XPoint(System.Windows.Point point)
     {
       return new XPoint(point.X, point.Y);
     }

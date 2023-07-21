@@ -1,4 +1,8 @@
-﻿namespace PdfSharp.Xps.XpsModel
+﻿using System;
+using System.Collections.Generic;
+using System.Text;
+
+namespace PdfSharp.Xps.XpsModel
 {
   /// <summary>
   /// Pseudo element that represents an XML comment in an XPS file.

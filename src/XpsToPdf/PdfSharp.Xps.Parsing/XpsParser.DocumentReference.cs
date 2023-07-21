@@ -1,4 +1,10 @@
-﻿using System.Diagnostics;
+﻿using System;
+using System.Diagnostics;
+using System.Collections.Generic;
+using System.Globalization;
+using System.Text;
+using System.Xml;
+using System.IO;
 using PdfSharp.Xps.XpsModel;
 
 namespace PdfSharp.Xps.Parsing
@@ -10,19 +16,19 @@ namespace PdfSharp.Xps.Parsing
     /// </summary>
     DocumentReference ParseDocumentReference()
     {
-      Debug.Assert(reader.Name == "DocumentReference");
-      bool isEmptyElement = reader.IsEmptyElement;
+      Debug.Assert(this.reader.Name == "DocumentReference");
+      bool isEmptyElement = this.reader.IsEmptyElement;
       DocumentReference documentReference = new DocumentReference();
       while (MoveToNextAttribute())
       {
-        switch (reader.Name)
+        switch (this.reader.Name)
         {
           case "Source":
-            documentReference.Source = reader.Value;
+            documentReference.Source = this.reader.Value;
             break;
 
           default:
-            UnexpectedAttribute(reader.Name);
+            UnexpectedAttribute(this.reader.Name);
             break;
         }
       }

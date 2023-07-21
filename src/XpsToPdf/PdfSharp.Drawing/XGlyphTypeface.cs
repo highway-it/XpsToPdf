@@ -28,14 +28,22 @@
 #endregion
 
 using System;
+using System.Diagnostics;
+using System.Runtime.InteropServices;
+using System.ComponentModel;
 using System.IO;
 #if GDI
 using System.Drawing;
 using System.Drawing.Drawing2D;
 #endif
 #if WPF
+using System.Windows;
+using System.Windows.Media;
 #endif
+using PdfSharp.Internal;
 using PdfSharp.Fonts.OpenType;
+using PdfSharp.Pdf;
+using PdfSharp.Pdf.Advanced;
 
 namespace PdfSharp.Drawing
 {
@@ -83,26 +91,38 @@ namespace PdfSharp.Drawing
     void Initialize(byte[] data)
     {
       // Cache data and return a FontData
-      fontData = FontDataStock.Global.RegisterFontData(data);
+      this.fontData = FontDataStock.Global.RegisterFontData(data);
     }
 
-    internal FontData FontData => fontData;
+    internal FontData FontData
+    {
+      get { return this.fontData; }
+    }
     private FontData fontData;
 
     /// <summary>
     /// Gets the English family name of the font.
     /// </summary>
-    public string FamilyName => "Times";
+    public string FamilyName
+    {
+      get { return "Times"; }
+    }
 
     /// <summary>
     /// Gets a value indicating whether the font weight is bold.
     /// </summary>
-    public bool IsBold => false;
+    public bool IsBold
+    {
+      get { return false; }
+    }
 
     /// <summary>
     /// Gets a value indicating whether the font style is italic.
     /// </summary>
-    public bool IsItalic => false;
+    public bool IsItalic
+    {
+      get { return false; }
+    }
 
     //internal byte[] GetData()
     //{

@@ -31,7 +31,10 @@ using System;
 using System.Diagnostics;
 using System.Collections.Generic;
 using System.Globalization;
+using System.Text;
+using System.IO;
 using PdfSharp.Drawing;
+using PdfSharp.Internal;
 
 namespace PdfSharp.Pdf.Advanced
 {
@@ -52,19 +55,19 @@ namespace PdfSharp.Pdf.Advanced
     /// </summary>
     public PdfImage GetImage(XImage image)
     {
-      ImageSelector selector = image.selector;
+      PdfImageTable.ImageSelector selector = image.selector;
       if (selector == null)
       {
         selector = new ImageSelector(image);
         image.selector = selector;
       }
       PdfImage pdfImage;
-      if (!images.TryGetValue(selector, out pdfImage))
+      if (!this.images.TryGetValue(selector, out pdfImage))
       {
-        pdfImage = new PdfImage(owner, image);
+        pdfImage = new PdfImage(this.owner, image);
         //pdfImage.Document = this.document;
-        Debug.Assert(pdfImage.Owner == owner);
-        images[selector] = pdfImage;
+        Debug.Assert(pdfImage.Owner == this.owner);
+        this.images[selector] = pdfImage;
         //if (this.document.EarlyWrite)
         //{
         //  //pdfFont.Close(); delete 
@@ -95,13 +98,13 @@ namespace PdfSharp.Pdf.Advanced
           image.path = Guid.NewGuid().ToString();
 
         // HACK: just use full path to identify
-        path = image.path.ToLower(CultureInfo.InvariantCulture);
+        this.path = image.path.ToLower(CultureInfo.InvariantCulture);
       }
 
       public string Path
       {
-        get => path;
-        set => path = value;
+        get { return this.path; }
+        set { this.path = value; }
       }
       string path;
 
@@ -110,12 +113,12 @@ namespace PdfSharp.Pdf.Advanced
         ImageSelector selector = obj as ImageSelector;
         if (obj == null)
           return false;
-        return path == selector.path; ;
+        return this.path == selector.path; ;
       }
 
       public override int GetHashCode()
       {
-        return path.GetHashCode();
+        return this.path.GetHashCode();
       }
     }
   }

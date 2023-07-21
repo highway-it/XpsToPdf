@@ -28,13 +28,21 @@
 #endregion
 
 using System;
+using System.Diagnostics;
+using System.Globalization;
+using System.Collections;
+using System.Text;
+using System.IO;
 #if GDI
 using System.Drawing;
 using System.Drawing.Imaging;
 #endif
 #if WPF
+using System.Windows.Media;
 #endif
 using PdfSharp.Drawing;
+using PdfSharp.Fonts.OpenType;
+using PdfSharp.Internal;
 using PdfSharp.Pdf.Internal;
 
 namespace PdfSharp.Pdf.Advanced
@@ -59,7 +67,7 @@ namespace PdfSharp.Pdf.Advanced
       if (brush == null)
         throw new ArgumentNullException("brush");
 
-      PdfColorMode colorMode = document.Options.ColorMode;
+      PdfColorMode colorMode = this.document.Options.ColorMode;
       XColor color1 = ColorSpaceHelper.EnsureColorMode(colorMode, brush.color1);
       XColor color2 = ColorSpaceHelper.EnsureColorMode(colorMode, brush.color2);
 
@@ -167,8 +175,8 @@ namespace PdfSharp.Pdf.Advanced
 
       /// <summary>
       /// (Optional) An array of four numbers giving the left, bottom, right, and top coordinates, 
-      /// respectively, of the shading’s bounding box. The coordinates are interpreted in the 
-      /// shading’s target coordinate space. If present, this bounding box is applied as a temporary 
+      /// respectively, of the shadingâ€™s bounding box. The coordinates are interpreted in the 
+      /// shadingâ€™s target coordinate space. If present, this bounding box is applied as a temporary 
       /// clipping boundary when the shading is painted, in addition to the current clipping path
       /// and any other clipping boundaries in effect at that time.
       /// </summary>
@@ -178,7 +186,7 @@ namespace PdfSharp.Pdf.Advanced
       /// <summary>
       /// (Optional) A flag indicating whether to filter the shading function to prevent aliasing 
       /// artifacts. The shading operators sample shading functions at a rate determined by the 
-      /// resolution of the output device. Aliasing can occur if the function is not smooth—that
+      /// resolution of the output device. Aliasing can occur if the function is not smoothâ€”that
       /// is, if it has a high spatial frequency relative to the sampling rate. Anti-aliasing can
       /// be computationally expensive and is usually unnecessary, since most shading functions
       /// are smooth enough or are sampled at a high enough frequency to avoid aliasing effects.
@@ -194,7 +202,7 @@ namespace PdfSharp.Pdf.Advanced
 
       /// <summary>
       /// (Required) An array of four numbers [x0 y0 x1 y1] specifying the starting and
-      /// ending coordinates of the axis, expressed in the shading’s target coordinate space.
+      /// ending coordinates of the axis, expressed in the shadingâ€™s target coordinate space.
       /// </summary>
       [KeyInfo(KeyType.Array | KeyType.Required)]
       public const string Coords = "/Coords";
@@ -211,9 +219,9 @@ namespace PdfSharp.Pdf.Advanced
 
       /// <summary>
       /// (Required) A 1-in, n-out function or an array of n 1-in, 1-out functions (where n
-      /// is the number of color components in the shading dictionary’s color space). The
+      /// is the number of color components in the shading dictionaryâ€™s color space). The
       /// function(s) are called with values of the parametric variable t in the domain defined
-      /// by the Domain entry. Each function’s domain must be a superset of that of the shading
+      /// by the Domain entry. Each functionâ€™s domain must be a superset of that of the shading
       /// dictionary. If the value returned by the function for a given color component is out
       /// of range, it is adjusted to the nearest valid value.
       /// </summary>
@@ -235,9 +243,9 @@ namespace PdfSharp.Pdf.Advanced
       {
         get
         {
-          if (meta == null)
-            meta = CreateMeta(typeof(Keys));
-          return meta;
+          if (Keys.meta == null)
+            Keys.meta = CreateMeta(typeof(Keys));
+          return Keys.meta;
         }
       }
       static DictionaryMeta meta;
@@ -246,6 +254,9 @@ namespace PdfSharp.Pdf.Advanced
     /// <summary>
     /// Gets the KeysMeta of this dictionary type.
     /// </summary>
-    internal override DictionaryMeta Meta => Keys.Meta;
+    internal override DictionaryMeta Meta
+    {
+      get { return Keys.Meta; }
+    }
   }
 }

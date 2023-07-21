@@ -27,6 +27,11 @@
 // DEALINGS IN THE SOFTWARE.
 #endregion
 
+using System;
+using System.Diagnostics;
+using System.ComponentModel;
+using PdfSharp.Drawing;
+
 namespace PdfSharp.Drawing.BarCodes
 {
   /// <summary>
@@ -49,7 +54,7 @@ namespace PdfSharp.Drawing.BarCodes
     {
       XGraphicsState state = gfx.Save();
 
-      switch (direction)
+      switch (this.direction)
       {
         case CodeDirection.RightToLeft:
           gfx.RotateAtTransform(180, position);
@@ -65,25 +70,25 @@ namespace PdfSharp.Drawing.BarCodes
       }
 
       //XPoint pt = center - this.size / 2;
-      XPoint pt = position - CalcDistance(AnchorType.TopLeft, anchor, size);
+      XPoint pt = position - CodeBase.CalcDistance(AnchorType.TopLeft, this.anchor, this.size);
       uint value;
-      uint.TryParse(text, out value);
+      uint.TryParse(this.text, out value);
 #if true
       // HACK: Project Wallenwein: set LK
       value |= 1;
-      synchronizeCode = true;
+      this.synchronizeCode = true;
 #endif
-      if (synchronizeCode)
+      if (this.synchronizeCode)
       {
-        XRect rect = new XRect(pt.x, pt.y, makerThickness, size.height);
+        XRect rect = new XRect(pt.x, pt.y, this.makerThickness, this.size.height);
         gfx.DrawRectangle(brush, rect);
-        pt.x += 2 * makerDistance;
+        pt.x += 2 * this.makerDistance;
       }
       for (int idx = 0; idx < 32; idx++)
       {
         if ((value & 1) == 1)
         {
-          XRect rect = new XRect(pt.x + idx * makerDistance, pt.y, makerThickness, size.height);
+          XRect rect = new XRect(pt.x + idx * this.makerDistance, pt.y, this.makerThickness, this.size.height);
           gfx.DrawRectangle(brush, rect);
         }
         value = value >> 1;
@@ -96,8 +101,8 @@ namespace PdfSharp.Drawing.BarCodes
     /// </summary>
     public bool SynchronizeCode
     {
-      get => synchronizeCode;
-      set => synchronizeCode = value;
+      get { return this.synchronizeCode; }
+      set { this.synchronizeCode = value; }
     }
     bool synchronizeCode;
 
@@ -106,8 +111,8 @@ namespace PdfSharp.Drawing.BarCodes
     /// </summary>
     public double MakerDistance
     {
-      get => makerDistance;
-      set => makerDistance = value;
+      get { return this.makerDistance; }
+      set { this.makerDistance = value; }
     }
     double makerDistance = 12;  // 1/6"
 
@@ -116,8 +121,8 @@ namespace PdfSharp.Drawing.BarCodes
     /// </summary>
     public double MakerThickness
     {
-      get => makerThickness;
-      set => makerThickness = value;
+      get { return this.makerThickness; }
+      set { this.makerThickness = value; }
     }
     double makerThickness = 1;
 

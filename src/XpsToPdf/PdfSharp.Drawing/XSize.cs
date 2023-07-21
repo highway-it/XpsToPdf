@@ -30,6 +30,7 @@
 using System;
 using System.Diagnostics;
 using System.Globalization;
+using System.ComponentModel;
 using System.Runtime.InteropServices;
 #if GDI
 using System.Drawing;
@@ -68,8 +69,8 @@ namespace PdfSharp.Drawing
     [Obsolete("Use explicit conversion to make your code more readable.")]
     public XSize(XPoint pt)  // DELETE: 08-12-31
     {
-      width = pt.X;
-      height = pt.Y;
+      this.width = pt.X;
+      this.height = pt.Y;
     }
 
     /// <summary>
@@ -159,7 +160,7 @@ namespace PdfSharp.Drawing
     /// </summary>
     public XPoint ToXPoint()
     {
-      return new XPoint(width, height);
+      return new XPoint(this.width, this.height);
     }
 
     /// <summary>
@@ -167,7 +168,7 @@ namespace PdfSharp.Drawing
     /// </summary>
     public XVector ToXVector()
     {
-      return new XVector(width, height);
+      return new XVector(this.width, this.height);
     }
 
 #if GDI
@@ -184,9 +185,9 @@ namespace PdfSharp.Drawing
     /// <summary>
     /// Converts this XSize to a System.Windows.Size.
     /// </summary>
-    public Size ToSize()
+    public System.Windows.Size ToSize()
     {
-      return new Size(width, height);
+      return new System.Windows.Size(this.width, this.height);
     }
 #endif
 
@@ -213,7 +214,7 @@ namespace PdfSharp.Drawing
     /// <summary>
     /// Creates an XSize from a System.Drawing.Size.
     /// </summary>
-    public static XSize FromSize(Size size)
+    public static XSize FromSize(System.Windows.Size size)
     {
       return new XSize(size.Width, size.Height);
     }
@@ -259,32 +260,38 @@ namespace PdfSharp.Drawing
         return "Empty";
 
       char numericListSeparator = TokenizerHelper.GetNumericListSeparator(provider);
-      return string.Format(provider, "{1:" + format + "}{0}{2:" + format + "}", new object[] { numericListSeparator, width, height });
+      return string.Format(provider, "{1:" + format + "}{0}{2:" + format + "}", new object[] { numericListSeparator, this.width, this.height });
     }
 
     /// <summary>
     /// Returns an empty size, i.e. a size with a width or height less than 0.
     /// </summary>
-    public static XSize Empty => s_empty;
+    public static XSize Empty
+    {
+      get { return s_empty; }
+    }
 
     /// <summary>
     /// Gets a value indicating whether this instance is empty.
     /// </summary>
-    public bool IsEmpty => width < 0;
+    public bool IsEmpty
+    {
+      get { return this.width < 0; }
+    }
 
     /// <summary>
     /// Gets or sets the width.
     /// </summary>
     public double Width
     {
-      get => width;
+      get { return this.width; }
       set
       {
         if (IsEmpty)
           throw new InvalidOperationException("CannotModifyEmptySize"); //SR.Get(SRID.Size_CannotModifyEmptySize, new object[0]));
         if (value < 0)
           throw new ArgumentException("WidthCannotBeNegative"); //SR.Get(SRID.Size_WidthCannotBeNegative, new object[0]));
-        width = value;
+        this.width = value;
       }
     }
 
@@ -293,14 +300,14 @@ namespace PdfSharp.Drawing
     /// </summary>
     public double Height
     {
-      get => height;
+      get { return this.height; }
       set
       {
         if (IsEmpty)
           throw new InvalidOperationException("CannotModifyEmptySize"); // SR.Get(SRID.Size_CannotModifyEmptySize, new object[0]));
         if (value < 0)
           throw new ArgumentException("HeightCannotBeNegative"); //SR.Get(SRID.Size_HeightCannotBeNegative, new object[0]));
-        height = value;
+        this.height = value;
       }
     }
 
@@ -324,7 +331,7 @@ namespace PdfSharp.Drawing
     /// <summary>
     /// Performs an explicit conversion from Size to XSize.
     /// </summary>
-    public static explicit operator XSize(Size size)
+    public static explicit operator XSize(System.Windows.Size size)
     {
       return new XSize(size.Width, size.Height);
     }

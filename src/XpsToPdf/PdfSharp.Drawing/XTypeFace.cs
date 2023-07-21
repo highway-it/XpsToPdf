@@ -28,12 +28,22 @@
 #endregion
 
 using System;
+using System.Diagnostics;
+using System.Runtime.InteropServices;
+using System.ComponentModel;
+using System.IO;
 #if GDI
 using System.Drawing;
 using System.Drawing.Drawing2D;
 #endif
 #if WPF
+using System.Windows;
+using System.Windows.Media;
 #endif
+using PdfSharp.Internal;
+using PdfSharp.Fonts.OpenType;
+using PdfSharp.Pdf;
+using PdfSharp.Pdf.Advanced;
 
 namespace PdfSharp.Drawing
 {
@@ -61,16 +71,28 @@ namespace PdfSharp.Drawing
       this.stretch = stretch;
     }
 
-    public string FontFamilyName => fontFamilyName;
+    public string FontFamilyName
+    {
+      get { return this.fontFamilyName; }
+    }
     string fontFamilyName;
 
-    public XFontWeight Weight => weight;
+    public XFontWeight Weight
+    {
+      get { return this.weight; }
+    }
     private XFontWeight weight;
 
-    public XFontStyle Style => style;
+    public XFontStyle Style
+    {
+      get { return this.style; }
+    }
     private XFontStyle style;
 
-    public XFontStretch Stretch => stretch;
+    public XFontStretch Stretch
+    {
+      get { return this.stretch; }
+    }
     private XFontStretch stretch;
   }
 

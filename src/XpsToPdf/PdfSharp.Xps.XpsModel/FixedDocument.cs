@@ -1,4 +1,6 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using System.Text;
 using System.IO.Packaging;
 using IOPath = System.IO.Path;
 
@@ -12,20 +14,26 @@ namespace PdfSharp.Xps.XpsModel
     /// <summary>
     /// Gets the number of fixed pages in this document.
     /// </summary>
-    public int PageCount => PageContentUriStrings.Count;
+    public int PageCount
+    {
+      get { return this.PageContentUriStrings.Count; }
+    }
 
     /// <summary>
     /// Gets the XPS document that owns this document.
     /// </summary>
-    public XpsDocument XpsDocument => fpayload.XpsDocument;
+    public XpsDocument XpsDocument
+    {
+      get { return this.fpayload.XpsDocument; }
+    }
 
     /// <summary>
     /// Gets the path to this document.
     /// </summary>
     public string UriString
     {
-      get => uriString;
-      internal set => uriString = value;
+      get { return this.uriString; }
+      internal set { this.uriString = value; }
     }
     string uriString;
 
@@ -34,15 +42,18 @@ namespace PdfSharp.Xps.XpsModel
     /// </summary>
     internal FixedPayload Payload
     {
-      get => fpayload;
-      set => fpayload = value;
+      get { return this.fpayload; }
+      set { this.fpayload = value; }
     }
     FixedPayload fpayload;
 
     /// <summary>
     /// Gets the underlying ZIP package.
     /// </summary>
-    internal ZipPackage Package => Payload.Package;
+    internal ZipPackage Package
+    {
+      get { return Payload.Package; }
+    }
 
     internal List<string> PageContentUriStrings = new List<string>();
 
@@ -55,9 +66,9 @@ namespace PdfSharp.Xps.XpsModel
     {
       get
       {
-        if (pages == null)
-          pages = new FixedPageCollection(this);
-        return pages;
+        if (this.pages == null)
+          this.pages = new FixedPageCollection(this);
+        return this.pages;
       }
     }
     FixedPageCollection pages;

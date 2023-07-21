@@ -30,6 +30,10 @@
 using System;
 using System.Diagnostics;
 using System.Globalization;
+using System.Collections;
+using System.Text;
+using System.IO;
+using PdfSharp.Internal;
 using PdfSharp.Pdf.IO;
 
 namespace PdfSharp.Pdf
@@ -58,10 +62,11 @@ namespace PdfSharp.Pdf
     /// <summary>
     /// Gets the value as integer.
     /// </summary>
-    public uint Value =>
-        // This class must behave like a value type. Therefore it cannot be changed (like System.String).
-        value;
-
+    public uint Value
+    {
+      // This class must behave like a value type. Therefore it cannot be changed (like System.String).
+      get { return this.value; }
+    }
     uint value;
 
     /// <summary>
@@ -69,7 +74,7 @@ namespace PdfSharp.Pdf
     /// </summary>
     public override string ToString()
     {
-      return value.ToString(CultureInfo.InvariantCulture);
+      return this.value.ToString();
     }
 
     /// <summary>
@@ -87,7 +92,7 @@ namespace PdfSharp.Pdf
     /// </summary>
     public ulong ToUInt64(IFormatProvider provider)
     {
-      return Convert.ToUInt64(value);
+      return Convert.ToUInt64(this.value);
     }
 
     /// <summary>
@@ -128,7 +133,7 @@ namespace PdfSharp.Pdf
     /// </summary>
     public bool ToBoolean(IFormatProvider provider)
     {
-      return Convert.ToBoolean(value);
+      return Convert.ToBoolean(this.value);
     }
 
     /// <summary>
@@ -136,7 +141,7 @@ namespace PdfSharp.Pdf
     /// </summary>
     public int ToInt32(IFormatProvider provider)
     {
-      return Convert.ToInt32(value);
+      return Convert.ToInt32(this.value);
     }
 
     /// <summary>
@@ -144,7 +149,7 @@ namespace PdfSharp.Pdf
     /// </summary>
     public ushort ToUInt16(IFormatProvider provider)
     {
-      return Convert.ToUInt16(value);
+      return Convert.ToUInt16(this.value);
     }
 
     /// <summary>
@@ -152,13 +157,13 @@ namespace PdfSharp.Pdf
     /// </summary>
     public short ToInt16(IFormatProvider provider)
     {
-      return Convert.ToInt16(value);
+      return Convert.ToInt16(this.value);
     }
 
     /// <summary>
     /// Converts the value of this instance to an equivalent <see cref="T:System.String"></see>.
     /// </summary>
-    string IConvertible.ToString(IFormatProvider provider)
+    string System.IConvertible.ToString(IFormatProvider provider)
     {
       return value.ToString(provider);
     }
@@ -168,7 +173,7 @@ namespace PdfSharp.Pdf
     /// </summary>
     public byte ToByte(IFormatProvider provider)
     {
-      return Convert.ToByte(value);
+      return Convert.ToByte(this.value);
     }
 
     /// <summary>
@@ -176,7 +181,7 @@ namespace PdfSharp.Pdf
     /// </summary>
     public char ToChar(IFormatProvider provider)
     {
-      return Convert.ToChar(value);
+      return Convert.ToChar(this.value);
     }
 
     /// <summary>
@@ -190,7 +195,7 @@ namespace PdfSharp.Pdf
     /// <summary>
     /// Returns type code for 32-bit integers.
     /// </summary>
-    public TypeCode GetTypeCode()
+    public System.TypeCode GetTypeCode()
     {
       return TypeCode.Int32;
     }
@@ -217,7 +222,7 @@ namespace PdfSharp.Pdf
     /// </summary>
     public uint ToUInt32(IFormatProvider provider)
     {
-      return Convert.ToUInt32(value);
+      return Convert.ToUInt32(this.value);
     }
 
     #endregion

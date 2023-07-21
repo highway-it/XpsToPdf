@@ -27,12 +27,22 @@
 // DEALINGS IN THE SOFTWARE.
 #endregion
 
+using System;
+using System.Diagnostics;
+using System.Collections;
+using System.Text;
+using System.IO;
 #if GDI
 using System.Drawing;
 using System.Drawing.Imaging;
 #endif
 #if WPF
+using System.Windows.Media;
 #endif
+using PdfSharp.Drawing;
+using PdfSharp.Fonts.OpenType;
+using PdfSharp.Internal;
+using PdfSharp.Pdf.Internal;
 
 namespace PdfSharp.Pdf.Advanced
 {
@@ -62,7 +72,7 @@ namespace PdfSharp.Pdf.Advanced
       /// <summary>
       /// (Required) The group subtype, which identifies the type of group whose
       /// attributes this dictionary describes and determines the format and meaning
-      /// of the dictionary’s remaining entries. The only group subtype defined in
+      /// of the dictionaryâ€™s remaining entries. The only group subtype defined in
       /// PDF 1.4 is Transparency. Other group subtypes may be added in the future.
       /// </summary>
       [KeyInfo(KeyType.Name | KeyType.Required)]
@@ -75,9 +85,9 @@ namespace PdfSharp.Pdf.Advanced
       {
         get
         {
-          if (meta == null)
-            meta = CreateMeta(typeof(Keys));
-          return meta;
+          if (Keys.meta == null)
+            Keys.meta = CreateMeta(typeof(Keys));
+          return Keys.meta;
         }
       }
       static DictionaryMeta meta;
@@ -86,6 +96,9 @@ namespace PdfSharp.Pdf.Advanced
     /// <summary>
     /// Gets the KeysMeta of this dictionary type.
     /// </summary>
-    internal override DictionaryMeta Meta => Keys.Meta;
+    internal override DictionaryMeta Meta
+    {
+      get { return Keys.Meta; }
+    }
   }
 }

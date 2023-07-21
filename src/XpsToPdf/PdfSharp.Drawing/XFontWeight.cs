@@ -29,12 +29,21 @@
 
 using System;
 using System.Diagnostics;
+using System.Runtime.InteropServices;
+using System.ComponentModel;
+using System.IO;
 #if GDI
 using System.Drawing;
 using System.Drawing.Drawing2D;
 #endif
 #if WPF
+using System.Windows;
+using System.Windows.Media;
 #endif
+using PdfSharp.Internal;
+using PdfSharp.Fonts.OpenType;
+using PdfSharp.Pdf;
+using PdfSharp.Pdf.Advanced;
 
 namespace PdfSharp.Drawing
 {
@@ -52,8 +61,10 @@ namespace PdfSharp.Drawing
     /// <summary>
     /// Gets the weight of the font, a value between 1 and 999.
     /// </summary>
-    public int Weight => (weight);
-
+    public int Weight
+    {
+      get { return (this.weight); }
+    }
     private int weight;
 
     //public static XFontWeight FromOpenTypeWeight(int weightValue)

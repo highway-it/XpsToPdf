@@ -27,6 +27,11 @@
 // DEALINGS IN THE SOFTWARE.
 #endregion
 
+using System;
+using System.Diagnostics;
+using System.Collections;
+using PdfSharp.Pdf.Internal;
+
 namespace PdfSharp.Pdf.AcroForms
 {
   /// <summary>
@@ -54,12 +59,12 @@ namespace PdfSharp.Pdf.AcroForms
     {
       get
       {
-        if (fields == null)
+        if (this.fields == null)
         {
           object o = Elements.GetValue(Keys.Fields, VCF.CreateIndirect);
-          fields = (PdfAcroField.PdfAcroFieldCollection)o;
+          this.fields = (PdfAcroField.PdfAcroFieldCollection)o;
         }
-        return fields;
+        return this.fields;
       }
     }
     PdfAcroField.PdfAcroFieldCollection fields;
@@ -71,7 +76,7 @@ namespace PdfSharp.Pdf.AcroForms
     public sealed class Keys : KeysBase
     {
       /// <summary>
-      /// (Required) An array of references to the document’s root fields (those with
+      /// (Required) An array of references to the documentâ€™s root fields (those with
       /// no ancestors in the field hierarchy).
       /// </summary>
       [KeyInfo(KeyType.Array | KeyType.Required, typeof(PdfAcroField.PdfAcroFieldCollection))]
@@ -127,9 +132,9 @@ namespace PdfSharp.Pdf.AcroForms
       {
         get
         {
-          if (meta == null)
-            meta = CreateMeta(typeof(Keys));
-          return meta;
+          if (Keys.meta == null)
+            Keys.meta = CreateMeta(typeof(Keys));
+          return Keys.meta;
         }
       }
       static DictionaryMeta meta;
@@ -138,6 +143,9 @@ namespace PdfSharp.Pdf.AcroForms
     /// <summary>
     /// Gets the KeysMeta of this dictionary type.
     /// </summary>
-    internal override DictionaryMeta Meta => Keys.Meta;
+    internal override DictionaryMeta Meta
+    {
+      get {return Keys.Meta;}
+    }
   }
 }

@@ -27,7 +27,11 @@
 // DEALINGS IN THE SOFTWARE.
 #endregion
 
+using System;
+using System.Diagnostics;
+using System.Collections;
 using PdfSharp.Pdf.Annotations;
+using PdfSharp.Pdf.Internal;
 
 namespace PdfSharp.Pdf.AcroForms
 {
@@ -55,13 +59,13 @@ namespace PdfSharp.Pdf.AcroForms
     { 
       get
       {
-        string value = Elements.GetString(PdfAcroField.Keys.V);
+        string value = Elements.GetString(Keys.V);
         return value.Length != 0 && value != "/Off";
       }
       set 
       {
         string name = value ? GetNonOffValue() : "/Off";
-        Elements.SetName(PdfAcroField.Keys.V, name);
+        Elements.SetName(Keys.V, name);
         Elements.SetName(PdfAnnotation.Keys.AS, name);
       }
     }
@@ -86,9 +90,9 @@ namespace PdfSharp.Pdf.AcroForms
       {
         get
         {
-          if (meta == null)
-            meta = CreateMeta(typeof(Keys));
-          return meta;
+          if (Keys.meta == null)
+            Keys.meta = CreateMeta(typeof(Keys));
+          return Keys.meta;
         }
       }
       static DictionaryMeta meta;
@@ -97,6 +101,9 @@ namespace PdfSharp.Pdf.AcroForms
     /// <summary>
     /// Gets the KeysMeta of this dictionary type.
     /// </summary>
-    internal override DictionaryMeta Meta => Keys.Meta;
+    internal override DictionaryMeta Meta
+    {
+      get {return Keys.Meta;}
+    }
   }
 }

@@ -29,6 +29,9 @@
 
 using System;
 using System.Diagnostics;
+using PdfSharp.Internal;
+using PdfSharp.Pdf.IO;
+using PdfSharp.Pdf.Internal;
 
 namespace PdfSharp.Pdf.Filters
 {
@@ -50,27 +53,27 @@ namespace PdfSharp.Pdf.Filters
       {
         case "ASCIIHexDecode":
         case "AHx":
-          if (asciiHexDecode == null)
-            asciiHexDecode = new ASCIIHexDecode();
-          return asciiHexDecode;
+          if (Filtering.asciiHexDecode == null)
+            Filtering.asciiHexDecode = new ASCIIHexDecode();
+          return Filtering.asciiHexDecode;
 
         case "ASCII85Decode":
         case "A85":
-          if (ascii85Decode == null)
-            ascii85Decode = new ASCII85Decode();
-          return ascii85Decode;
+          if (Filtering.ascii85Decode == null)
+            Filtering.ascii85Decode = new ASCII85Decode();
+          return Filtering.ascii85Decode;
 
         case "LZWDecode":
         case "LZW":
-          if (lzwDecode == null)
-            lzwDecode = new LzwDecode();
-          return lzwDecode;
+          if (Filtering.lzwDecode == null)
+            Filtering.lzwDecode = new LzwDecode();
+          return Filtering.lzwDecode;
 
         case "FlateDecode":
         case "Fl":
-          if (flateDecode == null)
-            flateDecode = new FlateDecode();
-          return flateDecode;
+          if (Filtering.flateDecode == null)
+            Filtering.flateDecode = new FlateDecode();
+          return Filtering.flateDecode;
 
         //case "RunLengthDecode":
         //  if (Filtering.RunLengthDecode == null)
@@ -108,7 +111,7 @@ namespace PdfSharp.Pdf.Filters
         case "DCTDecode":
         case "JPXDecode":
         case "Crypt":
-          Debug.WriteLine("Filter not implemented: " + filterName);
+          Debug.WriteLine("Filter not implemented: " + filterName.ToString());
           return null;
       }
       throw new NotImplementedException("Unknown filter: " + filterName);
@@ -121,9 +124,9 @@ namespace PdfSharp.Pdf.Filters
     {
       get
       {
-        if (asciiHexDecode == null)
-          asciiHexDecode = new ASCIIHexDecode();
-        return asciiHexDecode;
+        if (Filtering.asciiHexDecode == null)
+          Filtering.asciiHexDecode = new ASCIIHexDecode();
+        return Filtering.asciiHexDecode;
       }
     }
     static ASCIIHexDecode asciiHexDecode;
@@ -135,9 +138,9 @@ namespace PdfSharp.Pdf.Filters
     {
       get
       {
-        if (ascii85Decode == null)
-          ascii85Decode = new ASCII85Decode();
-        return ascii85Decode;
+        if (Filtering.ascii85Decode == null)
+          Filtering.ascii85Decode = new ASCII85Decode();
+        return Filtering.ascii85Decode;
       }
     }
     static ASCII85Decode ascii85Decode;
@@ -149,9 +152,9 @@ namespace PdfSharp.Pdf.Filters
     {
       get
       {
-        if (lzwDecode == null)
-          lzwDecode = new LzwDecode();
-        return lzwDecode;
+        if (Filtering.lzwDecode == null)
+          Filtering.lzwDecode = new LzwDecode();
+        return Filtering.lzwDecode;
       }
     }
     static LzwDecode lzwDecode;
@@ -163,9 +166,9 @@ namespace PdfSharp.Pdf.Filters
     {
       get
       {
-        if (flateDecode == null)
-          flateDecode = new FlateDecode();
-        return flateDecode;
+        if (Filtering.flateDecode == null)
+          Filtering.flateDecode = new FlateDecode();
+        return Filtering.flateDecode;
       }
     }
     static FlateDecode flateDecode;
@@ -237,7 +240,7 @@ namespace PdfSharp.Pdf.Filters
       {
         PdfArray array = (PdfArray)filterItem;
         foreach (PdfItem item in array)
-          data = Decode(data, item);
+          data = Filtering.Decode(data, item);
         result = data;
       }
       return result;

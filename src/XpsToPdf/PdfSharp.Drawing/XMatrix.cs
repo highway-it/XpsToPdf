@@ -30,12 +30,15 @@
 using System;
 using System.Diagnostics;
 using System.Globalization;
+using System.ComponentModel;
 using System.Runtime.InteropServices;
 #if GDI
 using System.Drawing;
 using System.Drawing.Drawing2D;
 #endif
 #if WPF
+using System.Windows;
+using System.Windows.Media;
 #endif
 using PdfSharp.Internal;
 
@@ -69,22 +72,25 @@ namespace PdfSharp.Drawing
       this.m22 = m22;
       this.offsetX = offsetX;
       this.offsetY = offsetY;
-      type = XMatrixTypes.Unknown;
-      padding = 0;
+      this.type = XMatrixTypes.Unknown;
+      this.padding = 0;
       DeriveMatrixType();
     }
 
     /// <summary>
     /// Gets a value that indicates whether this matrix is an identity matrix. 
     /// </summary>
-    public static XMatrix Identity => s_identity;
+    public static XMatrix Identity
+    {
+      get { return s_identity; }
+    }
 
     /// <summary>
     /// Sets this matrix into an identity matrix.
     /// </summary>
     public void SetIdentity()
     {
-      type = XMatrixTypes.Identity;
+      this.type = XMatrixTypes.Identity;
     }
 
     /// <summary>
@@ -94,13 +100,13 @@ namespace PdfSharp.Drawing
     // TODO: Eliminate this function.
     void InitIdentity()
     {
-      Debug.Assert(type == XMatrixTypes.Identity);
-      m11 = 1;
-      m22 = 1;
-      Debug.Assert(m12 == 0);
-      Debug.Assert(m21 == 0);
-      Debug.Assert(offsetX == 0);
-      Debug.Assert(offsetY == 0);
+      Debug.Assert(this.type == XMatrixTypes.Identity);
+      this.m11 = 1;
+      this.m22 = 1;
+      Debug.Assert(this.m12 == 0);
+      Debug.Assert(this.m21 == 0);
+      Debug.Assert(this.offsetX == 0);
+      Debug.Assert(this.offsetY == 0);
     }
 
     /// <summary>
@@ -110,11 +116,11 @@ namespace PdfSharp.Drawing
     {
       get
       {
-        if (type == XMatrixTypes.Identity)
+        if (this.type == XMatrixTypes.Identity)
           return true;
-        if (m11 == 1.0 && m12 == 0 && m21 == 0 && m22 == 1.0 && offsetX == 0 && offsetY == 0)
+        if (this.m11 == 1.0 && this.m12 == 0 && this.m21 == 0 && this.m22 == 1.0 && this.offsetX == 0 && this.offsetY == 0)
         {
-          type = XMatrixTypes.Identity;
+          this.type = XMatrixTypes.Identity;
           return true;
         }
         return false;
@@ -125,16 +131,19 @@ namespace PdfSharp.Drawing
     /// Gets an array of double values that represents the elements of this matrix.
     /// </summary>
     [Obsolete("Use GetElements().")]
-    public double[] Elements => GetElements();
+    public double[] Elements
+    {
+      get { return GetElements(); }
+    }
 
     /// <summary>
     /// Gets an array of double values that represents the elements of this matrix.
     /// </summary>
     public double[] GetElements()
     {
-      if (type == XMatrixTypes.Identity)
+      if (this.type == XMatrixTypes.Identity)
         return new double[] { 1, 0, 0, 1, 0, 0 };
-      return new double[] { m11, m12, m21, m22, offsetX, offsetY };
+      return new double[] { this.m11, this.m12, this.m21, this.m22, this.offsetX, this.offsetY };
     }
 
     /// <summary>
@@ -195,7 +204,7 @@ namespace PdfSharp.Drawing
     public void Multiply(XMatrix matrix, XMatrixOrder order)
     {
       // HACK in Multiply
-      if (type == XMatrixTypes.Identity)
+      if (this.type == XMatrixTypes.Identity)
         InitIdentity();
 
       // Must use properties, the fields can be invalid if the matrix is identity matrix.
@@ -208,21 +217,21 @@ namespace PdfSharp.Drawing
 
       if (order == XMatrixOrder.Append)
       {
-        m11 = t11 * matrix.M11 + t12 * matrix.M21;
-        m12 = t11 * matrix.M12 + t12 * matrix.M22;
-        m21 = t21 * matrix.M11 + t22 * matrix.M21;
-        m22 = t21 * matrix.M12 + t22 * matrix.M22;
-        offsetX = tdx * matrix.M11 + tdy * matrix.M21 + matrix.OffsetX;
-        offsetY = tdx * matrix.M12 + tdy * matrix.M22 + matrix.OffsetY;
+        this.m11 = t11 * matrix.M11 + t12 * matrix.M21;
+        this.m12 = t11 * matrix.M12 + t12 * matrix.M22;
+        this.m21 = t21 * matrix.M11 + t22 * matrix.M21;
+        this.m22 = t21 * matrix.M12 + t22 * matrix.M22;
+        this.offsetX = tdx * matrix.M11 + tdy * matrix.M21 + matrix.OffsetX;
+        this.offsetY = tdx * matrix.M12 + tdy * matrix.M22 + matrix.OffsetY;
       }
       else
       {
-        m11 = t11 * matrix.M11 + t21 * matrix.M12;
-        m12 = t12 * matrix.M11 + t22 * matrix.M12;
-        m21 = t11 * matrix.M21 + t21 * matrix.M22;
-        m22 = t12 * matrix.M21 + t22 * matrix.M22;
-        offsetX = t11 * matrix.OffsetX + t21 * matrix.OffsetY + tdx;
-        offsetY = t12 * matrix.OffsetX + t22 * matrix.OffsetY + tdy;
+        this.m11 = t11 * matrix.M11 + t21 * matrix.M12;
+        this.m12 = t12 * matrix.M11 + t22 * matrix.M12;
+        this.m21 = t11 * matrix.M21 + t21 * matrix.M22;
+        this.m22 = t12 * matrix.M21 + t22 * matrix.M22;
+        this.offsetX = t11 * matrix.OffsetX + t21 * matrix.OffsetY + tdx;
+        this.offsetY = t12 * matrix.OffsetX + t22 * matrix.OffsetY + tdy;
       }
       DeriveMatrixType();
     }
@@ -256,11 +265,11 @@ namespace PdfSharp.Drawing
     /// </summary>
     public void TranslateAppend(double offsetX, double offsetY) // TODO: will become default
     {
-      if (type == XMatrixTypes.Identity)
+      if (this.type == XMatrixTypes.Identity)
       {
         SetMatrix(1, 0, 0, 1, offsetX, offsetY, XMatrixTypes.Translation);
       }
-      else if (type == XMatrixTypes.Unknown)
+      else if (this.type == XMatrixTypes.Unknown)
       {
         this.offsetX += offsetX;
         this.offsetY += offsetY;
@@ -269,7 +278,7 @@ namespace PdfSharp.Drawing
       {
         this.offsetX += offsetX;
         this.offsetY += offsetY;
-        type |= XMatrixTypes.Translation;
+        this.type |= XMatrixTypes.Translation;
       }
     }
 
@@ -287,7 +296,7 @@ namespace PdfSharp.Drawing
     public void Translate(double offsetX, double offsetY, XMatrixOrder order)
     {
       // HACK in Translate
-      if (type == XMatrixTypes.Identity)
+      if (this.type == XMatrixTypes.Identity)
         InitIdentity();
 
       if (order == XMatrixOrder.Append)
@@ -297,8 +306,8 @@ namespace PdfSharp.Drawing
       }
       else
       {
-        this.offsetX += offsetX * m11 + offsetY * m21;
-        this.offsetY += offsetX * m12 + offsetY * m22;
+        this.offsetX += offsetX * this.m11 + offsetY * this.m21;
+        this.offsetY += offsetX * this.m12 + offsetY * this.m22;
       }
       DeriveMatrixType();
     }
@@ -335,24 +344,24 @@ namespace PdfSharp.Drawing
     public void Scale(double scaleX, double scaleY, XMatrixOrder order)
     {
       // HACK in Scale
-      if (type == XMatrixTypes.Identity)
+      if (this.type == XMatrixTypes.Identity)
         InitIdentity();
 
       if (order == XMatrixOrder.Append)
       {
-        m11 *= scaleX;
-        m12 *= scaleY;
-        m21 *= scaleX;
-        m22 *= scaleY;
-        offsetX *= scaleX;
-        offsetY *= scaleY;
+        this.m11 *= scaleX;
+        this.m12 *= scaleY;
+        this.m21 *= scaleX;
+        this.m22 *= scaleY;
+        this.offsetX *= scaleX;
+        this.offsetY *= scaleY;
       }
       else
       {
-        m11 *= scaleX;
-        m12 *= scaleX;
-        m21 *= scaleY;
-        m22 *= scaleY;
+        this.m11 *= scaleX;
+        this.m12 *= scaleX;
+        this.m21 *= scaleY;
+        this.m22 *= scaleY;
       }
       DeriveMatrixType();
     }
@@ -452,7 +461,7 @@ namespace PdfSharp.Drawing
     public void Rotate(double angle, XMatrixOrder order)
     {
       // HACK in Rotate
-      if (type == XMatrixTypes.Identity)
+      if (this.type == XMatrixTypes.Identity)
         InitIdentity();
 
       angle = angle * Calc.Deg2Rad;
@@ -460,29 +469,29 @@ namespace PdfSharp.Drawing
       double sin = Math.Sin(angle);
       if (order == XMatrixOrder.Append)
       {
-        double t11 = m11;
-        double t12 = m12;
-        double t21 = m21;
-        double t22 = m22;
-        double tdx = offsetX;
-        double tdy = offsetY;
-        m11 = t11 * cos - t12 * sin;
-        m12 = t11 * sin + t12 * cos;
-        m21 = t21 * cos - t22 * sin;
-        m22 = t21 * sin + t22 * cos;
-        offsetX = tdx * cos - tdy * sin;
-        offsetY = tdx * sin + tdy * cos;
+        double t11 = this.m11;
+        double t12 = this.m12;
+        double t21 = this.m21;
+        double t22 = this.m22;
+        double tdx = this.offsetX;
+        double tdy = this.offsetY;
+        this.m11 = t11 * cos - t12 * sin;
+        this.m12 = t11 * sin + t12 * cos;
+        this.m21 = t21 * cos - t22 * sin;
+        this.m22 = t21 * sin + t22 * cos;
+        this.offsetX = tdx * cos - tdy * sin;
+        this.offsetY = tdx * sin + tdy * cos;
       }
       else
       {
-        double t11 = m11;
-        double t12 = m12;
-        double t21 = m21;
-        double t22 = m22;
-        m11 = t11 * cos + t21 * sin;
-        m12 = t12 * cos + t22 * sin;
-        m21 = -t11 * sin + t21 * cos;
-        m22 = -t12 * sin + t22 * cos;
+        double t11 = this.m11;
+        double t12 = this.m12;
+        double t21 = this.m21;
+        double t22 = this.m22;
+        this.m11 = t11 * cos + t21 * sin;
+        this.m12 = t12 * cos + t22 * sin;
+        this.m21 = -t11 * sin + t21 * cos;
+        this.m22 = -t12 * sin + t22 * cos;
       }
       DeriveMatrixType();
     }
@@ -596,30 +605,30 @@ namespace PdfSharp.Drawing
     public void Shear(double shearX, double shearY, XMatrixOrder order)
     {
       // HACK in Shear
-      if (type == XMatrixTypes.Identity)
+      if (this.type == XMatrixTypes.Identity)
         InitIdentity();
 
-      double t11 = m11;
-      double t12 = m12;
-      double t21 = m21;
-      double t22 = m22;
-      double tdx = offsetX;
-      double tdy = offsetY;
+      double t11 = this.m11;
+      double t12 = this.m12;
+      double t21 = this.m21;
+      double t22 = this.m22;
+      double tdx = this.offsetX;
+      double tdy = this.offsetY;
       if (order == XMatrixOrder.Append)
       {
-        m11 += shearX * t12;
-        m12 += shearY * t11;
-        m21 += shearX * t22;
-        m22 += shearY * t21;
-        offsetX += shearX * tdy;
-        offsetY += shearY * tdx;
+        this.m11 += shearX * t12;
+        this.m12 += shearY * t11;
+        this.m21 += shearX * t22;
+        this.m22 += shearY * t21;
+        this.offsetX += shearX * tdy;
+        this.offsetY += shearY * tdx;
       }
       else
       {
-        m11 += shearY * t21;
-        m12 += shearY * t22;
-        m21 += shearX * t11;
-        m22 += shearX * t12;
+        this.m11 += shearY * t21;
+        this.m12 += shearY * t22;
+        this.m21 += shearX * t11;
+        this.m22 += shearX * t12;
       }
       DeriveMatrixType();
     }
@@ -695,8 +704,8 @@ namespace PdfSharp.Drawing
       {
         double x = points[idx].X;
         double y = points[idx].Y;
-        points[idx].X = x * m11 + y * m21 + offsetX;
-        points[idx].Y = x * m12 + y * m22 + offsetY;
+        points[idx].X = x * this.m11 + y * this.m21 + this.offsetX;
+        points[idx].Y = x * this.m12 + y * this.m22 + this.offsetY;
       }
     }
 
@@ -740,8 +749,8 @@ namespace PdfSharp.Drawing
       {
         double x = points[idx].X;
         double y = points[idx].Y;
-        points[idx].X = (int)(x * m11 + y * m21 + offsetX);
-        points[idx].Y = (int)(x * m12 + y * m22 + offsetY);
+        points[idx].X = (int)(x * this.m11 + y * this.m21 + this.offsetX);
+        points[idx].Y = (int)(x * this.m12 + y * this.m22 + this.offsetY);
       }
     }
 #endif
@@ -800,7 +809,7 @@ namespace PdfSharp.Drawing
     {
       get
       {
-        switch (type)
+        switch (this.type)
         {
           case XMatrixTypes.Identity:
           case XMatrixTypes.Translation:
@@ -808,16 +817,19 @@ namespace PdfSharp.Drawing
 
           case XMatrixTypes.Scaling:
           case XMatrixTypes.Scaling | XMatrixTypes.Translation:
-            return m11 * m22;
+            return this.m11 * this.m22;
         }
-        return (m11 * m22) - (m12 * m21);
+        return (this.m11 * this.m22) - (this.m12 * this.m21);
       }
     }
 
     /// <summary>
     /// Gets a value that indicates whether this matrix is invertible.
     /// </summary>
-    public bool HasInverse => !DoubleUtil.IsZero(Determinant);
+    public bool HasInverse
+    {
+      get { return !DoubleUtil.IsZero(Determinant); }
+    }
 
     /// <summary>
     /// Inverts the matrix.
@@ -828,32 +840,32 @@ namespace PdfSharp.Drawing
       if (DoubleUtil.IsZero(determinant))
         throw new InvalidOperationException("NotInvertible"); //SR.Get(SRID.Transform_NotInvertible, new object[0]));
 
-      switch (type)
+      switch (this.type)
       {
         case XMatrixTypes.Identity:
           break;
 
         case XMatrixTypes.Translation:
-          offsetX = -offsetX;
-          offsetY = -offsetY;
+          this.offsetX = -this.offsetX;
+          this.offsetY = -this.offsetY;
           return;
 
         case XMatrixTypes.Scaling:
-          m11 = 1.0 / m11;
-          m22 = 1.0 / m22;
+          this.m11 = 1.0 / this.m11;
+          this.m22 = 1.0 / this.m22;
           return;
 
         case XMatrixTypes.Scaling | XMatrixTypes.Translation:
-          m11 = 1.0 / m11;
-          m22 = 1.0 / m22;
-          offsetX = -offsetX * m11;
-          offsetY = -offsetY * m22;
+          this.m11 = 1.0 / this.m11;
+          this.m22 = 1.0 / this.m22;
+          this.offsetX = -this.offsetX * this.m11;
+          this.offsetY = -this.offsetY * this.m22;
           return;
 
         default:
           {
             double detInvers = 1.0 / determinant;
-            SetMatrix(m22 * detInvers, -m12 * detInvers, -m21 * detInvers, m11 * detInvers, (m21 * offsetY - offsetX * m22) * detInvers, (offsetX * m12 - m11 * offsetY) * detInvers, XMatrixTypes.Unknown);
+            SetMatrix(this.m22 * detInvers, -this.m12 * detInvers, -this.m21 * detInvers, this.m11 * detInvers, (this.m21 * this.offsetY - this.offsetX * this.m22) * detInvers, (this.offsetX * this.m12 - this.m11 * this.offsetY) * detInvers, XMatrixTypes.Unknown);
             break;
           }
       }
@@ -866,19 +878,19 @@ namespace PdfSharp.Drawing
     {
       get
       {
-        if (type == XMatrixTypes.Identity)
+        if (this.type == XMatrixTypes.Identity)
           return 1.0;
-        return m11;
+        return this.m11;
       }
       set
       {
-        if (type == XMatrixTypes.Identity)
+        if (this.type == XMatrixTypes.Identity)
           SetMatrix(value, 0, 0, 1, 0, 0, XMatrixTypes.Scaling);
         else
         {
-          m11 = value;
-          if (type != XMatrixTypes.Unknown)
-            type |= XMatrixTypes.Scaling;
+          this.m11 = value;
+          if (this.type != XMatrixTypes.Unknown)
+            this.type |= XMatrixTypes.Scaling;
         }
       }
     }
@@ -890,18 +902,18 @@ namespace PdfSharp.Drawing
     {
       get
       {
-        if (type == XMatrixTypes.Identity)
+        if (this.type == XMatrixTypes.Identity)
           return 0;
-        return m12;
+        return this.m12;
       }
       set
       {
-        if (type == XMatrixTypes.Identity)
+        if (this.type == XMatrixTypes.Identity)
           SetMatrix(1, value, 0, 1, 0, 0, XMatrixTypes.Unknown);
         else
         {
-          m12 = value;
-          type = XMatrixTypes.Unknown;
+          this.m12 = value;
+          this.type = XMatrixTypes.Unknown;
         }
       }
     }
@@ -913,18 +925,18 @@ namespace PdfSharp.Drawing
     {
       get
       {
-        if (type == XMatrixTypes.Identity)
+        if (this.type == XMatrixTypes.Identity)
           return 0;
-        return m21;
+        return this.m21;
       }
       set
       {
-        if (type == XMatrixTypes.Identity)
+        if (this.type == XMatrixTypes.Identity)
           SetMatrix(1, 0, value, 1, 0, 0, XMatrixTypes.Unknown);
         else
         {
-          m21 = value;
-          type = XMatrixTypes.Unknown;
+          this.m21 = value;
+          this.type = XMatrixTypes.Unknown;
         }
       }
     }
@@ -936,20 +948,20 @@ namespace PdfSharp.Drawing
     {
       get
       {
-        if (type == XMatrixTypes.Identity)
+        if (this.type == XMatrixTypes.Identity)
           return 1.0;
-        return m22;
+        return this.m22;
       }
       set
       {
-        if (type == XMatrixTypes.Identity)
+        if (this.type == XMatrixTypes.Identity)
           SetMatrix(1, 0, 0, value, 0, 0, XMatrixTypes.Scaling);
         else
         {
-          m22 = value;
-          if (type != XMatrixTypes.Unknown)
+          this.m22 = value;
+          if (this.type != XMatrixTypes.Unknown)
           {
-            type |= XMatrixTypes.Scaling;
+            this.type |= XMatrixTypes.Scaling;
           }
         }
       }
@@ -962,19 +974,19 @@ namespace PdfSharp.Drawing
     {
       get
       {
-        if (type == XMatrixTypes.Identity)
+        if (this.type == XMatrixTypes.Identity)
           return 0;
-        return offsetX;
+        return this.offsetX;
       }
       set
       {
-        if (type == XMatrixTypes.Identity)
+        if (this.type == XMatrixTypes.Identity)
           SetMatrix(1, 0, 0, 1, value, 0, XMatrixTypes.Translation);
         else
         {
-          offsetX = value;
-          if (type != XMatrixTypes.Unknown)
-            type |= XMatrixTypes.Translation;
+          this.offsetX = value;
+          if (this.type != XMatrixTypes.Unknown)
+            this.type |= XMatrixTypes.Translation;
         }
       }
     }
@@ -986,19 +998,19 @@ namespace PdfSharp.Drawing
     {
       get
       {
-        if (type == XMatrixTypes.Identity)
+        if (this.type == XMatrixTypes.Identity)
           return 0;
-        return offsetY;
+        return this.offsetY;
       }
       set
       {
-        if (type == XMatrixTypes.Identity)
+        if (this.type == XMatrixTypes.Identity)
           SetMatrix(1, 0, 0, 1, 0, value, XMatrixTypes.Translation);
         else
         {
-          offsetY = value;
-          if (type != XMatrixTypes.Unknown)
-            type |= XMatrixTypes.Translation;
+          this.offsetY = value;
+          if (this.type != XMatrixTypes.Unknown)
+            this.type |= XMatrixTypes.Translation;
         }
       }
     }
@@ -1030,7 +1042,7 @@ namespace PdfSharp.Drawing
     /// </summary>
     public System.Windows.Media.Matrix ToWpfMatrix()
     {
-      return new System.Windows.Media.Matrix(m11, m12, m21, m22, offsetX, offsetY);
+      return new System.Windows.Media.Matrix(this.m11, this.m12, this.m21, this.m22, this.offsetX, this.offsetY);
     }
 #endif
 
@@ -1194,12 +1206,12 @@ namespace PdfSharp.Drawing
         return "Identity";
 
       char numericListSeparator = TokenizerHelper.GetNumericListSeparator(provider);
-      return string.Format(provider, "{1:" + format + "}{0}{2:" + format + "}{0}{3:" + format + "}{0}{4:" + format + "}{0}{5:" + format + "}{0}{6:" + format + "}", new object[] { numericListSeparator, m11, m12, m21, m22, offsetX, offsetY });
+      return string.Format(provider, "{1:" + format + "}{0}{2:" + format + "}{0}{3:" + format + "}{0}{4:" + format + "}{0}{5:" + format + "}{0}{6:" + format + "}", new object[] { numericListSeparator, this.m11, this.m12, this.m21, this.m22, this.offsetX, this.offsetY });
     }
 
     internal void MultiplyVector(ref double x, ref double y)
     {
-      switch (type)
+      switch (this.type)
       {
         case XMatrixTypes.Identity:
         case XMatrixTypes.Translation:
@@ -1207,47 +1219,47 @@ namespace PdfSharp.Drawing
 
         case XMatrixTypes.Scaling:
         case XMatrixTypes.Scaling | XMatrixTypes.Translation:
-          x *= m11;
-          y *= m22;
+          x *= this.m11;
+          y *= this.m22;
           return;
       }
-      double d1 = y * m21;
-      double d2 = x * m12;
-      x *= m11;
+      double d1 = y * this.m21;
+      double d2 = x * this.m12;
+      x *= this.m11;
       x += d1;
-      y *= m22;
+      y *= this.m22;
       y += d2;
     }
 
     internal void MultiplyPoint(ref double x, ref double y)
     {
-      switch (type)
+      switch (this.type)
       {
         case XMatrixTypes.Identity:
           return;
 
         case XMatrixTypes.Translation:
-          x += offsetX;
-          y += offsetY;
+          x += this.offsetX;
+          y += this.offsetY;
           return;
 
         case XMatrixTypes.Scaling:
-          x *= m11;
-          y *= m22;
+          x *= this.m11;
+          y *= this.m22;
           return;
 
         case (XMatrixTypes.Scaling | XMatrixTypes.Translation):
-          x *= m11;
-          x += offsetX;
-          y *= m22;
-          y += offsetY;
+          x *= this.m11;
+          x += this.offsetX;
+          y *= this.m22;
+          y += this.offsetY;
           return;
       }
-      double d1 = (y * m21) + offsetX;
-      double d2 = (x * m12) + offsetY;
-      x *= m11;
+      double d1 = (y * this.m21) + this.offsetX;
+      double d2 = (x * this.m12) + this.offsetY;
+      x *= this.m11;
       x += d1;
-      y *= m22;
+      y *= this.m22;
       y += d2;
     }
 
@@ -1320,25 +1332,28 @@ namespace PdfSharp.Drawing
 
     void DeriveMatrixType()
     {
-      type = XMatrixTypes.Identity;
-      if (m21 != 0 || m12 != 0)
+      this.type = XMatrixTypes.Identity;
+      if (this.m21 != 0 || this.m12 != 0)
       {
-        type = XMatrixTypes.Unknown;
+        this.type = XMatrixTypes.Unknown;
       }
       else
       {
-        if (m11 != 1 || m22 != 1)
-          type = XMatrixTypes.Scaling;
+        if (this.m11 != 1 || this.m22 != 1)
+          this.type = XMatrixTypes.Scaling;
 
-        if (offsetX != 0 || offsetY != 0)
-          type |= XMatrixTypes.Translation;
+        if (this.offsetX != 0 || this.offsetY != 0)
+          this.type |= XMatrixTypes.Translation;
 
-        if ((type & (XMatrixTypes.Scaling | XMatrixTypes.Translation)) == XMatrixTypes.Identity)
-          type = XMatrixTypes.Identity;
+        if ((this.type & (XMatrixTypes.Scaling | XMatrixTypes.Translation)) == XMatrixTypes.Identity)
+          this.type = XMatrixTypes.Identity;
       }
     }
 
-    private bool IsDistinguishedIdentity => (type == XMatrixTypes.Identity);
+    private bool IsDistinguishedIdentity
+    {
+      get { return (this.type == XMatrixTypes.Identity); }
+    }
 
     static XMatrix()
     {
@@ -1362,7 +1377,7 @@ namespace PdfSharp.Drawing
     /// </summary>
     internal static class MatrixHelper
     {
-      // Fast multiplication taking matrix type into account. Reflectored from WPF.
+      // Fast mutiplication taking matrix type into account. Reflectored from WPF.
       internal static void MultiplyMatrix(ref XMatrix matrix1, ref XMatrix matrix2)
       {
         XMatrixTypes type1 = matrix1.type;

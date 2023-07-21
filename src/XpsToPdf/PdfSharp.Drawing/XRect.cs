@@ -30,12 +30,14 @@
 using System;
 using System.Diagnostics;
 using System.Globalization;
+using System.ComponentModel;
 using System.Runtime.InteropServices;
 #if GDI
 using System.Drawing;
 #endif
 #if WPF
 using System.Windows;
+using System.Windows.Media;
 #endif
 using PdfSharp.Internal;
 
@@ -66,10 +68,10 @@ namespace PdfSharp.Drawing
     /// </summary>
     public XRect(XPoint point1, XPoint point2)
     {
-      x = Math.Min(point1.x, point2.x);
-      y = Math.Min(point1.y, point2.y);
-      width = Math.Max(Math.Max(point1.x, point2.x) - x, 0);
-      height = Math.Max(Math.Max(point1.y, point2.y) - y, 0);
+      this.x = Math.Min(point1.x, point2.x);
+      this.y = Math.Min(point1.y, point2.y);
+      this.width = Math.Max(Math.Max(point1.x, point2.x) - this.x, 0);
+      this.height = Math.Max(Math.Max(point1.y, point2.y) - this.y, 0);
     }
 
     /// <summary>
@@ -88,10 +90,10 @@ namespace PdfSharp.Drawing
         this = s_empty;
       else
       {
-        x = location.x;
-        y = location.y;
-        width = size.width;
-        height = size.height;
+        this.x = location.x;
+        this.y = location.y;
+        this.width = size.width;
+        this.height = size.height;
       }
     }
 
@@ -104,9 +106,9 @@ namespace PdfSharp.Drawing
         this = s_empty;
       else
       {
-        x = y = 0;
-        width = size.Width;
-        height = size.Height;
+        this.x = this.y = 0;
+        this.width = size.Width;
+        this.height = size.Height;
       }
     }
 
@@ -142,10 +144,10 @@ namespace PdfSharp.Drawing
     /// </summary>
     public XRect(Rect rect)
     {
-      x = rect.X;
-      y = rect.Y;
-      width = rect.Width;
-      height = rect.Height;
+      this.x = rect.X;
+      this.y = rect.Y;
+      this.width = rect.Width;
+      this.height = rect.Height;
     }
 #endif
 
@@ -258,31 +260,37 @@ namespace PdfSharp.Drawing
       if (IsEmpty)
         return "Empty";
       char numericListSeparator = TokenizerHelper.GetNumericListSeparator(provider);
-      return string.Format(provider, "{1:" + format + "}{0}{2:" + format + "}{0}{3:" + format + "}{0}{4:" + format + "}", new object[] { numericListSeparator, x, y, width, height });
+      return string.Format(provider, "{1:" + format + "}{0}{2:" + format + "}{0}{3:" + format + "}{0}{4:" + format + "}", new object[] { numericListSeparator, this.x, this.y, this.width, this.height });
     }
 
     /// <summary>
     /// Gets the empty rectangle.
     /// </summary>
-    public static XRect Empty => s_empty;
+    public static XRect Empty
+    {
+      get { return s_empty; }
+    }
 
     /// <summary>
     /// Gets a value indicating whether this instance is empty.
     /// </summary>
-    public bool IsEmpty => width < 0;
+    public bool IsEmpty
+    {
+      get { return this.width < 0; }
+    }
 
     /// <summary>
     /// Gets or sets the location of the rectangle.
     /// </summary>
     public XPoint Location
     {
-      get => new XPoint(x, y);
+      get { return new XPoint(this.x, this.y); }
       set
       {
         if (IsEmpty)
           throw new InvalidOperationException("CannotModifyEmptyRect"); //SR.Get(SRID.Rect_CannotModifyEmptyRect, new object[0]));
-        x = value.x;
-        y = value.y;
+        this.x = value.x;
+        this.y = value.y;
       }
     }
 
@@ -296,7 +304,7 @@ namespace PdfSharp.Drawing
       {
         if (IsEmpty)
           return XSize.Empty;
-        return new XSize(width, height);
+        return new XSize(this.width, this.height);
       }
       set
       {
@@ -306,8 +314,8 @@ namespace PdfSharp.Drawing
         {
           if (IsEmpty)
             throw new InvalidOperationException("CannotModifyEmptyRect"); //SR.Get(SRID.Rect_CannotModifyEmptyRect, new object[0]));
-          width = value.width;
-          height = value.height;
+          this.width = value.width;
+          this.height = value.height;
         }
       }
     }
@@ -317,12 +325,12 @@ namespace PdfSharp.Drawing
     /// </summary>
     public double X
     {
-      get => x;
+      get { return this.x; }
       set
       {
         if (IsEmpty)
           throw new InvalidOperationException("CannotModifyEmptyRect"); //SR.Get(SRID.Rect_CannotModifyEmptyRect, new object[0]));
-        x = value;
+        this.x = value;
       }
     }
 
@@ -331,12 +339,12 @@ namespace PdfSharp.Drawing
     /// </summary>
     public double Y
     {
-      get => y;
+      get { return this.y; }
       set
       {
         if (IsEmpty)
           throw new InvalidOperationException("CannotModifyEmptyRect"); //SR.Get(SRID.Rect_CannotModifyEmptyRect, new object[0]));
-        y = value;
+        this.y = value;
       }
     }
 
@@ -345,7 +353,7 @@ namespace PdfSharp.Drawing
     /// </summary>
     public double Width
     {
-      get => width;
+      get { return this.width; }
       set
       {
         if (IsEmpty)
@@ -353,7 +361,7 @@ namespace PdfSharp.Drawing
         if (value < 0)
           throw new ArgumentException("WidthCannotBeNegative"); //SR.Get(SRID.Size_WidthCannotBeNegative, new object[0]));
 
-        width = value;
+        this.width = value;
       }
     }
 
@@ -362,26 +370,32 @@ namespace PdfSharp.Drawing
     /// </summary>
     public double Height
     {
-      get => height;
+      get { return this.height; }
       set
       {
         if (IsEmpty)
           throw new InvalidOperationException("CannotModifyEmptyRect"); //SR.Get(SRID.Rect_CannotModifyEmptyRect, new object[0]));
         if (value < 0)
           throw new ArgumentException("WidthCannotBeNegative"); //SR.Get(SRID.Size_WidthCannotBeNegative, new object[0]));
-        height = value;
+        this.height = value;
       }
     }
 
     /// <summary>
     /// Gets the x-axis value of the left side of the rectangle. 
     /// </summary>
-    public double Left => x;
+    public double Left
+    {
+      get { return this.x; }
+    }
 
     /// <summary>
     /// Gets the y-axis value of the top side of the rectangle. 
     /// </summary>
-    public double Top => y;
+    public double Top
+    {
+      get { return this.y; }
+    }
 
     /// <summary>
     /// Gets the x-axis value of the right side of the rectangle. 
@@ -392,7 +406,7 @@ namespace PdfSharp.Drawing
       {
         if (IsEmpty)
           return double.NegativeInfinity;
-        return x + width;
+        return this.x + this.width;
       }
     }
 
@@ -405,35 +419,50 @@ namespace PdfSharp.Drawing
       {
         if (IsEmpty)
           return double.NegativeInfinity;
-        return y + height;
+        return this.y + this.height;
       }
     }
 
     /// <summary>
     /// Gets the position of the top-left corner of the rectangle. 
     /// </summary>
-    public XPoint TopLeft => new XPoint(Left, Top);
+    public XPoint TopLeft
+    {
+      get { return new XPoint(Left, Top); }
+    }
 
     /// <summary>
     /// Gets the position of the top-right corner of the rectangle. 
     /// </summary>
-    public XPoint TopRight => new XPoint(Right, Top);
+    public XPoint TopRight
+    {
+      get { return new XPoint(Right, Top); }
+    }
 
     /// <summary>
     /// Gets the position of the bottom-left corner of the rectangle. 
     /// </summary>
-    public XPoint BottomLeft => new XPoint(Left, Bottom);
+    public XPoint BottomLeft
+    {
+      get { return new XPoint(Left, Bottom); }
+    }
 
     /// <summary>
     /// Gets the position of the bottom-right corner of the rectangle. 
     /// </summary>
-    public XPoint BottomRight => new XPoint(Right, Bottom);
+    public XPoint BottomRight
+    {
+      get { return new XPoint(Right, Bottom); }
+    }
 
     /// <summary>
     /// Gets the center of the rectangle.
     /// </summary>
     //[Browsable(false)]
-    public XPoint Center => new XPoint(x + width / 2, y + height / 2);
+    public XPoint Center
+    {
+      get { return new XPoint(this.x + this.width / 2, this.y + this.height / 2); }
+    }
 
     /// <summary>
     /// Indicates whether the rectangle contains the specified point. 
@@ -459,8 +488,8 @@ namespace PdfSharp.Drawing
     public bool Contains(XRect rect)
     {
       return !IsEmpty && !rect.IsEmpty &&
-        x <= rect.x && y <= rect.y &&
-        x + width >= rect.x + rect.width && y + height >= rect.y + rect.height;
+        this.x <= rect.x && this.y <= rect.y &&
+        this.x + this.width >= rect.x + rect.width && this.y + this.height >= rect.y + rect.height;
     }
 
     /// <summary>
@@ -484,10 +513,10 @@ namespace PdfSharp.Drawing
       {
         double left = Math.Max(Left, rect.Left);
         double top = Math.Max(Top, rect.Top);
-        width = Math.Max(Math.Min(Right, rect.Right) - left, 0.0);
-        height = Math.Max(Math.Min(Bottom, rect.Bottom) - top, 0.0);
-        x = left;
-        y = top;
+        this.width = Math.Max(Math.Min(Right, rect.Right) - left, 0.0);
+        this.height = Math.Max(Math.Min(Bottom, rect.Bottom) - top, 0.0);
+        this.x = left;
+        this.y = top;
       }
     }
 
@@ -512,22 +541,22 @@ namespace PdfSharp.Drawing
         double left = Math.Min(Left, rect.Left);
         double top = Math.Min(Top, rect.Top);
         if (rect.Width == Double.PositiveInfinity || Width == Double.PositiveInfinity)
-          width = Double.PositiveInfinity;
+          this.width = Double.PositiveInfinity;
         else
         {
           double right = Math.Max(Right, rect.Right);
-          width = Math.Max(right - left, 0.0);
+          this.width = Math.Max(right - left, 0.0);
         }
 
-        if (rect.Height == Double.PositiveInfinity || height == Double.PositiveInfinity)
-          height = Double.PositiveInfinity;
+        if (rect.Height == Double.PositiveInfinity || this.height == Double.PositiveInfinity)
+          this.height = Double.PositiveInfinity;
         else
         {
           double bottom = Math.Max(Bottom, rect.Bottom);
-          height = Math.Max(bottom - top, 0.0);
+          this.height = Math.Max(bottom - top, 0.0);
         }
-        x = left;
-        y = top;
+        this.x = left;
+        this.y = top;
       }
     }
 
@@ -564,8 +593,8 @@ namespace PdfSharp.Drawing
     {
       if (IsEmpty)
         throw new InvalidOperationException("CannotCallMethod"); //SR.Get(SRID.Rect_CannotCallMethod, new object[0]));
-      x += offsetVector.x;
-      y += offsetVector.y;
+      this.x += offsetVector.x;
+      this.y += offsetVector.y;
     }
 
     /// <summary>
@@ -575,8 +604,8 @@ namespace PdfSharp.Drawing
     {
       if (IsEmpty)
         throw new InvalidOperationException("CannotCallMethod"); //SR.Get(SRID.Rect_CannotCallMethod, new object[0]));
-      x += offsetX;
-      y += offsetY;
+      this.x += offsetX;
+      this.y += offsetY;
     }
 
     /// <summary>
@@ -630,8 +659,8 @@ namespace PdfSharp.Drawing
     {
       if (IsEmpty)
         throw new InvalidOperationException("CannotCallMethod"); //SR.Get(SRID.Rect_CannotCallMethod, new object[0]));
-      x -= width;
-      y -= height;
+      this.x -= width;
+      this.y -= height;
       this.width += width;
       this.width += width;
       this.height += height;
@@ -682,19 +711,19 @@ namespace PdfSharp.Drawing
     {
       if (!IsEmpty)
       {
-        x *= scaleX;
-        y *= scaleY;
-        width *= scaleX;
-        height *= scaleY;
+        this.x *= scaleX;
+        this.y *= scaleY;
+        this.width *= scaleX;
+        this.height *= scaleY;
         if (scaleX < 0)
         {
-          x += width;
-          width *= -1.0;
+          this.x += this.width;
+          this.width *= -1.0;
         }
         if (scaleY < 0)
         {
-          y += height;
-          height *= -1.0;
+          this.y += this.height;
+          this.height *= -1.0;
         }
       }
     }
@@ -739,7 +768,7 @@ namespace PdfSharp.Drawing
 
     bool ContainsInternal(double x, double y)
     {
-      return x >= this.x && x - width <= this.x && y >= this.y && y - height <= this.y;
+      return x >= this.x && x - this.width <= this.x && y >= this.y && y - this.height <= this.y;
     }
 
     static XRect CreateEmptyRect()

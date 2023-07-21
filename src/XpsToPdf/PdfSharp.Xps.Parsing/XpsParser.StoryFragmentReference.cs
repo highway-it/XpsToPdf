@@ -1,4 +1,10 @@
-﻿using System.Diagnostics;
+﻿using System;
+using System.Diagnostics;
+using System.Collections.Generic;
+using System.Globalization;
+using System.Text;
+using System.Xml;
+using System.IO;
 using PdfSharp.Xps.XpsModel;
 
 namespace PdfSharp.Xps.Parsing
@@ -10,23 +16,23 @@ namespace PdfSharp.Xps.Parsing
     /// </summary>
     StoryFragmentReference ParseStoryFragmentReference()
     {
-      Debug.Assert(reader.Name == "");
-      bool isEmptyElement = reader.IsEmptyElement;
+      Debug.Assert(this.reader.Name == "");
+      bool isEmptyElement = this.reader.IsEmptyElement;
       StoryFragmentReference storyFragmentReference = new StoryFragmentReference();
       while (MoveToNextAttribute())
       {
-        switch (reader.Name)
+        switch (this.reader.Name)
         {
           case "Page":
-            storyFragmentReference.Page = int.Parse(reader.Value);
+            storyFragmentReference.Page = int.Parse(this.reader.Value);
             break;
 
           case "FragmentName":
-            storyFragmentReference.FragmentName = reader.Value;
+            storyFragmentReference.FragmentName = this.reader.Value;
             break;
 
           default:
-            UnexpectedAttribute(reader.Name);
+            UnexpectedAttribute(this.reader.Name);
             break;
         }
       }

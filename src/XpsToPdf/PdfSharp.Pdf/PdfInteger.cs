@@ -30,6 +30,10 @@
 using System;
 using System.Diagnostics;
 using System.Globalization;
+using System.Collections;
+using System.Text;
+using System.IO;
+using PdfSharp.Internal;
 using PdfSharp.Pdf.IO;
 
 namespace PdfSharp.Pdf
@@ -58,10 +62,11 @@ namespace PdfSharp.Pdf
     /// <summary>
     /// Gets the value as integer
     /// </summary>
-    public int Value =>
-        // This class must behave like a value type. Therefore it cannot be changed (like System.String).
-        value;
-
+    public int Value
+    {
+      // This class must behave like a value type. Therefore it cannot be changed (like System.String).
+      get { return this.value; }
+    }
     readonly int value;
 
     /// <summary>
@@ -69,7 +74,7 @@ namespace PdfSharp.Pdf
     /// </summary>
     public override string ToString()
     {
-      return value.ToString(CultureInfo.InvariantCulture);
+      return this.value.ToString();
     }
 
     /// <summary>
@@ -84,7 +89,7 @@ namespace PdfSharp.Pdf
 
     ulong IConvertible.ToUInt64(IFormatProvider provider)
     {
-      return Convert.ToUInt64(value);
+      return Convert.ToUInt64(this.value);
     }
 
     sbyte IConvertible.ToSByte(IFormatProvider provider)
@@ -110,7 +115,7 @@ namespace PdfSharp.Pdf
 
     bool IConvertible.ToBoolean(IFormatProvider provider)
     {
-      return Convert.ToBoolean(value);
+      return Convert.ToBoolean(this.value);
     }
 
     int IConvertible.ToInt32(IFormatProvider provider)
@@ -120,12 +125,12 @@ namespace PdfSharp.Pdf
 
     ushort IConvertible.ToUInt16(IFormatProvider provider)
     {
-      return Convert.ToUInt16(value);
+      return Convert.ToUInt16(this.value);
     }
 
     short IConvertible.ToInt16(IFormatProvider provider)
     {
-      return Convert.ToInt16(value);
+      return Convert.ToInt16(this.value);
     }
 
     string IConvertible.ToString(IFormatProvider provider)
@@ -135,12 +140,12 @@ namespace PdfSharp.Pdf
 
     byte IConvertible.ToByte(IFormatProvider provider)
     {
-      return Convert.ToByte(value);
+      return Convert.ToByte(this.value);
     }
 
     char IConvertible.ToChar(IFormatProvider provider)
     {
-      return Convert.ToChar(value);
+      return Convert.ToChar(this.value);
     }
 
     long IConvertible.ToInt64(IFormatProvider provider)
@@ -169,7 +174,7 @@ namespace PdfSharp.Pdf
 
     uint IConvertible.ToUInt32(IFormatProvider provider)
     {
-      return Convert.ToUInt32(value);
+      return Convert.ToUInt32(this.value);
     }
 
     #endregion

@@ -28,13 +28,21 @@
 #endregion
 
 using System;
+using System.Diagnostics;
+using System.Collections;
+using System.Text;
+using System.IO;
 #if GDI
 using System.Drawing;
 using System.Drawing.Imaging;
 #endif
 #if WPF
+using System.Windows.Media;
 #endif
 using PdfSharp.Drawing;
+using PdfSharp.Fonts.OpenType;
+using PdfSharp.Internal;
+using PdfSharp.Pdf.Internal;
 
 namespace PdfSharp.Pdf.Advanced
 {
@@ -61,7 +69,7 @@ namespace PdfSharp.Pdf.Advanced
       if (brush == null)
         throw new ArgumentNullException("brush");
 
-      PdfShading shading = new PdfShading(document);
+      PdfShading shading = new PdfShading(this.document);
       shading.SetupFromBrush(brush);
       Elements[Keys.Shading] = shading;
       //Elements[Keys.Matrix] = new PdfLiteral("[" + PdfEncoders.ToString(matrix) + "]");
@@ -88,7 +96,7 @@ namespace PdfSharp.Pdf.Advanced
       public const string PatternType = "/PatternType";
 
       /// <summary>
-      /// (Required) A shading object (see below) defining the shading pattern’s gradient fill.
+      /// (Required) A shading object (see below) defining the shading patternâ€™s gradient fill.
       /// </summary>
       [KeyInfo(KeyType.Dictionary | KeyType.Required)]
       public const string Shading = "/Shading";
@@ -116,9 +124,9 @@ namespace PdfSharp.Pdf.Advanced
       {
         get
         {
-          if (meta == null)
-            meta = CreateMeta(typeof(Keys));
-          return meta;
+          if (Keys.meta == null)
+            Keys.meta = CreateMeta(typeof(Keys));
+          return Keys.meta;
         }
       }
       static DictionaryMeta meta;
@@ -127,6 +135,9 @@ namespace PdfSharp.Pdf.Advanced
     /// <summary>
     /// Gets the KeysMeta of this dictionary type.
     /// </summary>
-    internal override DictionaryMeta Meta => Keys.Meta;
+    internal override DictionaryMeta Meta
+    {
+      get { return Keys.Meta; }
+    }
   }
 }

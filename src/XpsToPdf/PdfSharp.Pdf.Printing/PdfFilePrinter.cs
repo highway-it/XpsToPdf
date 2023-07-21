@@ -76,7 +76,7 @@ namespace PdfSharp.Pdf.Printing
     /// <param name="pdfFileName">Name of the PDF file.</param>
     public PdfFilePrinter(string pdfFileName)
     {
-      PdfFileName = pdfFileName;
+      this.PdfFileName = pdfFileName;
     }
 
     /// <summary>
@@ -95,8 +95,8 @@ namespace PdfSharp.Pdf.Printing
     /// </summary>
     public string PdfFileName
     {
-      get => pdfFileName;
-      set => pdfFileName = value;
+      get { return this.pdfFileName; }
+      set { this.pdfFileName = value; }
     }
     string pdfFileName;
 
@@ -106,8 +106,8 @@ namespace PdfSharp.Pdf.Printing
     /// <value>The name of the printer.</value>
     public string PrinterName
     {
-      get => printerName;
-      set => printerName = value;
+      get { return this.printerName; }
+      set { this.printerName = value; }
     }
     string printerName;
 
@@ -116,8 +116,8 @@ namespace PdfSharp.Pdf.Printing
     /// </summary>
     public string WorkingDirectory
     {
-      get => workingDirectory;
-      set => workingDirectory = value;
+      get { return this.workingDirectory; }
+      set { this.workingDirectory = value; }
     }
     string workingDirectory;
 
@@ -135,21 +135,21 @@ namespace PdfSharp.Pdf.Printing
     /// <param name="milliseconds">The number of milliseconds to wait for completing the print job.</param>
     public void Print(int milliseconds)
     {
-      if (printerName == null || printerName.Length == 0)
-        printerName = defaultPrinterName;
+      if (this.printerName == null || this.printerName.Length == 0)
+        this.printerName = PdfFilePrinter.defaultPrinterName;
 
-      if (adobeReaderPath == null || adobeReaderPath.Length == 0)
+      if (PdfFilePrinter.adobeReaderPath == null || PdfFilePrinter.adobeReaderPath.Length == 0)
         throw new InvalidOperationException("No full qualified path to AcroRd32.exe or Acrobat.exe is set.");
 
-      if (printerName == null || printerName.Length == 0)
+      if (this.printerName == null || this.printerName.Length == 0)
         throw new InvalidOperationException("No printer name set.");
 
       // Check whether file exists.
       string fqName = String.Empty;
-      if (workingDirectory != null && workingDirectory.Length != 0)
-        fqName = Path.Combine(workingDirectory, pdfFileName);
+      if (this.workingDirectory != null && this.workingDirectory.Length != 0)
+        fqName = Path.Combine(this.workingDirectory, this.pdfFileName);
       else
-        fqName = Path.Combine(Directory.GetCurrentDirectory(), pdfFileName);
+        fqName = Path.Combine(Directory.GetCurrentDirectory(), this.pdfFileName);
       if (!File.Exists(fqName))
         throw new InvalidOperationException(String.Format("The file {0} does not exist.", fqName));
 
@@ -162,15 +162,15 @@ namespace PdfSharp.Pdf.Printing
         //acrord32.exe /t          <- seems to work best
         //acrord32.exe /h /p       <- some swear by this version
         ProcessStartInfo startInfo = new ProcessStartInfo();
-        startInfo.FileName = adobeReaderPath;
-        string args = String.Format("/t \"{0}\" \"{1}\"", pdfFileName, printerName);
+        startInfo.FileName = PdfFilePrinter.adobeReaderPath;
+        string args = String.Format("/t \"{0}\" \"{1}\"", this.pdfFileName, this.printerName);
         //Debug.WriteLine(args);
         startInfo.Arguments = args;
         startInfo.CreateNoWindow = true;
         startInfo.ErrorDialog = false;
         startInfo.UseShellExecute = false;
-        if (workingDirectory != null && workingDirectory.Length != 0)
-          startInfo.WorkingDirectory = workingDirectory;
+        if (this.workingDirectory != null && this.workingDirectory.Length != 0)
+          startInfo.WorkingDirectory = this.workingDirectory;
 
         Process process = Process.Start(startInfo);
         if (!process.WaitForExit(milliseconds))
@@ -192,12 +192,12 @@ namespace PdfSharp.Pdf.Printing
     /// </summary>
     void DoSomeVeryDirtyHacksToMakeItWork()
     {
-      if (runningAcro != null)
+      if (PdfFilePrinter.runningAcro != null)
       {
-        if (!runningAcro.HasExited)
+        if (!PdfFilePrinter.runningAcro.HasExited)
           return;
-        runningAcro.Dispose();
-        runningAcro = null;
+        PdfFilePrinter.runningAcro.Dispose();
+        PdfFilePrinter.runningAcro = null;
       }
       // Is any Adobe Reader/Acrobat running?
       Process[] processes = Process.GetProcesses();
@@ -209,21 +209,21 @@ namespace PdfSharp.Pdf.Printing
           Process process = processes[idx];
           ProcessModule module = process.MainModule;
 
-          if (String.Compare(Path.GetFileName(module.FileName), Path.GetFileName(adobeReaderPath), true) == 0)
+          if (String.Compare(Path.GetFileName(module.FileName), Path.GetFileName(PdfFilePrinter.adobeReaderPath), true) == 0)
           {
             // Yes: Fine, we can print.
-            runningAcro = process;
+            PdfFilePrinter.runningAcro = process;
             break;
           }
         }
         catch { }
       }
-      if (runningAcro == null)
+      if (PdfFilePrinter.runningAcro == null)
       {
         // No: Start an Adobe Reader/Acrobat.
         // If you are within ASP.NET, good luck...
-        runningAcro = Process.Start(adobeReaderPath);
-        runningAcro.WaitForInputIdle();
+        PdfFilePrinter.runningAcro = Process.Start(PdfFilePrinter.adobeReaderPath);
+        PdfFilePrinter.runningAcro.WaitForInputIdle();
       }
     }
     static Process runningAcro;
@@ -234,8 +234,8 @@ namespace PdfSharp.Pdf.Printing
     /// </summary>
     static public string AdobeReaderPath
     {
-      get => adobeReaderPath;
-      set => adobeReaderPath = value;
+      get { return PdfFilePrinter.adobeReaderPath; }
+      set { PdfFilePrinter.adobeReaderPath = value; }
     }
     static string adobeReaderPath;
 
@@ -244,8 +244,8 @@ namespace PdfSharp.Pdf.Printing
     /// </summary>
     static public string DefaultPrinterName
     {
-      get => defaultPrinterName;
-      set => defaultPrinterName = value;
+      get { return PdfFilePrinter.defaultPrinterName; }
+      set { PdfFilePrinter.defaultPrinterName = value; }
     }
     static string defaultPrinterName;
   }

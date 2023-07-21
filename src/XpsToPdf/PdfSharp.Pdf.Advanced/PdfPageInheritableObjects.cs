@@ -28,6 +28,13 @@
 #endregion
 
 using System;
+using System.Diagnostics;
+using System.Collections;
+using System.Text;
+using System.IO;
+using PdfSharp.Internal;
+using PdfSharp.Pdf.IO;
+using PdfSharp.Drawing;
 
 namespace PdfSharp.Pdf.Advanced
 {
@@ -47,26 +54,26 @@ namespace PdfSharp.Pdf.Advanced
     /// </summary>
     public PdfRectangle MediaBox
     {
-      get => mediaBox;
-      set => mediaBox = value;
+      get {return this.mediaBox;}
+      set {this.mediaBox = value;}
     }
     PdfRectangle mediaBox;
 
     public PdfRectangle CropBox
     {
-      get => cropBox;
-      set => cropBox = value;
+      get {return this.cropBox;}
+      set {this.cropBox = value;}
     }
     PdfRectangle cropBox;
 
     public int Rotate
     {
-      get => rotate;
+      get {return this.rotate;}
       set 
       {
         if (value % 90 != 0)
           throw new ArgumentException("Rotate", "The value must be a multiple of 90.");
-        rotate = value;
+        this.rotate = value;
       }
     }
     int rotate;

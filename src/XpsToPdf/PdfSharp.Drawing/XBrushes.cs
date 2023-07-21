@@ -27,6 +27,8 @@
 // DEALINGS IN THE SOFTWARE.
 #endregion
 
+using System;
+
 namespace PdfSharp.Drawing
 {
   /// <summary>
@@ -39,9 +41,9 @@ namespace PdfSharp.Drawing
     {
       get
       {
-        if (aliceBlue == null)
-          aliceBlue = new XSolidBrush(XColors.AliceBlue, true);
-        return aliceBlue;
+        if (XBrushes.aliceBlue == null)
+          XBrushes.aliceBlue = new XSolidBrush(XColors.AliceBlue, true);
+        return XBrushes.aliceBlue;
       }
     }
 
@@ -50,9 +52,9 @@ namespace PdfSharp.Drawing
     {
       get
       {
-        if (antiqueWhite == null)
-          antiqueWhite = new XSolidBrush(XColors.AntiqueWhite, true);
-        return antiqueWhite;
+        if (XBrushes.antiqueWhite == null)
+          XBrushes.antiqueWhite = new XSolidBrush(XColors.AntiqueWhite, true);
+        return XBrushes.antiqueWhite;
       }
     }
 
@@ -61,9 +63,9 @@ namespace PdfSharp.Drawing
     {
       get
       {
-        if (aqua == null)
-          aqua = new XSolidBrush(XColors.Aqua, true);
-        return aqua;
+        if (XBrushes.aqua == null)
+          XBrushes.aqua = new XSolidBrush(XColors.Aqua, true);
+        return XBrushes.aqua;
       }
     }
 
@@ -72,9 +74,9 @@ namespace PdfSharp.Drawing
     {
       get
       {
-        if (aquamarine == null)
-          aquamarine = new XSolidBrush(XColors.Aquamarine, true);
-        return aquamarine;
+        if (XBrushes.aquamarine == null)
+          XBrushes.aquamarine = new XSolidBrush(XColors.Aquamarine, true);
+        return XBrushes.aquamarine;
       }
     }
 
@@ -83,9 +85,9 @@ namespace PdfSharp.Drawing
     {
       get
       {
-        if (azure == null)
-          azure = new XSolidBrush(XColors.Azure, true);
-        return azure;
+        if (XBrushes.azure == null)
+          XBrushes.azure = new XSolidBrush(XColors.Azure, true);
+        return XBrushes.azure;
       }
     }
 
@@ -94,9 +96,9 @@ namespace PdfSharp.Drawing
     {
       get
       {
-        if (beige == null)
-          beige = new XSolidBrush(XColors.Beige, true);
-        return beige;
+        if (XBrushes.beige == null)
+          XBrushes.beige = new XSolidBrush(XColors.Beige, true);
+        return XBrushes.beige;
       }
     }
 
@@ -105,9 +107,9 @@ namespace PdfSharp.Drawing
     {
       get
       {
-        if (bisque == null)
-          bisque = new XSolidBrush(XColors.Bisque, true);
-        return bisque;
+        if (XBrushes.bisque == null)
+          XBrushes.bisque = new XSolidBrush(XColors.Bisque, true);
+        return XBrushes.bisque;
       }
     }
 
@@ -116,9 +118,9 @@ namespace PdfSharp.Drawing
     {
       get
       {
-        if (black == null)
-          black = new XSolidBrush(XColors.Black, true);
-        return black;
+        if (XBrushes.black == null)
+          XBrushes.black = new XSolidBrush(XColors.Black, true);
+        return XBrushes.black;
       }
     }
 
@@ -127,9 +129,9 @@ namespace PdfSharp.Drawing
     {
       get
       {
-        if (blanchedAlmond == null)
-          blanchedAlmond = new XSolidBrush(XColors.BlanchedAlmond, true);
-        return blanchedAlmond;
+        if (XBrushes.blanchedAlmond == null)
+          XBrushes.blanchedAlmond = new XSolidBrush(XColors.BlanchedAlmond, true);
+        return XBrushes.blanchedAlmond;
       }
     }
 
@@ -138,9 +140,9 @@ namespace PdfSharp.Drawing
     {
       get
       {
-        if (blue == null)
-          blue = new XSolidBrush(XColors.Blue, true);
-        return blue;
+        if (XBrushes.blue == null)
+          XBrushes.blue = new XSolidBrush(XColors.Blue, true);
+        return XBrushes.blue;
       }
     }
 
@@ -149,9 +151,9 @@ namespace PdfSharp.Drawing
     {
       get
       {
-        if (blueViolet == null)
-          blueViolet = new XSolidBrush(XColors.BlueViolet, true);
-        return blueViolet;
+        if (XBrushes.blueViolet == null)
+          XBrushes.blueViolet = new XSolidBrush(XColors.BlueViolet, true);
+        return XBrushes.blueViolet;
       }
     }
 
@@ -160,9 +162,9 @@ namespace PdfSharp.Drawing
     {
       get
       {
-        if (brown == null)
-          brown = new XSolidBrush(XColors.Brown, true);
-        return brown;
+        if (XBrushes.brown == null)
+          XBrushes.brown = new XSolidBrush(XColors.Brown, true);
+        return XBrushes.brown;
       }
     }
 
@@ -171,9 +173,9 @@ namespace PdfSharp.Drawing
     {
       get
       {
-        if (burlyWood == null)
-          burlyWood = new XSolidBrush(XColors.BurlyWood, true);
-        return burlyWood;
+        if (XBrushes.burlyWood == null)
+          XBrushes.burlyWood = new XSolidBrush(XColors.BurlyWood, true);
+        return XBrushes.burlyWood;
       }
     }
 
@@ -182,9 +184,9 @@ namespace PdfSharp.Drawing
     {
       get
       {
-        if (cadetBlue == null)
-          cadetBlue = new XSolidBrush(XColors.CadetBlue, true);
-        return cadetBlue;
+        if (XBrushes.cadetBlue == null)
+          XBrushes.cadetBlue = new XSolidBrush(XColors.CadetBlue, true);
+        return XBrushes.cadetBlue;
       }
     }
 
@@ -193,9 +195,9 @@ namespace PdfSharp.Drawing
     {
       get
       {
-        if (chartreuse == null)
-          chartreuse = new XSolidBrush(XColors.Chartreuse, true);
-        return chartreuse;
+        if (XBrushes.chartreuse == null)
+          XBrushes.chartreuse = new XSolidBrush(XColors.Chartreuse, true);
+        return XBrushes.chartreuse;
       }
     }
 
@@ -204,9 +206,9 @@ namespace PdfSharp.Drawing
     {
       get
       {
-        if (chocolate == null)
-          chocolate = new XSolidBrush(XColors.Chocolate, true);
-        return chocolate;
+        if (XBrushes.chocolate == null)
+          XBrushes.chocolate = new XSolidBrush(XColors.Chocolate, true);
+        return XBrushes.chocolate;
       }
     }
 
@@ -215,9 +217,9 @@ namespace PdfSharp.Drawing
     {
       get
       {
-        if (coral == null)
-          coral = new XSolidBrush(XColors.Coral, true);
-        return coral;
+        if (XBrushes.coral == null)
+          XBrushes.coral = new XSolidBrush(XColors.Coral, true);
+        return XBrushes.coral;
       }
     }
 
@@ -226,9 +228,9 @@ namespace PdfSharp.Drawing
     {
       get
       {
-        if (cornflowerBlue == null)
-          cornflowerBlue = new XSolidBrush(XColors.CornflowerBlue, true);
-        return cornflowerBlue;
+        if (XBrushes.cornflowerBlue == null)
+          XBrushes.cornflowerBlue = new XSolidBrush(XColors.CornflowerBlue, true);
+        return XBrushes.cornflowerBlue;
       }
     }
 
@@ -237,9 +239,9 @@ namespace PdfSharp.Drawing
     {
       get
       {
-        if (cornsilk == null)
-          cornsilk = new XSolidBrush(XColors.Cornsilk, true);
-        return cornsilk;
+        if (XBrushes.cornsilk == null)
+          XBrushes.cornsilk = new XSolidBrush(XColors.Cornsilk, true);
+        return XBrushes.cornsilk;
       }
     }
 
@@ -248,9 +250,9 @@ namespace PdfSharp.Drawing
     {
       get
       {
-        if (crimson == null)
-          crimson = new XSolidBrush(XColors.Crimson, true);
-        return crimson;
+        if (XBrushes.crimson == null)
+          XBrushes.crimson = new XSolidBrush(XColors.Crimson, true);
+        return XBrushes.crimson;
       }
     }
 
@@ -259,9 +261,9 @@ namespace PdfSharp.Drawing
     {
       get
       {
-        if (cyan == null)
-          cyan = new XSolidBrush(XColors.Cyan, true);
-        return cyan;
+        if (XBrushes.cyan == null)
+          XBrushes.cyan = new XSolidBrush(XColors.Cyan, true);
+        return XBrushes.cyan;
       }
     }
 
@@ -270,9 +272,9 @@ namespace PdfSharp.Drawing
     {
       get
       {
-        if (darkBlue == null)
-          darkBlue = new XSolidBrush(XColors.DarkBlue, true);
-        return darkBlue;
+        if (XBrushes.darkBlue == null)
+          XBrushes.darkBlue = new XSolidBrush(XColors.DarkBlue, true);
+        return XBrushes.darkBlue;
       }
     }
 
@@ -281,9 +283,9 @@ namespace PdfSharp.Drawing
     {
       get
       {
-        if (darkCyan == null)
-          darkCyan = new XSolidBrush(XColors.DarkCyan, true);
-        return darkCyan;
+        if (XBrushes.darkCyan == null)
+          XBrushes.darkCyan = new XSolidBrush(XColors.DarkCyan, true);
+        return XBrushes.darkCyan;
       }
     }
 
@@ -292,9 +294,9 @@ namespace PdfSharp.Drawing
     {
       get
       {
-        if (darkGoldenrod == null)
-          darkGoldenrod = new XSolidBrush(XColors.DarkGoldenrod, true);
-        return darkGoldenrod;
+        if (XBrushes.darkGoldenrod == null)
+          XBrushes.darkGoldenrod = new XSolidBrush(XColors.DarkGoldenrod, true);
+        return XBrushes.darkGoldenrod;
       }
     }
 
@@ -303,9 +305,9 @@ namespace PdfSharp.Drawing
     {
       get
       {
-        if (darkGray == null)
-          darkGray = new XSolidBrush(XColors.DarkGray, true);
-        return darkGray;
+        if (XBrushes.darkGray == null)
+          XBrushes.darkGray = new XSolidBrush(XColors.DarkGray, true);
+        return XBrushes.darkGray;
       }
     }
 
@@ -314,9 +316,9 @@ namespace PdfSharp.Drawing
     {
       get
       {
-        if (darkGreen == null)
-          darkGreen = new XSolidBrush(XColors.DarkGreen, true);
-        return darkGreen;
+        if (XBrushes.darkGreen == null)
+          XBrushes.darkGreen = new XSolidBrush(XColors.DarkGreen, true);
+        return XBrushes.darkGreen;
       }
     }
 
@@ -325,9 +327,9 @@ namespace PdfSharp.Drawing
     {
       get
       {
-        if (darkKhaki == null)
-          darkKhaki = new XSolidBrush(XColors.DarkKhaki, true);
-        return darkKhaki;
+        if (XBrushes.darkKhaki == null)
+          XBrushes.darkKhaki = new XSolidBrush(XColors.DarkKhaki, true);
+        return XBrushes.darkKhaki;
       }
     }
 
@@ -336,9 +338,9 @@ namespace PdfSharp.Drawing
     {
       get
       {
-        if (darkMagenta == null)
-          darkMagenta = new XSolidBrush(XColors.DarkMagenta, true);
-        return darkMagenta;
+        if (XBrushes.darkMagenta == null)
+          XBrushes.darkMagenta = new XSolidBrush(XColors.DarkMagenta, true);
+        return XBrushes.darkMagenta;
       }
     }
 
@@ -347,9 +349,9 @@ namespace PdfSharp.Drawing
     {
       get
       {
-        if (darkOliveGreen == null)
-          darkOliveGreen = new XSolidBrush(XColors.DarkOliveGreen, true);
-        return darkOliveGreen;
+        if (XBrushes.darkOliveGreen == null)
+          XBrushes.darkOliveGreen = new XSolidBrush(XColors.DarkOliveGreen, true);
+        return XBrushes.darkOliveGreen;
       }
     }
 
@@ -358,9 +360,9 @@ namespace PdfSharp.Drawing
     {
       get
       {
-        if (darkOrange == null)
-          darkOrange = new XSolidBrush(XColors.DarkOrange, true);
-        return darkOrange;
+        if (XBrushes.darkOrange == null)
+          XBrushes.darkOrange = new XSolidBrush(XColors.DarkOrange, true);
+        return XBrushes.darkOrange;
       }
     }
 
@@ -369,9 +371,9 @@ namespace PdfSharp.Drawing
     {
       get
       {
-        if (darkOrchid == null)
-          darkOrchid = new XSolidBrush(XColors.DarkOrchid, true);
-        return darkOrchid;
+        if (XBrushes.darkOrchid == null)
+          XBrushes.darkOrchid = new XSolidBrush(XColors.DarkOrchid, true);
+        return XBrushes.darkOrchid;
       }
     }
 
@@ -380,9 +382,9 @@ namespace PdfSharp.Drawing
     {
       get
       {
-        if (darkRed == null)
-          darkRed = new XSolidBrush(XColors.DarkRed, true);
-        return darkRed;
+        if (XBrushes.darkRed == null)
+          XBrushes.darkRed = new XSolidBrush(XColors.DarkRed, true);
+        return XBrushes.darkRed;
       }
     }
 
@@ -391,9 +393,9 @@ namespace PdfSharp.Drawing
     {
       get
       {
-        if (darkSalmon == null)
-          darkSalmon = new XSolidBrush(XColors.DarkSalmon, true);
-        return darkSalmon;
+        if (XBrushes.darkSalmon == null)
+          XBrushes.darkSalmon = new XSolidBrush(XColors.DarkSalmon, true);
+        return XBrushes.darkSalmon;
       }
     }
 
@@ -402,9 +404,9 @@ namespace PdfSharp.Drawing
     {
       get
       {
-        if (darkSeaGreen == null)
-          darkSeaGreen = new XSolidBrush(XColors.DarkSeaGreen, true);
-        return darkSeaGreen;
+        if (XBrushes.darkSeaGreen == null)
+          XBrushes.darkSeaGreen = new XSolidBrush(XColors.DarkSeaGreen, true);
+        return XBrushes.darkSeaGreen;
       }
     }
 
@@ -413,9 +415,9 @@ namespace PdfSharp.Drawing
     {
       get
       {
-        if (darkSlateBlue == null)
-          darkSlateBlue = new XSolidBrush(XColors.DarkSlateBlue, true);
-        return darkSlateBlue;
+        if (XBrushes.darkSlateBlue == null)
+          XBrushes.darkSlateBlue = new XSolidBrush(XColors.DarkSlateBlue, true);
+        return XBrushes.darkSlateBlue;
       }
     }
 
@@ -424,9 +426,9 @@ namespace PdfSharp.Drawing
     {
       get
       {
-        if (darkSlateGray == null)
-          darkSlateGray = new XSolidBrush(XColors.DarkSlateGray, true);
-        return darkSlateGray;
+        if (XBrushes.darkSlateGray == null)
+          XBrushes.darkSlateGray = new XSolidBrush(XColors.DarkSlateGray, true);
+        return XBrushes.darkSlateGray;
       }
     }
 
@@ -435,9 +437,9 @@ namespace PdfSharp.Drawing
     {
       get
       {
-        if (darkTurquoise == null)
-          darkTurquoise = new XSolidBrush(XColors.DarkTurquoise, true);
-        return darkTurquoise;
+        if (XBrushes.darkTurquoise == null)
+          XBrushes.darkTurquoise = new XSolidBrush(XColors.DarkTurquoise, true);
+        return XBrushes.darkTurquoise;
       }
     }
 
@@ -446,9 +448,9 @@ namespace PdfSharp.Drawing
     {
       get
       {
-        if (darkViolet == null)
-          darkViolet = new XSolidBrush(XColors.DarkViolet, true);
-        return darkViolet;
+        if (XBrushes.darkViolet == null)
+          XBrushes.darkViolet = new XSolidBrush(XColors.DarkViolet, true);
+        return XBrushes.darkViolet;
       }
     }
 
@@ -457,9 +459,9 @@ namespace PdfSharp.Drawing
     {
       get
       {
-        if (deepPink == null)
-          deepPink = new XSolidBrush(XColors.DeepPink, true);
-        return deepPink;
+        if (XBrushes.deepPink == null)
+          XBrushes.deepPink = new XSolidBrush(XColors.DeepPink, true);
+        return XBrushes.deepPink;
       }
     }
 
@@ -468,9 +470,9 @@ namespace PdfSharp.Drawing
     {
       get
       {
-        if (deepSkyBlue == null)
-          deepSkyBlue = new XSolidBrush(XColors.DeepSkyBlue, true);
-        return deepSkyBlue;
+        if (XBrushes.deepSkyBlue == null)
+          XBrushes.deepSkyBlue = new XSolidBrush(XColors.DeepSkyBlue, true);
+        return XBrushes.deepSkyBlue;
       }
     }
 
@@ -479,9 +481,9 @@ namespace PdfSharp.Drawing
     {
       get
       {
-        if (dimGray == null)
-          dimGray = new XSolidBrush(XColors.DimGray, true);
-        return dimGray;
+        if (XBrushes.dimGray == null)
+          XBrushes.dimGray = new XSolidBrush(XColors.DimGray, true);
+        return XBrushes.dimGray;
       }
     }
 
@@ -490,9 +492,9 @@ namespace PdfSharp.Drawing
     {
       get
       {
-        if (dodgerBlue == null)
-          dodgerBlue = new XSolidBrush(XColors.DodgerBlue, true);
-        return dodgerBlue;
+        if (XBrushes.dodgerBlue == null)
+          XBrushes.dodgerBlue = new XSolidBrush(XColors.DodgerBlue, true);
+        return XBrushes.dodgerBlue;
       }
     }
 
@@ -501,9 +503,9 @@ namespace PdfSharp.Drawing
     {
       get
       {
-        if (firebrick == null)
-          firebrick = new XSolidBrush(XColors.Firebrick, true);
-        return firebrick;
+        if (XBrushes.firebrick == null)
+          XBrushes.firebrick = new XSolidBrush(XColors.Firebrick, true);
+        return XBrushes.firebrick;
       }
     }
 
@@ -512,9 +514,9 @@ namespace PdfSharp.Drawing
     {
       get
       {
-        if (floralWhite == null)
-          floralWhite = new XSolidBrush(XColors.FloralWhite, true);
-        return floralWhite;
+        if (XBrushes.floralWhite == null)
+          XBrushes.floralWhite = new XSolidBrush(XColors.FloralWhite, true);
+        return XBrushes.floralWhite;
       }
     }
 
@@ -523,9 +525,9 @@ namespace PdfSharp.Drawing
     {
       get
       {
-        if (forestGreen == null)
-          forestGreen = new XSolidBrush(XColors.ForestGreen, true);
-        return forestGreen;
+        if (XBrushes.forestGreen == null)
+          XBrushes.forestGreen = new XSolidBrush(XColors.ForestGreen, true);
+        return XBrushes.forestGreen;
       }
     }
 
@@ -534,9 +536,9 @@ namespace PdfSharp.Drawing
     {
       get
       {
-        if (fuchsia == null)
-          fuchsia = new XSolidBrush(XColors.Fuchsia, true);
-        return fuchsia;
+        if (XBrushes.fuchsia == null)
+          XBrushes.fuchsia = new XSolidBrush(XColors.Fuchsia, true);
+        return XBrushes.fuchsia;
       }
     }
 
@@ -545,9 +547,9 @@ namespace PdfSharp.Drawing
     {
       get
       {
-        if (gainsboro == null)
-          gainsboro = new XSolidBrush(XColors.Gainsboro, true);
-        return gainsboro;
+        if (XBrushes.gainsboro == null)
+          XBrushes.gainsboro = new XSolidBrush(XColors.Gainsboro, true);
+        return XBrushes.gainsboro;
       }
     }
 
@@ -556,9 +558,9 @@ namespace PdfSharp.Drawing
     {
       get
       {
-        if (ghostWhite == null)
-          ghostWhite = new XSolidBrush(XColors.GhostWhite, true);
-        return ghostWhite;
+        if (XBrushes.ghostWhite == null)
+          XBrushes.ghostWhite = new XSolidBrush(XColors.GhostWhite, true);
+        return XBrushes.ghostWhite;
       }
     }
 
@@ -567,9 +569,9 @@ namespace PdfSharp.Drawing
     {
       get
       {
-        if (gold == null)
-          gold = new XSolidBrush(XColors.Gold, true);
-        return gold;
+        if (XBrushes.gold == null)
+          XBrushes.gold = new XSolidBrush(XColors.Gold, true);
+        return XBrushes.gold;
       }
     }
 
@@ -578,9 +580,9 @@ namespace PdfSharp.Drawing
     {
       get
       {
-        if (goldenrod == null)
-          goldenrod = new XSolidBrush(XColors.Goldenrod, true);
-        return goldenrod;
+        if (XBrushes.goldenrod == null)
+          XBrushes.goldenrod = new XSolidBrush(XColors.Goldenrod, true);
+        return XBrushes.goldenrod;
       }
     }
 
@@ -589,9 +591,9 @@ namespace PdfSharp.Drawing
     {
       get
       {
-        if (gray == null)
-          gray = new XSolidBrush(XColors.Gray, true);
-        return gray;
+        if (XBrushes.gray == null)
+          XBrushes.gray = new XSolidBrush(XColors.Gray, true);
+        return XBrushes.gray;
       }
     }
 
@@ -600,9 +602,9 @@ namespace PdfSharp.Drawing
     {
       get
       {
-        if (green == null)
-          green = new XSolidBrush(XColors.Green, true);
-        return green;
+        if (XBrushes.green == null)
+          XBrushes.green = new XSolidBrush(XColors.Green, true);
+        return XBrushes.green;
       }
     }
 
@@ -611,9 +613,9 @@ namespace PdfSharp.Drawing
     {
       get
       {
-        if (greenYellow == null)
-          greenYellow = new XSolidBrush(XColors.GreenYellow, true);
-        return greenYellow;
+        if (XBrushes.greenYellow == null)
+          XBrushes.greenYellow = new XSolidBrush(XColors.GreenYellow, true);
+        return XBrushes.greenYellow;
       }
     }
 
@@ -622,9 +624,9 @@ namespace PdfSharp.Drawing
     {
       get
       {
-        if (honeydew == null)
-          honeydew = new XSolidBrush(XColors.Honeydew, true);
-        return honeydew;
+        if (XBrushes.honeydew == null)
+          XBrushes.honeydew = new XSolidBrush(XColors.Honeydew, true);
+        return XBrushes.honeydew;
       }
     }
 
@@ -633,9 +635,9 @@ namespace PdfSharp.Drawing
     {
       get
       {
-        if (hotPink == null)
-          hotPink = new XSolidBrush(XColors.HotPink, true);
-        return hotPink;
+        if (XBrushes.hotPink == null)
+          XBrushes.hotPink = new XSolidBrush(XColors.HotPink, true);
+        return XBrushes.hotPink;
       }
     }
 
@@ -644,9 +646,9 @@ namespace PdfSharp.Drawing
     {
       get
       {
-        if (indianRed == null)
-          indianRed = new XSolidBrush(XColors.IndianRed, true);
-        return indianRed;
+        if (XBrushes.indianRed == null)
+          XBrushes.indianRed = new XSolidBrush(XColors.IndianRed, true);
+        return XBrushes.indianRed;
       }
     }
 
@@ -655,9 +657,9 @@ namespace PdfSharp.Drawing
     {
       get
       {
-        if (indigo == null)
-          indigo = new XSolidBrush(XColors.Indigo, true);
-        return indigo;
+        if (XBrushes.indigo == null)
+          XBrushes.indigo = new XSolidBrush(XColors.Indigo, true);
+        return XBrushes.indigo;
       }
     }
 
@@ -666,9 +668,9 @@ namespace PdfSharp.Drawing
     {
       get
       {
-        if (ivory == null)
-          ivory = new XSolidBrush(XColors.Ivory, true);
-        return ivory;
+        if (XBrushes.ivory == null)
+          XBrushes.ivory = new XSolidBrush(XColors.Ivory, true);
+        return XBrushes.ivory;
       }
     }
 
@@ -677,9 +679,9 @@ namespace PdfSharp.Drawing
     {
       get
       {
-        if (khaki == null)
-          khaki = new XSolidBrush(XColors.Khaki, true);
-        return khaki;
+        if (XBrushes.khaki == null)
+          XBrushes.khaki = new XSolidBrush(XColors.Khaki, true);
+        return XBrushes.khaki;
       }
     }
 
@@ -688,9 +690,9 @@ namespace PdfSharp.Drawing
     {
       get
       {
-        if (lavender == null)
-          lavender = new XSolidBrush(XColors.Lavender, true);
-        return lavender;
+        if (XBrushes.lavender == null)
+          XBrushes.lavender = new XSolidBrush(XColors.Lavender, true);
+        return XBrushes.lavender;
       }
     }
 
@@ -699,9 +701,9 @@ namespace PdfSharp.Drawing
     {
       get
       {
-        if (lavenderBlush == null)
-          lavenderBlush = new XSolidBrush(XColors.LavenderBlush, true);
-        return lavenderBlush;
+        if (XBrushes.lavenderBlush == null)
+          XBrushes.lavenderBlush = new XSolidBrush(XColors.LavenderBlush, true);
+        return XBrushes.lavenderBlush;
       }
     }
 
@@ -710,9 +712,9 @@ namespace PdfSharp.Drawing
     {
       get
       {
-        if (lawnGreen == null)
-          lawnGreen = new XSolidBrush(XColors.LawnGreen, true);
-        return lawnGreen;
+        if (XBrushes.lawnGreen == null)
+          XBrushes.lawnGreen = new XSolidBrush(XColors.LawnGreen, true);
+        return XBrushes.lawnGreen;
       }
     }
 
@@ -721,9 +723,9 @@ namespace PdfSharp.Drawing
     {
       get
       {
-        if (lemonChiffon == null)
-          lemonChiffon = new XSolidBrush(XColors.LemonChiffon, true);
-        return lemonChiffon;
+        if (XBrushes.lemonChiffon == null)
+          XBrushes.lemonChiffon = new XSolidBrush(XColors.LemonChiffon, true);
+        return XBrushes.lemonChiffon;
       }
     }
 
@@ -732,9 +734,9 @@ namespace PdfSharp.Drawing
     {
       get
       {
-        if (lightBlue == null)
-          lightBlue = new XSolidBrush(XColors.LightBlue, true);
-        return lightBlue;
+        if (XBrushes.lightBlue == null)
+          XBrushes.lightBlue = new XSolidBrush(XColors.LightBlue, true);
+        return XBrushes.lightBlue;
       }
     }
 
@@ -743,9 +745,9 @@ namespace PdfSharp.Drawing
     {
       get
       {
-        if (lightCoral == null)
-          lightCoral = new XSolidBrush(XColors.LightCoral, true);
-        return lightCoral;
+        if (XBrushes.lightCoral == null)
+          XBrushes.lightCoral = new XSolidBrush(XColors.LightCoral, true);
+        return XBrushes.lightCoral;
       }
     }
 
@@ -754,9 +756,9 @@ namespace PdfSharp.Drawing
     {
       get
       {
-        if (lightCyan == null)
-          lightCyan = new XSolidBrush(XColors.LightCyan, true);
-        return lightCyan;
+        if (XBrushes.lightCyan == null)
+          XBrushes.lightCyan = new XSolidBrush(XColors.LightCyan, true);
+        return XBrushes.lightCyan;
       }
     }
 
@@ -765,9 +767,9 @@ namespace PdfSharp.Drawing
     {
       get
       {
-        if (lightGoldenrodYellow == null)
-          lightGoldenrodYellow = new XSolidBrush(XColors.LightGoldenrodYellow, true);
-        return lightGoldenrodYellow;
+        if (XBrushes.lightGoldenrodYellow == null)
+          XBrushes.lightGoldenrodYellow = new XSolidBrush(XColors.LightGoldenrodYellow, true);
+        return XBrushes.lightGoldenrodYellow;
       }
     }
 
@@ -776,9 +778,9 @@ namespace PdfSharp.Drawing
     {
       get
       {
-        if (lightGray == null)
-          lightGray = new XSolidBrush(XColors.LightGray, true);
-        return lightGray;
+        if (XBrushes.lightGray == null)
+          XBrushes.lightGray = new XSolidBrush(XColors.LightGray, true);
+        return XBrushes.lightGray;
       }
     }
 
@@ -787,9 +789,9 @@ namespace PdfSharp.Drawing
     {
       get
       {
-        if (lightGreen == null)
-          lightGreen = new XSolidBrush(XColors.LightGreen, true);
-        return lightGreen;
+        if (XBrushes.lightGreen == null)
+          XBrushes.lightGreen = new XSolidBrush(XColors.LightGreen, true);
+        return XBrushes.lightGreen;
       }
     }
 
@@ -798,9 +800,9 @@ namespace PdfSharp.Drawing
     {
       get
       {
-        if (lightPink == null)
-          lightPink = new XSolidBrush(XColors.LightPink, true);
-        return lightPink;
+        if (XBrushes.lightPink == null)
+          XBrushes.lightPink = new XSolidBrush(XColors.LightPink, true);
+        return XBrushes.lightPink;
       }
     }
 
@@ -809,9 +811,9 @@ namespace PdfSharp.Drawing
     {
       get
       {
-        if (lightSalmon == null)
-          lightSalmon = new XSolidBrush(XColors.LightSalmon, true);
-        return lightSalmon;
+        if (XBrushes.lightSalmon == null)
+          XBrushes.lightSalmon = new XSolidBrush(XColors.LightSalmon, true);
+        return XBrushes.lightSalmon;
       }
     }
 
@@ -820,9 +822,9 @@ namespace PdfSharp.Drawing
     {
       get
       {
-        if (lightSeaGreen == null)
-          lightSeaGreen = new XSolidBrush(XColors.LightSeaGreen, true);
-        return lightSeaGreen;
+        if (XBrushes.lightSeaGreen == null)
+          XBrushes.lightSeaGreen = new XSolidBrush(XColors.LightSeaGreen, true);
+        return XBrushes.lightSeaGreen;
       }
     }
 
@@ -831,9 +833,9 @@ namespace PdfSharp.Drawing
     {
       get
       {
-        if (lightSkyBlue == null)
-          lightSkyBlue = new XSolidBrush(XColors.LightSkyBlue, true);
-        return lightSkyBlue;
+        if (XBrushes.lightSkyBlue == null)
+          XBrushes.lightSkyBlue = new XSolidBrush(XColors.LightSkyBlue, true);
+        return XBrushes.lightSkyBlue;
       }
     }
 
@@ -842,9 +844,9 @@ namespace PdfSharp.Drawing
     {
       get
       {
-        if (lightSlateGray == null)
-          lightSlateGray = new XSolidBrush(XColors.LightSlateGray, true);
-        return lightSlateGray;
+        if (XBrushes.lightSlateGray == null)
+          XBrushes.lightSlateGray = new XSolidBrush(XColors.LightSlateGray, true);
+        return XBrushes.lightSlateGray;
       }
     }
 
@@ -853,9 +855,9 @@ namespace PdfSharp.Drawing
     {
       get
       {
-        if (lightSteelBlue == null)
-          lightSteelBlue = new XSolidBrush(XColors.LightSteelBlue, true);
-        return lightSteelBlue;
+        if (XBrushes.lightSteelBlue == null)
+          XBrushes.lightSteelBlue = new XSolidBrush(XColors.LightSteelBlue, true);
+        return XBrushes.lightSteelBlue;
       }
     }
 
@@ -864,9 +866,9 @@ namespace PdfSharp.Drawing
     {
       get
       {
-        if (lightYellow == null)
-          lightYellow = new XSolidBrush(XColors.LightYellow, true);
-        return lightYellow;
+        if (XBrushes.lightYellow == null)
+          XBrushes.lightYellow = new XSolidBrush(XColors.LightYellow, true);
+        return XBrushes.lightYellow;
       }
     }
 
@@ -875,9 +877,9 @@ namespace PdfSharp.Drawing
     {
       get
       {
-        if (lime == null)
-          lime = new XSolidBrush(XColors.Lime, true);
-        return lime;
+        if (XBrushes.lime == null)
+          XBrushes.lime = new XSolidBrush(XColors.Lime, true);
+        return XBrushes.lime;
       }
     }
 
@@ -886,9 +888,9 @@ namespace PdfSharp.Drawing
     {
       get
       {
-        if (limeGreen == null)
-          limeGreen = new XSolidBrush(XColors.LimeGreen, true);
-        return limeGreen;
+        if (XBrushes.limeGreen == null)
+          XBrushes.limeGreen = new XSolidBrush(XColors.LimeGreen, true);
+        return XBrushes.limeGreen;
       }
     }
 
@@ -897,9 +899,9 @@ namespace PdfSharp.Drawing
     {
       get
       {
-        if (linen == null)
-          linen = new XSolidBrush(XColors.Linen, true);
-        return linen;
+        if (XBrushes.linen == null)
+          XBrushes.linen = new XSolidBrush(XColors.Linen, true);
+        return XBrushes.linen;
       }
     }
 
@@ -908,9 +910,9 @@ namespace PdfSharp.Drawing
     {
       get
       {
-        if (magenta == null)
-          magenta = new XSolidBrush(XColors.Magenta, true);
-        return magenta;
+        if (XBrushes.magenta == null)
+          XBrushes.magenta = new XSolidBrush(XColors.Magenta, true);
+        return XBrushes.magenta;
       }
     }
 
@@ -919,9 +921,9 @@ namespace PdfSharp.Drawing
     {
       get
       {
-        if (maroon == null)
-          maroon = new XSolidBrush(XColors.Maroon, true);
-        return maroon;
+        if (XBrushes.maroon == null)
+          XBrushes.maroon = new XSolidBrush(XColors.Maroon, true);
+        return XBrushes.maroon;
       }
     }
 
@@ -930,9 +932,9 @@ namespace PdfSharp.Drawing
     {
       get
       {
-        if (mediumAquamarine == null)
-          mediumAquamarine = new XSolidBrush(XColors.MediumAquamarine, true);
-        return mediumAquamarine;
+        if (XBrushes.mediumAquamarine == null)
+          XBrushes.mediumAquamarine = new XSolidBrush(XColors.MediumAquamarine, true);
+        return XBrushes.mediumAquamarine;
       }
     }
 
@@ -941,9 +943,9 @@ namespace PdfSharp.Drawing
     {
       get
       {
-        if (mediumBlue == null)
-          mediumBlue = new XSolidBrush(XColors.MediumBlue, true);
-        return mediumBlue;
+        if (XBrushes.mediumBlue == null)
+          XBrushes.mediumBlue = new XSolidBrush(XColors.MediumBlue, true);
+        return XBrushes.mediumBlue;
       }
     }
 
@@ -952,9 +954,9 @@ namespace PdfSharp.Drawing
     {
       get
       {
-        if (mediumOrchid == null)
-          mediumOrchid = new XSolidBrush(XColors.MediumOrchid, true);
-        return mediumOrchid;
+        if (XBrushes.mediumOrchid == null)
+          XBrushes.mediumOrchid = new XSolidBrush(XColors.MediumOrchid, true);
+        return XBrushes.mediumOrchid;
       }
     }
 
@@ -963,9 +965,9 @@ namespace PdfSharp.Drawing
     {
       get
       {
-        if (mediumPurple == null)
-          mediumPurple = new XSolidBrush(XColors.MediumPurple, true);
-        return mediumPurple;
+        if (XBrushes.mediumPurple == null)
+          XBrushes.mediumPurple = new XSolidBrush(XColors.MediumPurple, true);
+        return XBrushes.mediumPurple;
       }
     }
 
@@ -974,9 +976,9 @@ namespace PdfSharp.Drawing
     {
       get
       {
-        if (mediumSeaGreen == null)
-          mediumSeaGreen = new XSolidBrush(XColors.MediumSeaGreen, true);
-        return mediumSeaGreen;
+        if (XBrushes.mediumSeaGreen == null)
+          XBrushes.mediumSeaGreen = new XSolidBrush(XColors.MediumSeaGreen, true);
+        return XBrushes.mediumSeaGreen;
       }
     }
 
@@ -985,9 +987,9 @@ namespace PdfSharp.Drawing
     {
       get
       {
-        if (mediumSlateBlue == null)
-          mediumSlateBlue = new XSolidBrush(XColors.MediumSlateBlue, true);
-        return mediumSlateBlue;
+        if (XBrushes.mediumSlateBlue == null)
+          XBrushes.mediumSlateBlue = new XSolidBrush(XColors.MediumSlateBlue, true);
+        return XBrushes.mediumSlateBlue;
       }
     }
 
@@ -996,9 +998,9 @@ namespace PdfSharp.Drawing
     {
       get
       {
-        if (mediumSpringGreen == null)
-          mediumSpringGreen = new XSolidBrush(XColors.MediumSpringGreen, true);
-        return mediumSpringGreen;
+        if (XBrushes.mediumSpringGreen == null)
+          XBrushes.mediumSpringGreen = new XSolidBrush(XColors.MediumSpringGreen, true);
+        return XBrushes.mediumSpringGreen;
       }
     }
 
@@ -1007,9 +1009,9 @@ namespace PdfSharp.Drawing
     {
       get
       {
-        if (mediumTurquoise == null)
-          mediumTurquoise = new XSolidBrush(XColors.MediumTurquoise, true);
-        return mediumTurquoise;
+        if (XBrushes.mediumTurquoise == null)
+          XBrushes.mediumTurquoise = new XSolidBrush(XColors.MediumTurquoise, true);
+        return XBrushes.mediumTurquoise;
       }
     }
 
@@ -1018,9 +1020,9 @@ namespace PdfSharp.Drawing
     {
       get
       {
-        if (mediumVioletRed == null)
-          mediumVioletRed = new XSolidBrush(XColors.MediumVioletRed, true);
-        return mediumVioletRed;
+        if (XBrushes.mediumVioletRed == null)
+          XBrushes.mediumVioletRed = new XSolidBrush(XColors.MediumVioletRed, true);
+        return XBrushes.mediumVioletRed;
       }
     }
 
@@ -1029,9 +1031,9 @@ namespace PdfSharp.Drawing
     {
       get
       {
-        if (midnightBlue == null)
-          midnightBlue = new XSolidBrush(XColors.MidnightBlue, true);
-        return midnightBlue;
+        if (XBrushes.midnightBlue == null)
+          XBrushes.midnightBlue = new XSolidBrush(XColors.MidnightBlue, true);
+        return XBrushes.midnightBlue;
       }
     }
 
@@ -1040,9 +1042,9 @@ namespace PdfSharp.Drawing
     {
       get
       {
-        if (mintCream == null)
-          mintCream = new XSolidBrush(XColors.MintCream, true);
-        return mintCream;
+        if (XBrushes.mintCream == null)
+          XBrushes.mintCream = new XSolidBrush(XColors.MintCream, true);
+        return XBrushes.mintCream;
       }
     }
 
@@ -1051,9 +1053,9 @@ namespace PdfSharp.Drawing
     {
       get
       {
-        if (mistyRose == null)
-          mistyRose = new XSolidBrush(XColors.MistyRose, true);
-        return mistyRose;
+        if (XBrushes.mistyRose == null)
+          XBrushes.mistyRose = new XSolidBrush(XColors.MistyRose, true);
+        return XBrushes.mistyRose;
       }
     }
 
@@ -1062,9 +1064,9 @@ namespace PdfSharp.Drawing
     {
       get
       {
-        if (moccasin == null)
-          moccasin = new XSolidBrush(XColors.Moccasin, true);
-        return moccasin;
+        if (XBrushes.moccasin == null)
+          XBrushes.moccasin = new XSolidBrush(XColors.Moccasin, true);
+        return XBrushes.moccasin;
       }
     }
 
@@ -1073,9 +1075,9 @@ namespace PdfSharp.Drawing
     {
       get
       {
-        if (navajoWhite == null)
-          navajoWhite = new XSolidBrush(XColors.NavajoWhite, true);
-        return navajoWhite;
+        if (XBrushes.navajoWhite == null)
+          XBrushes.navajoWhite = new XSolidBrush(XColors.NavajoWhite, true);
+        return XBrushes.navajoWhite;
       }
     }
 
@@ -1084,9 +1086,9 @@ namespace PdfSharp.Drawing
     {
       get
       {
-        if (navy == null)
-          navy = new XSolidBrush(XColors.Navy, true);
-        return navy;
+        if (XBrushes.navy == null)
+          XBrushes.navy = new XSolidBrush(XColors.Navy, true);
+        return XBrushes.navy;
       }
     }
 
@@ -1095,9 +1097,9 @@ namespace PdfSharp.Drawing
     {
       get
       {
-        if (oldLace == null)
-          oldLace = new XSolidBrush(XColors.OldLace, true);
-        return oldLace;
+        if (XBrushes.oldLace == null)
+          XBrushes.oldLace = new XSolidBrush(XColors.OldLace, true);
+        return XBrushes.oldLace;
       }
     }
 
@@ -1106,9 +1108,9 @@ namespace PdfSharp.Drawing
     {
       get
       {
-        if (olive == null)
-          olive = new XSolidBrush(XColors.Olive, true);
-        return olive;
+        if (XBrushes.olive == null)
+          XBrushes.olive = new XSolidBrush(XColors.Olive, true);
+        return XBrushes.olive;
       }
     }
 
@@ -1117,9 +1119,9 @@ namespace PdfSharp.Drawing
     {
       get
       {
-        if (oliveDrab == null)
-          oliveDrab = new XSolidBrush(XColors.OliveDrab, true);
-        return oliveDrab;
+        if (XBrushes.oliveDrab == null)
+          XBrushes.oliveDrab = new XSolidBrush(XColors.OliveDrab, true);
+        return XBrushes.oliveDrab;
       }
     }
 
@@ -1128,9 +1130,9 @@ namespace PdfSharp.Drawing
     {
       get
       {
-        if (orange == null)
-          orange = new XSolidBrush(XColors.Orange, true);
-        return orange;
+        if (XBrushes.orange == null)
+          XBrushes.orange = new XSolidBrush(XColors.Orange, true);
+        return XBrushes.orange;
       }
     }
 
@@ -1139,9 +1141,9 @@ namespace PdfSharp.Drawing
     {
       get
       {
-        if (orangeRed == null)
-          orangeRed = new XSolidBrush(XColors.OrangeRed, true);
-        return orangeRed;
+        if (XBrushes.orangeRed == null)
+          XBrushes.orangeRed = new XSolidBrush(XColors.OrangeRed, true);
+        return XBrushes.orangeRed;
       }
     }
 
@@ -1150,9 +1152,9 @@ namespace PdfSharp.Drawing
     {
       get
       {
-        if (orchid == null)
-          orchid = new XSolidBrush(XColors.Orchid, true);
-        return orchid;
+        if (XBrushes.orchid == null)
+          XBrushes.orchid = new XSolidBrush(XColors.Orchid, true);
+        return XBrushes.orchid;
       }
     }
 
@@ -1161,9 +1163,9 @@ namespace PdfSharp.Drawing
     {
       get
       {
-        if (paleGoldenrod == null)
-          paleGoldenrod = new XSolidBrush(XColors.PaleGoldenrod, true);
-        return paleGoldenrod;
+        if (XBrushes.paleGoldenrod == null)
+          XBrushes.paleGoldenrod = new XSolidBrush(XColors.PaleGoldenrod, true);
+        return XBrushes.paleGoldenrod;
       }
     }
 
@@ -1172,9 +1174,9 @@ namespace PdfSharp.Drawing
     {
       get
       {
-        if (paleGreen == null)
-          paleGreen = new XSolidBrush(XColors.PaleGreen, true);
-        return paleGreen;
+        if (XBrushes.paleGreen == null)
+          XBrushes.paleGreen = new XSolidBrush(XColors.PaleGreen, true);
+        return XBrushes.paleGreen;
       }
     }
 
@@ -1183,9 +1185,9 @@ namespace PdfSharp.Drawing
     {
       get
       {
-        if (paleTurquoise == null)
-          paleTurquoise = new XSolidBrush(XColors.PaleTurquoise, true);
-        return paleTurquoise;
+        if (XBrushes.paleTurquoise == null)
+          XBrushes.paleTurquoise = new XSolidBrush(XColors.PaleTurquoise, true);
+        return XBrushes.paleTurquoise;
       }
     }
 
@@ -1194,9 +1196,9 @@ namespace PdfSharp.Drawing
     {
       get
       {
-        if (paleVioletRed == null)
-          paleVioletRed = new XSolidBrush(XColors.PaleVioletRed, true);
-        return paleVioletRed;
+        if (XBrushes.paleVioletRed == null)
+          XBrushes.paleVioletRed = new XSolidBrush(XColors.PaleVioletRed, true);
+        return XBrushes.paleVioletRed;
       }
     }
 
@@ -1205,9 +1207,9 @@ namespace PdfSharp.Drawing
     {
       get
       {
-        if (papayaWhip == null)
-          papayaWhip = new XSolidBrush(XColors.PapayaWhip, true);
-        return papayaWhip;
+        if (XBrushes.papayaWhip == null)
+          XBrushes.papayaWhip = new XSolidBrush(XColors.PapayaWhip, true);
+        return XBrushes.papayaWhip;
       }
     }
 
@@ -1216,9 +1218,9 @@ namespace PdfSharp.Drawing
     {
       get
       {
-        if (peachPuff == null)
-          peachPuff = new XSolidBrush(XColors.PeachPuff, true);
-        return peachPuff;
+        if (XBrushes.peachPuff == null)
+          XBrushes.peachPuff = new XSolidBrush(XColors.PeachPuff, true);
+        return XBrushes.peachPuff;
       }
     }
 
@@ -1227,9 +1229,9 @@ namespace PdfSharp.Drawing
     {
       get
       {
-        if (peru == null)
-          peru = new XSolidBrush(XColors.Peru, true);
-        return peru;
+        if (XBrushes.peru == null)
+          XBrushes.peru = new XSolidBrush(XColors.Peru, true);
+        return XBrushes.peru;
       }
     }
 
@@ -1238,9 +1240,9 @@ namespace PdfSharp.Drawing
     {
       get
       {
-        if (pink == null)
-          pink = new XSolidBrush(XColors.Pink, true);
-        return pink;
+        if (XBrushes.pink == null)
+          XBrushes.pink = new XSolidBrush(XColors.Pink, true);
+        return XBrushes.pink;
       }
     }
 
@@ -1249,9 +1251,9 @@ namespace PdfSharp.Drawing
     {
       get
       {
-        if (plum == null)
-          plum = new XSolidBrush(XColors.Plum, true);
-        return plum;
+        if (XBrushes.plum == null)
+          XBrushes.plum = new XSolidBrush(XColors.Plum, true);
+        return XBrushes.plum;
       }
     }
 
@@ -1260,9 +1262,9 @@ namespace PdfSharp.Drawing
     {
       get
       {
-        if (powderBlue == null)
-          powderBlue = new XSolidBrush(XColors.PowderBlue, true);
-        return powderBlue;
+        if (XBrushes.powderBlue == null)
+          XBrushes.powderBlue = new XSolidBrush(XColors.PowderBlue, true);
+        return XBrushes.powderBlue;
       }
     }
 
@@ -1271,9 +1273,9 @@ namespace PdfSharp.Drawing
     {
       get
       {
-        if (purple == null)
-          purple = new XSolidBrush(XColors.Purple, true);
-        return purple;
+        if (XBrushes.purple == null)
+          XBrushes.purple = new XSolidBrush(XColors.Purple, true);
+        return XBrushes.purple;
       }
     }
 
@@ -1282,9 +1284,9 @@ namespace PdfSharp.Drawing
     {
       get
       {
-        if (red == null)
-          red = new XSolidBrush(XColors.Red, true);
-        return red;
+        if (XBrushes.red == null)
+          XBrushes.red = new XSolidBrush(XColors.Red, true);
+        return XBrushes.red;
       }
     }
 
@@ -1293,9 +1295,9 @@ namespace PdfSharp.Drawing
     {
       get
       {
-        if (rosyBrown == null)
-          rosyBrown = new XSolidBrush(XColors.RosyBrown, true);
-        return rosyBrown;
+        if (XBrushes.rosyBrown == null)
+          XBrushes.rosyBrown = new XSolidBrush(XColors.RosyBrown, true);
+        return XBrushes.rosyBrown;
       }
     }
 
@@ -1304,9 +1306,9 @@ namespace PdfSharp.Drawing
     {
       get
       {
-        if (royalBlue == null)
-          royalBlue = new XSolidBrush(XColors.RoyalBlue, true);
-        return royalBlue;
+        if (XBrushes.royalBlue == null)
+          XBrushes.royalBlue = new XSolidBrush(XColors.RoyalBlue, true);
+        return XBrushes.royalBlue;
       }
     }
 
@@ -1315,9 +1317,9 @@ namespace PdfSharp.Drawing
     {
       get
       {
-        if (saddleBrown == null)
-          saddleBrown = new XSolidBrush(XColors.SaddleBrown, true);
-        return saddleBrown;
+        if (XBrushes.saddleBrown == null)
+          XBrushes.saddleBrown = new XSolidBrush(XColors.SaddleBrown, true);
+        return XBrushes.saddleBrown;
       }
     }
 
@@ -1326,9 +1328,9 @@ namespace PdfSharp.Drawing
     {
       get
       {
-        if (salmon == null)
-          salmon = new XSolidBrush(XColors.Salmon, true);
-        return salmon;
+        if (XBrushes.salmon == null)
+          XBrushes.salmon = new XSolidBrush(XColors.Salmon, true);
+        return XBrushes.salmon;
       }
     }
 
@@ -1337,9 +1339,9 @@ namespace PdfSharp.Drawing
     {
       get
       {
-        if (sandyBrown == null)
-          sandyBrown = new XSolidBrush(XColors.SandyBrown, true);
-        return sandyBrown;
+        if (XBrushes.sandyBrown == null)
+          XBrushes.sandyBrown = new XSolidBrush(XColors.SandyBrown, true);
+        return XBrushes.sandyBrown;
       }
     }
 
@@ -1348,9 +1350,9 @@ namespace PdfSharp.Drawing
     {
       get
       {
-        if (seaGreen == null)
-          seaGreen = new XSolidBrush(XColors.SeaGreen, true);
-        return seaGreen;
+        if (XBrushes.seaGreen == null)
+          XBrushes.seaGreen = new XSolidBrush(XColors.SeaGreen, true);
+        return XBrushes.seaGreen;
       }
     }
 
@@ -1359,9 +1361,9 @@ namespace PdfSharp.Drawing
     {
       get
       {
-        if (seaShell == null)
-          seaShell = new XSolidBrush(XColors.SeaShell, true);
-        return seaShell;
+        if (XBrushes.seaShell == null)
+          XBrushes.seaShell = new XSolidBrush(XColors.SeaShell, true);
+        return XBrushes.seaShell;
       }
     }
 
@@ -1370,9 +1372,9 @@ namespace PdfSharp.Drawing
     {
       get
       {
-        if (sienna == null)
-          sienna = new XSolidBrush(XColors.Sienna, true);
-        return sienna;
+        if (XBrushes.sienna == null)
+          XBrushes.sienna = new XSolidBrush(XColors.Sienna, true);
+        return XBrushes.sienna;
       }
     }
 
@@ -1381,9 +1383,9 @@ namespace PdfSharp.Drawing
     {
       get
       {
-        if (silver == null)
-          silver = new XSolidBrush(XColors.Silver, true);
-        return silver;
+        if (XBrushes.silver == null)
+          XBrushes.silver = new XSolidBrush(XColors.Silver, true);
+        return XBrushes.silver;
       }
     }
 
@@ -1392,9 +1394,9 @@ namespace PdfSharp.Drawing
     {
       get
       {
-        if (skyBlue == null)
-          skyBlue = new XSolidBrush(XColors.SkyBlue, true);
-        return skyBlue;
+        if (XBrushes.skyBlue == null)
+          XBrushes.skyBlue = new XSolidBrush(XColors.SkyBlue, true);
+        return XBrushes.skyBlue;
       }
     }
 
@@ -1403,9 +1405,9 @@ namespace PdfSharp.Drawing
     {
       get
       {
-        if (slateBlue == null)
-          slateBlue = new XSolidBrush(XColors.SlateBlue, true);
-        return slateBlue;
+        if (XBrushes.slateBlue == null)
+          XBrushes.slateBlue = new XSolidBrush(XColors.SlateBlue, true);
+        return XBrushes.slateBlue;
       }
     }
 
@@ -1414,9 +1416,9 @@ namespace PdfSharp.Drawing
     {
       get
       {
-        if (slateGray == null)
-          slateGray = new XSolidBrush(XColors.SlateGray, true);
-        return slateGray;
+        if (XBrushes.slateGray == null)
+          XBrushes.slateGray = new XSolidBrush(XColors.SlateGray, true);
+        return XBrushes.slateGray;
       }
     }
 
@@ -1425,9 +1427,9 @@ namespace PdfSharp.Drawing
     {
       get
       {
-        if (snow == null)
-          snow = new XSolidBrush(XColors.Snow, true);
-        return snow;
+        if (XBrushes.snow == null)
+          XBrushes.snow = new XSolidBrush(XColors.Snow, true);
+        return XBrushes.snow;
       }
     }
 
@@ -1436,9 +1438,9 @@ namespace PdfSharp.Drawing
     {
       get
       {
-        if (springGreen == null)
-          springGreen = new XSolidBrush(XColors.SpringGreen, true);
-        return springGreen;
+        if (XBrushes.springGreen == null)
+          XBrushes.springGreen = new XSolidBrush(XColors.SpringGreen, true);
+        return XBrushes.springGreen;
       }
     }
 
@@ -1447,9 +1449,9 @@ namespace PdfSharp.Drawing
     {
       get
       {
-        if (steelBlue == null)
-          steelBlue = new XSolidBrush(XColors.SteelBlue, true);
-        return steelBlue;
+        if (XBrushes.steelBlue == null)
+          XBrushes.steelBlue = new XSolidBrush(XColors.SteelBlue, true);
+        return XBrushes.steelBlue;
       }
     }
 
@@ -1458,9 +1460,9 @@ namespace PdfSharp.Drawing
     {
       get
       {
-        if (tan == null)
-          tan = new XSolidBrush(XColors.Tan, true);
-        return tan;
+        if (XBrushes.tan == null)
+          XBrushes.tan = new XSolidBrush(XColors.Tan, true);
+        return XBrushes.tan;
       }
     }
 
@@ -1469,9 +1471,9 @@ namespace PdfSharp.Drawing
     {
       get
       {
-        if (teal == null)
-          teal = new XSolidBrush(XColors.Teal, true);
-        return teal;
+        if (XBrushes.teal == null)
+          XBrushes.teal = new XSolidBrush(XColors.Teal, true);
+        return XBrushes.teal;
       }
     }
 
@@ -1480,9 +1482,9 @@ namespace PdfSharp.Drawing
     {
       get
       {
-        if (thistle == null)
-          thistle = new XSolidBrush(XColors.Thistle, true);
-        return thistle;
+        if (XBrushes.thistle == null)
+          XBrushes.thistle = new XSolidBrush(XColors.Thistle, true);
+        return XBrushes.thistle;
       }
     }
 
@@ -1491,9 +1493,9 @@ namespace PdfSharp.Drawing
     {
       get
       {
-        if (tomato == null)
-          tomato = new XSolidBrush(XColors.Tomato, true);
-        return tomato;
+        if (XBrushes.tomato == null)
+          XBrushes.tomato = new XSolidBrush(XColors.Tomato, true);
+        return XBrushes.tomato;
       }
     }
 
@@ -1502,9 +1504,9 @@ namespace PdfSharp.Drawing
     {
       get
       {
-        if (transparent == null)
-          transparent = new XSolidBrush(XColors.Transparent, true);
-        return transparent;
+        if (XBrushes.transparent == null)
+          XBrushes.transparent = new XSolidBrush(XColors.Transparent, true);
+        return XBrushes.transparent;
       }
     }
 
@@ -1513,9 +1515,9 @@ namespace PdfSharp.Drawing
     {
       get
       {
-        if (turquoise == null)
-          turquoise = new XSolidBrush(XColors.Turquoise, true);
-        return turquoise;
+        if (XBrushes.turquoise == null)
+          XBrushes.turquoise = new XSolidBrush(XColors.Turquoise, true);
+        return XBrushes.turquoise;
       }
     }
 
@@ -1524,9 +1526,9 @@ namespace PdfSharp.Drawing
     {
       get
       {
-        if (violet == null)
-          violet = new XSolidBrush(XColors.Violet, true);
-        return violet;
+        if (XBrushes.violet == null)
+          XBrushes.violet = new XSolidBrush(XColors.Violet, true);
+        return XBrushes.violet;
       }
     }
 
@@ -1535,9 +1537,9 @@ namespace PdfSharp.Drawing
     {
       get
       {
-        if (wheat == null)
-          wheat = new XSolidBrush(XColors.Wheat, true);
-        return wheat;
+        if (XBrushes.wheat == null)
+          XBrushes.wheat = new XSolidBrush(XColors.Wheat, true);
+        return XBrushes.wheat;
       }
     }
 
@@ -1546,9 +1548,9 @@ namespace PdfSharp.Drawing
     {
       get
       {
-        if (white == null)
-          white = new XSolidBrush(XColors.White, true);
-        return white;
+        if (XBrushes.white == null)
+          XBrushes.white = new XSolidBrush(XColors.White, true);
+        return XBrushes.white;
       }
     }
 
@@ -1557,9 +1559,9 @@ namespace PdfSharp.Drawing
     {
       get
       {
-        if (whiteSmoke == null)
-          whiteSmoke = new XSolidBrush(XColors.WhiteSmoke, true);
-        return whiteSmoke;
+        if (XBrushes.whiteSmoke == null)
+          XBrushes.whiteSmoke = new XSolidBrush(XColors.WhiteSmoke, true);
+        return XBrushes.whiteSmoke;
       }
     }
 
@@ -1568,9 +1570,9 @@ namespace PdfSharp.Drawing
     {
       get
       {
-        if (yellow == null)
-          yellow = new XSolidBrush(XColors.Yellow, true);
-        return yellow;
+        if (XBrushes.yellow == null)
+          XBrushes.yellow = new XSolidBrush(XColors.Yellow, true);
+        return XBrushes.yellow;
       }
     }
 
@@ -1579,9 +1581,9 @@ namespace PdfSharp.Drawing
     {
       get
       {
-        if (yellowGreen == null)
-          yellowGreen = new XSolidBrush(XColors.YellowGreen, true);
-        return yellowGreen;
+        if (XBrushes.yellowGreen == null)
+          XBrushes.yellowGreen = new XSolidBrush(XColors.YellowGreen, true);
+        return XBrushes.yellowGreen;
       }
     }
 

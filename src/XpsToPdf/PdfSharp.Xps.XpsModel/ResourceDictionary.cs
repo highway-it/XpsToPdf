@@ -1,4 +1,6 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using System.Text;
 
 namespace PdfSharp.Xps.XpsModel
 {
@@ -18,8 +20,8 @@ namespace PdfSharp.Xps.XpsModel
     /// </summary>
     public ResourceDictionary ResourceParent
     {
-      get => parentResourceDictionary;
-      set => parentResourceDictionary = value;
+      get { return this.parentResourceDictionary; }
+      set { this.parentResourceDictionary = value; }
     }
     ResourceDictionary parentResourceDictionary;
 
@@ -31,7 +33,7 @@ namespace PdfSharp.Xps.XpsModel
       get 
       {
         XpsElement element;
-        elements.TryGetValue(key, out element);
+        this.elements.TryGetValue(key, out element);
         return element; 
       }
     }

@@ -28,6 +28,11 @@
 #endregion
 
 using System;
+using System.Diagnostics;
+using System.Runtime.InteropServices;
+using PdfSharp.Drawing;
+using PdfSharp.Internal;
+
 using Fixed = System.Int32;
 using FWord = System.Int16;
 using UFWord = System.UInt16;
@@ -46,8 +51,8 @@ namespace PdfSharp.Fonts.OpenType
       int length = fontTable.DirectoryEntry.Length;
       if (length > 0)
       {
-        table = new byte[length];
-        Buffer.BlockCopy(fontTable.FontData.Data, fontTable.DirectoryEntry.Offset, table, 0, length);
+        this.table = new byte[length];
+        Buffer.BlockCopy(fontTable.FontData.Data, fontTable.DirectoryEntry.Offset, this.table, 0, length);
       }
     }
 
@@ -60,7 +65,7 @@ namespace PdfSharp.Fonts.OpenType
     protected override OpenTypeFontTable DeepCopy()
     {
       GenericFontTable fontTable = (GenericFontTable)base.DeepCopy();
-      fontTable.table = (byte[])table.Clone();
+      fontTable.table = (byte[])this.table.Clone();
       return fontTable;
     }
 

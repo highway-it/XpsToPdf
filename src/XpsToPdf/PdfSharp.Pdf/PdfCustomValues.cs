@@ -28,6 +28,8 @@
 #endregion
 
 using System;
+using System.Diagnostics;
+using System.Collections;
 
 namespace PdfSharp.Pdf
 {
@@ -55,7 +57,10 @@ namespace PdfSharp.Pdf
     /// </summary>
     public PdfCustomValueCompressionMode CompressionMode
     {
-      set => throw new NotImplementedException();
+      set
+      {
+        throw new NotImplementedException();
+      }
     }
 
     /// <summary>

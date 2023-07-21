@@ -1,4 +1,10 @@
-﻿using System.Diagnostics;
+﻿using System;
+using System.Diagnostics;
+using System.Collections.Generic;
+using System.Globalization;
+using System.Text;
+using System.Xml;
+using System.IO;
 using PdfSharp.Xps.XpsModel;
 
 namespace PdfSharp.Xps.Parsing
@@ -10,60 +16,60 @@ namespace PdfSharp.Xps.Parsing
     /// </summary>
     RadialGradientBrush ParseRadialGradientBrush()
     {
-      Debug.Assert(reader.Name == "RadialGradientBrush");
-      bool isEmptyElement = reader.IsEmptyElement;
+      Debug.Assert(this.reader.Name == "RadialGradientBrush");
+      bool isEmptyElement = this.reader.IsEmptyElement;
       RadialGradientBrush brush = new RadialGradientBrush();
       while (MoveToNextAttribute())
       {
-        switch (reader.Name)
+        switch (this.reader.Name)
         {
           case "Opacity":
-            brush.Opacity = ParseDouble(reader.Value);
+            brush.Opacity = ParseDouble(this.reader.Value);
             break;
 
           case "Transform":
-            brush.Transform = ParseMatrixTransform(reader.Value);
+            brush.Transform = ParseMatrixTransform(this.reader.Value);
             break;
 
           case "ColorInterpolationMode":
-            brush.ColorInterpolationMode= ParseEnum<ClrIntMode>(reader.Value);
+            brush.ColorInterpolationMode= ParseEnum<ClrIntMode>(this.reader.Value);
             break;
 
           case "SpreadMethod":
-            brush.SpreadMethod = ParseEnum<SpreadMethod>(reader.Value);
+            brush.SpreadMethod = ParseEnum<SpreadMethod>(this.reader.Value);
             break;
 
           case "MappingMode ":
-            brush.MappingMode = ParseEnum<MappingMode>(reader.Value);
+            brush.MappingMode = ParseEnum<MappingMode>(this.reader.Value);
             break;
 
           case "Center":
-            brush.Center = Point.Parse(reader.Value);
+            brush.Center = Point.Parse(this.reader.Value);
             break;
 
           case "GradientOrigin":
-            brush.GradientOrigin = Point.Parse(reader.Value);
+            brush.GradientOrigin = Point.Parse(this.reader.Value);
             break;
 
           case "RadiusX":
-            brush.RadiusX =ParseDouble(reader.Value);
+            brush.RadiusX =ParseDouble(this.reader.Value);
             break;
 
           case "RadiusY":
-            brush.RadiusY = ParseDouble(reader.Value);
+            brush.RadiusY = ParseDouble(this.reader.Value);
             break;
 
           case "x:Key":
-            brush.Key = reader.Value;
+            brush.Key = this.reader.Value;
             break;
         }
       }
       if (!isEmptyElement)
       {
         MoveToNextElement();
-        while (reader.IsStartElement())
+        while (this.reader.IsStartElement())
         {
-          switch (reader.Name)
+          switch (this.reader.Name)
           {
             case "RadialGradientBrush.Transform":
               MoveToNextElement();

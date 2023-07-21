@@ -27,8 +27,13 @@
 // DEALINGS IN THE SOFTWARE.
 #endregion
 
+using System;
 using System.Diagnostics;
 using System.Globalization;
+using System.Collections;
+using System.Text;
+using System.IO;
+using PdfSharp.Internal;
 using PdfSharp.Pdf.IO;
 
 namespace PdfSharp.Pdf
@@ -67,9 +72,11 @@ namespace PdfSharp.Pdf
     /// <summary>
     /// Gets the value as integer.
     /// </summary>
-    public int Value => value;
-
-    //set {this.value = value;}
+    public int Value
+    {
+      get { return this.value; }
+      //set {this.value = value;}
+    }
     int value;
 
     /// <summary>
@@ -77,7 +84,7 @@ namespace PdfSharp.Pdf
     /// </summary>
     public override string ToString()
     {
-      return value.ToString(CultureInfo.InvariantCulture);
+      return this.value.ToString();
     }
 
     /// <summary>
@@ -86,7 +93,7 @@ namespace PdfSharp.Pdf
     internal override void WriteObject(PdfWriter writer)
     {
       writer.WriteBeginObject(this);
-      writer.Write(value);
+      writer.Write(this.value);
       writer.WriteEndObject();
     }
   }

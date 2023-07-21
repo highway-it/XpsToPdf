@@ -28,7 +28,12 @@
 #endregion
 
 using System;
+using System.Diagnostics;
 using System.Collections.Generic;
+using System.Globalization;
+using System.ComponentModel;
+using System.IO;
+using System.Runtime.InteropServices;
 #if GDI
 using System.Drawing;
 using System.Drawing.Text;
@@ -36,6 +41,8 @@ using System.Drawing.Text;
 #if WPF
 using System.Windows.Media;
 #endif
+using PdfSharp.Internal;
+using PdfSharp.Fonts.OpenType;
 
 namespace PdfSharp.Drawing
 {
@@ -101,7 +108,10 @@ namespace PdfSharp.Drawing
     /// <summary>
     /// Gets the global font collection.
     /// </summary>
-    public static XPrivateFontCollection Global => s_global;
+    public static XPrivateFontCollection Global
+    {
+      get { return s_global; }
+    }
 
     /// <summary>
     /// Sets a new global font collection and returns the previous one, or null if no previous one exists.
@@ -218,16 +228,16 @@ namespace PdfSharp.Drawing
       if (String.IsNullOrEmpty(key))
         throw new ArgumentException("familyName has invalid format.");
 
-      if (fontFamilies.ContainsKey(key))
+      if (this.fontFamilies.ContainsKey(key))
         throw new ArgumentException("An entry with the specified family name already exists.");
 
 #if !SILVERLIGHT
-      FontFamily fontFamily = new FontFamily(baseUri, familyName);
+      System.Windows.Media.FontFamily fontFamily = new System.Windows.Media.FontFamily(baseUri, familyName);
 #else
       System.Windows.Media.FontFamily fontFamily = new System.Windows.Media.FontFamily(familyName);
 #endif
 
-      // Check whether font data really exists
+      // Check whether font data realy exists
 #if DEBUG && !SILVERLIGHT
       ICollection<Typeface> list = fontFamily.GetTypefaces();
       foreach (Typeface typeFace in list)
@@ -239,7 +249,7 @@ namespace PdfSharp.Drawing
       }
 #endif
 
-      fontFamilies.Add(key, fontFamily);
+      this.fontFamilies.Add(key, fontFamily);
     }
 #endif
 
@@ -267,7 +277,7 @@ namespace PdfSharp.Drawing
 #endif
 
 #if WPF
-    internal static Typeface TryFindTypeface(string name, XFontStyle style, out FontFamily fontFamily)
+    internal static Typeface TryFindTypeface(string name, XFontStyle style, out System.Windows.Media.FontFamily fontFamily)
     {
       if (s_global.fontFamilies.TryGetValue(name, out fontFamily))
       {
@@ -323,7 +333,7 @@ namespace PdfSharp.Drawing
     //List<XGlyphTypeface> privateFonts = new List<XGlyphTypeface>();
 #endif
 #if WPF
-    readonly Dictionary<string, FontFamily> fontFamilies = new Dictionary<string, FontFamily>(StringComparer.InvariantCultureIgnoreCase);
+    readonly Dictionary<string, System.Windows.Media.FontFamily> fontFamilies = new Dictionary<string, System.Windows.Media.FontFamily>(StringComparer.InvariantCultureIgnoreCase);
 #endif
   }
 }

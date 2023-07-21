@@ -27,6 +27,11 @@
 // DEALINGS IN THE SOFTWARE.
 #endregion
 
+using System;
+using System.Diagnostics;
+using System.Collections;
+using PdfSharp.Pdf.Internal;
+
 namespace PdfSharp.Pdf.AcroForms
 {
   /// <summary>
@@ -54,13 +59,13 @@ namespace PdfSharp.Pdf.AcroForms
     {
       get
       {
-        string value = Elements.GetString(PdfAcroField.Keys.V);
+        string value = Elements.GetString(Keys.V);
         return IndexInOptArray(value);
       }
       set
       {
         string key = ValueInOptArray(value);
-        Elements.SetString(PdfAcroField.Keys.V, key);
+        Elements.SetString(Keys.V, key);
       }
     }
 
@@ -76,9 +81,9 @@ namespace PdfSharp.Pdf.AcroForms
       {
         get
         {
-          if (meta == null)
-            meta = CreateMeta(typeof(Keys));
-          return meta;
+          if (Keys.meta == null)
+            Keys.meta = CreateMeta(typeof(Keys));
+          return Keys.meta;
         }
       }
       static DictionaryMeta meta;
@@ -87,6 +92,9 @@ namespace PdfSharp.Pdf.AcroForms
     /// <summary>
     /// Gets the KeysMeta of this dictionary type.
     /// </summary>
-    internal override DictionaryMeta Meta => Keys.Meta;
+    internal override DictionaryMeta Meta
+    {
+      get { return Keys.Meta; }
+    }
   }
 }

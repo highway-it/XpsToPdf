@@ -1,4 +1,13 @@
-﻿using System.Diagnostics;
+﻿using System;
+using System.Diagnostics;
+using System.Collections.Generic;
+using System.Text;
+using PdfSharp.Xps.XpsModel;
+using PdfSharp.Pdf;
+using PdfSharp.Pdf.Advanced;
+using PdfSharp.Pdf.Internal;
+using PdfSharp.Drawing;
+using PdfSharp.Drawing.Pdf;
 
 namespace PdfSharp.Xps
 {
@@ -44,11 +53,11 @@ namespace PdfSharp.Xps
     public static bool FlattenArcSegments
     {
 #if DEBUG
-      get { return flattenArcSegments; }
+      get { return DevHelper.flattenArcSegments; }
 #else
       get { return false; }
 #endif
-      set { flattenArcSegments = value; }
+      set { DevHelper.flattenArcSegments = value; }
     }
     static bool flattenArcSegments = false;
 
@@ -58,11 +67,11 @@ namespace PdfSharp.Xps
     public static bool FlattenPolyQuadraticBezierSegment
     {
 #if DEBUG
-      get { return flattenPolyQuadraticBezierSegment; }
+      get { return DevHelper.flattenPolyQuadraticBezierSegment; }
 #else
       get { return true; }
 #endif
-      set { flattenPolyQuadraticBezierSegment = value; }
+      set { DevHelper.flattenPolyQuadraticBezierSegment = value; }
     }
     static bool flattenPolyQuadraticBezierSegment = false;
   }

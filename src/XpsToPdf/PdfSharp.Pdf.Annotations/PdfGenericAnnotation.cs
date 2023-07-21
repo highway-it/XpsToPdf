@@ -27,6 +27,16 @@
 // DEALINGS IN THE SOFTWARE.
 #endregion
 
+using System;
+using System.Globalization;
+using System.Diagnostics;
+using System.Collections;
+using PdfSharp.Internal;
+using PdfSharp.Drawing;
+using PdfSharp.Pdf;
+using PdfSharp.Pdf.IO;
+using PdfSharp.Pdf.Internal;
+
 namespace PdfSharp.Pdf.Annotations
 {
   /// <summary>
@@ -50,9 +60,9 @@ namespace PdfSharp.Pdf.Annotations
       {
         get
         {
-          if (meta == null)
-            meta = CreateMeta(typeof(Keys));
-          return meta;
+          if (Keys.meta == null)
+            Keys.meta = CreateMeta(typeof(Keys));
+          return Keys.meta;
         }
       }
       static DictionaryMeta meta;
@@ -61,6 +71,9 @@ namespace PdfSharp.Pdf.Annotations
     /// <summary>
     /// Gets the KeysMeta of this dictionary type.
     /// </summary>
-    internal override DictionaryMeta Meta => Keys.Meta;
+    internal override DictionaryMeta Meta
+    {
+      get { return Keys.Meta; }
+    }
   }
 }

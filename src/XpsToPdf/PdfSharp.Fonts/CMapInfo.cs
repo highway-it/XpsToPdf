@@ -29,6 +29,8 @@
 
 using System;
 using System.Diagnostics;
+using System.Text;
+using System.Collections;
 using System.Collections.Generic;
 using PdfSharp.Fonts.OpenType;
 using PdfSharp.Pdf.Internal;
@@ -54,7 +56,7 @@ namespace PdfSharp.Fonts
     {
       if (text != null)
       {
-        bool symbol = descriptor.fontData.cmap.symbol;
+        bool symbol = this.descriptor.fontData.cmap.symbol;
         int length = text.Length;
         for (int idx = 0; idx < length; idx++)
         {
@@ -62,7 +64,7 @@ namespace PdfSharp.Fonts
           if (!CharacterToGlyphIndex.ContainsKey(ch))
           {
             int glyphIndex = 0;
-            if (descriptor != null)
+            if (this.descriptor != null)
             {
               if (symbol)
               {
@@ -76,8 +78,8 @@ namespace PdfSharp.Fonts
             CharacterToGlyphIndex.Add(ch, glyphIndex);
             //GlyphIndices.Add(glyphIndex, null);
             GlyphIndices[glyphIndex] = null;
-            MinChar = (char)Math.Min(MinChar, ch);
-            MaxChar = (char)Math.Max(MaxChar, ch);
+            this.MinChar = (char)Math.Min(this.MinChar, ch);
+            this.MaxChar = (char)Math.Max(this.MaxChar, ch);
           }
         }
       }

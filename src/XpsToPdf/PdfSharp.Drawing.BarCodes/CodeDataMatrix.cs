@@ -29,11 +29,15 @@
 #endregion
 
 using System;
+using System.Diagnostics;
 #if GDI
 using System.Drawing;
 #endif
 #if WPF
+using System.Windows;
+using System.Windows.Media;
 #endif
+using PdfSharp.Drawing;
 
 namespace PdfSharp.Drawing.BarCodes
 {
@@ -156,8 +160,8 @@ namespace PdfSharp.Drawing.BarCodes
     /// </summary>
     public int QuietZone
     {
-      get => quietZone;
-      set => quietZone = value;
+      get { return this.quietZone; }
+      set { this.quietZone = value; }
     }
     int quietZone;
 
@@ -168,7 +172,7 @@ namespace PdfSharp.Drawing.BarCodes
     {
       XGraphicsState state = gfx.Save();
 
-      switch (direction)
+      switch (this.direction)
       {
         case CodeDirection.RightToLeft:
           gfx.RotateAtTransform(180, position);
@@ -183,14 +187,14 @@ namespace PdfSharp.Drawing.BarCodes
           break;
       }
 
-      XPoint pos = position + CalcDistance(anchor, AnchorType.TopLeft, size);
+      XPoint pos = position + CodeBase.CalcDistance(this.anchor, AnchorType.TopLeft, this.size);
 
-      if (matrixImage == null)
-        matrixImage = DataMatrixImage.GenerateMatrixImage(Text, Encoding, Rows, Columns);
+      if (this.matrixImage == null)
+        this.matrixImage = DataMatrixImage.GenerateMatrixImage(Text, Encoding, Rows, Columns);
 
       if (QuietZone > 0)
       {
-        XSize sizeWithZone = new XSize(size.width, size.height);
+        XSize sizeWithZone = new XSize(this.size.width, this.size.height);
         sizeWithZone.width = sizeWithZone.width / (Columns + 2 * QuietZone) * Columns;
         sizeWithZone.height = sizeWithZone.height / (Rows + 2 * QuietZone) * Rows;
 
@@ -202,7 +206,7 @@ namespace PdfSharp.Drawing.BarCodes
         gfx.DrawImage(matrixImage, posWithZone.x, posWithZone.y, sizeWithZone.width, sizeWithZone.height);
       }
       else
-        gfx.DrawImage(matrixImage, pos.x, pos.y, size.width, size.height);
+        gfx.DrawImage(matrixImage, pos.x, pos.y, this.size.width, this.size.height);
 
       gfx.Restore(state);
     }

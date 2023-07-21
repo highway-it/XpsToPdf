@@ -1,4 +1,10 @@
-﻿using System.Diagnostics;
+﻿using System;
+using System.Diagnostics;
+using System.Collections.Generic;
+using System.Globalization;
+using System.Text;
+using System.Xml;
+using System.IO;
 using PdfSharp.Xps.XpsModel;
 
 namespace PdfSharp.Xps.Parsing
@@ -10,36 +16,36 @@ namespace PdfSharp.Xps.Parsing
     /// </summary>
     PathFigure ParsePathFigure()
     {
-      Debug.Assert(reader.Name == "PathFigure");
-      bool isEmptyElement = reader.IsEmptyElement;
+      Debug.Assert(this.reader.Name == "PathFigure");
+      bool isEmptyElement = this.reader.IsEmptyElement;
       PathFigure fig = new PathFigure();
       while (MoveToNextAttribute())
       {
-        switch (reader.Name)
+        switch (this.reader.Name)
         {
           case "IsClosed":
-            fig.IsClosed = ParseBool(reader.Value);
+            fig.IsClosed = ParseBool(this.reader.Value);
             break;
 
           case "StartPoint":
-            fig.StartPoint = Point.Parse(reader.Value);
+            fig.StartPoint = Point.Parse(this.reader.Value);
             break;
 
           case "IsFilled":
-            fig.IsFilled = ParseBool(reader.Value);
+            fig.IsFilled = ParseBool(this.reader.Value);
             break;
 
           default:
-            UnexpectedAttribute(reader.Name);
+            UnexpectedAttribute(this.reader.Name);
             break;
         }
       }
       if (!isEmptyElement)
       {
         MoveToNextElement();
-        while (reader.IsStartElement())
+        while (this.reader.IsStartElement())
         {
-          switch (reader.Name)
+          switch (this.reader.Name)
           {
             case "PolyLineSegment":
               fig.Segments.Add(ParsePolyLineSegment());

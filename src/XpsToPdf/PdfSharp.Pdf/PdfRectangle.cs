@@ -29,12 +29,18 @@
 
 using System;
 using System.Diagnostics;
+using System.Globalization;
+using System.Collections;
+using System.Text;
 #if GDI
 using System.Drawing;
 #endif
 #if WPF
+using System.Windows.Media;
 #endif
+using PdfSharp.Internal;
 using PdfSharp.Drawing;
+using PdfSharp.Pdf;
 using PdfSharp.Pdf.Advanced;
 using PdfSharp.Pdf.IO;
 using PdfSharp.Pdf.Internal;
@@ -91,10 +97,10 @@ namespace PdfSharp.Pdf
     /// </summary>
     public PdfRectangle(XPoint pt1, XPoint pt2)
     {
-      x1 = pt1.X;
-      y1 = pt1.Y;
-      x2 = pt2.X;
-      y2 = pt2.Y;
+      this.x1 = pt1.X;
+      this.y1 = pt1.Y;
+      this.x2 = pt2.X;
+      this.y2 = pt2.Y;
     }
 
 #if GDI
@@ -115,10 +121,10 @@ namespace PdfSharp.Pdf
     /// </summary>
     public PdfRectangle(XPoint pt, XSize size)
     {
-      x1 = pt.X;
-      y1 = pt.Y;
-      x2 = pt.X + size.Width;
-      y2 = pt.Y + size.Height;
+      this.x1 = pt.X;
+      this.y1 = pt.Y;
+      this.x2 = pt.X + size.Width;
+      this.y2 = pt.Y + size.Height;
     }
 
     /// <summary>
@@ -126,10 +132,10 @@ namespace PdfSharp.Pdf
     /// </summary>
     public PdfRectangle(XRect rect)
     {
-      x1 = rect.x;
-      y1 = rect.y;
-      x2 = rect.x + rect.width;
-      y2 = rect.y + rect.height;
+      this.x1 = rect.x;
+      this.y1 = rect.y;
+      this.x2 = rect.x + rect.width;
+      this.y2 = rect.y + rect.height;
     }
 
     /// <summary>
@@ -147,10 +153,10 @@ namespace PdfSharp.Pdf
       if (array == null)
         throw new InvalidOperationException(PSSR.UnexpectedTokenInPdfFile);
 
-      x1 = array.Elements.GetReal(0);
-      y1 = array.Elements.GetReal(1);
-      x2 = array.Elements.GetReal(2);
-      y2 = array.Elements.GetReal(3);
+      this.x1 = array.Elements.GetReal(0);
+      this.y1 = array.Elements.GetReal(1);
+      this.x2 = array.Elements.GetReal(2);
+      this.y2 = array.Elements.GetReal(3);
     }
 
     /// <summary>
@@ -173,7 +179,10 @@ namespace PdfSharp.Pdf
     /// <summary>
     /// Tests whether all coordinate are zero.
     /// </summary>
-    public bool IsEmpty => x1 == 0 && y1 == 0 && x2 == 0 && y2 == 0;
+    public bool IsEmpty
+    {
+      get { return this.x1 == 0 && this.y1 == 0 && this.x2 == 0 && this.y2 == 0; }
+    }
 
     /// <summary>
     /// Tests whether the specified object is a PdfRectangle and has equal coordinates.
@@ -183,7 +192,7 @@ namespace PdfSharp.Pdf
       if (obj is PdfRectangle)
       {
         PdfRectangle rect = (PdfRectangle)obj;
-        return rect.x1 == x1 && rect.y1 == y1 && rect.x2 == x2 && rect.y2 == y2;
+        return rect.x1 == this.x1 && rect.y1 == this.y1 && rect.x2 == this.x2 && rect.y2 == this.y2;
       }
       return false;
     }
@@ -194,10 +203,10 @@ namespace PdfSharp.Pdf
     public override int GetHashCode()
     {
       // This code is from System.Drawing...
-      return (int)(((((uint)x1) ^ ((((uint)y1) << 13) |
-        (((uint)y1) >> 0x13))) ^ ((((uint)x2) << 0x1a) |
-        (((uint)x2) >> 6))) ^ ((((uint)y2) << 7) |
-        (((uint)y2) >> 0x19)));
+      return (int)(((((uint)this.x1) ^ ((((uint)this.y1) << 13) |
+        (((uint)this.y1) >> 0x13))) ^ ((((uint)this.x2) << 0x1a) |
+        (((uint)this.x2) >> 6))) ^ ((((uint)this.y2) << 7) |
+        (((uint)this.y2) >> 0x19)));
     }
 
     /// <summary>
@@ -227,50 +236,70 @@ namespace PdfSharp.Pdf
     /// <summary>
     /// Gets or sets the x-coordinate of the first corner of this PdfRectangle.
     /// </summary>
-    public double X1 => x1;
-
+    public double X1
+    {
+      get { return this.x1; }
+    }
     double x1;
 
     /// <summary>
     /// Gets or sets the y-coordinate of the first corner of this PdfRectangle.
     /// </summary>
-    public double Y1 => y1;
-
+    public double Y1
+    {
+      get { return this.y1; }
+    }
     double y1;
 
     /// <summary>
     /// Gets or sets the x-coordinate of the second corner of this PdfRectangle.
     /// </summary>
-    public double X2 => x2;
-
+    public double X2
+    {
+      get { return this.x2; }
+    }
     double x2;
 
     /// <summary>
     /// Gets or sets the y-coordinate of the second corner of this PdfRectangle.
     /// </summary>
-    public double Y2 => y2;
-
+    public double Y2
+    {
+      get { return this.y2; }
+    }
     double y2;
 
     /// <summary>
     /// Gets X2 - X1.
     /// </summary>
-    public double Width => x2 - x1;
+    public double Width
+    {
+      get { return this.x2 - this.x1; }
+    }
 
     /// <summary>
     /// Gets Y2 - Y1.
     /// </summary>
-    public double Height => y2 - y1;
+    public double Height
+    {
+      get { return this.y2 - this.y1; }
+    }
 
     /// <summary>
     /// Gets or sets the coordinates of the first point of this PdfRectangle.
     /// </summary>
-    public XPoint Location => new XPoint(x1, y1);
+    public XPoint Location
+    {
+      get { return new XPoint(this.x1, this.y1); }
+    }
 
     /// <summary>
     /// Gets or sets the size of this PdfRectangle.
     /// </summary>
-    public XSize Size => new XSize(x2 - x1, y2 - y1);
+    public XSize Size
+    {
+      get { return new XSize(this.x2 - this.x1, this.y2 - this.y1); }
+    }
 
 #if GDI
     /// <summary>
@@ -296,7 +325,7 @@ namespace PdfSharp.Pdf
     public bool Contains(double x, double y)
     {
       // Treat rectangle inclusive/inclusive.
-      return x1 <= x && x <= x2 && y1 <= y && y <= y2;
+      return this.x1 <= x && x <= this.x2 && this.y1 <= y && y <= this.y2;
     }
 
 #if GDI
@@ -315,8 +344,8 @@ namespace PdfSharp.Pdf
     /// </summary>
     public bool Contains(XRect rect)
     {
-      return x1 <= rect.X && (rect.X + rect.Width) <= x2 &&
-        y1 <= rect.Y && (rect.Y + rect.Height) <= y2;
+      return this.x1 <= rect.X && (rect.X + rect.Width) <= this.x2 &&
+        this.y1 <= rect.Y && (rect.Y + rect.Height) <= this.y2;
     }
 
     /// <summary>
@@ -324,8 +353,8 @@ namespace PdfSharp.Pdf
     /// </summary>
     public bool Contains(PdfRectangle rect)
     {
-      return x1 <= rect.x1 && rect.x2 <= x2 &&
-        y1 <= rect.y1 && rect.y2 <= y2;
+      return this.x1 <= rect.x1 && rect.x2 <= this.x2 &&
+        this.y1 <= rect.y1 && rect.y2 <= this.y2;
     }
 
     /// <summary>
@@ -333,15 +362,15 @@ namespace PdfSharp.Pdf
     /// </summary>
     public XRect ToXRect()
     {
-      return new XRect(x1, y1, Width, Height);
+      return new XRect(this.x1, this.y1, this.Width, this.Height);
     }
 
     /// <summary>
-    /// Returns the rectangle as a string in the form «[x1 y1 x2 y2]».
+    /// Returns the rectangle as a string in the form Â«[x1 y1 x2 y2]Â».
     /// </summary>
     public override string ToString()
     {
-      return PdfEncoders.Format("[{0:0.###} {1:0.###} {2:0.###} {3:0.###}]", x1, y1, x2, y2);
+      return PdfEncoders.Format("[{0:0.###} {1:0.###} {2:0.###} {3:0.###}]", this.x1, this.y1, this.x2, this.y2);
     }
 
     /// <summary>

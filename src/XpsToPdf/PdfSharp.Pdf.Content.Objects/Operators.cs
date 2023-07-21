@@ -27,6 +27,8 @@
 // DEALINGS IN THE SOFTWARE.
 #endregion
 
+using System;
+using System.Collections;
 using System.Diagnostics;
 using System.Collections.Generic;
 
@@ -103,7 +105,7 @@ namespace PdfSharp.Pdf.Content.Objects
     static public COperator OperatorFromName(string name)
     {
       COperator op = null;
-      OpCode opcode = stringToOpCode[name] as OpCode;
+      OpCode opcode = OpCodes.stringToOpCode[name] as OpCode;
       if (opcode != null)
       {
         op = new COperator(opcode);

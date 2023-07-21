@@ -27,6 +27,9 @@
 // DEALINGS IN THE SOFTWARE.
 #endregion
 
+using System;
+using System.Diagnostics;
+
 namespace PdfSharp.Fonts.OpenType
 {
   //enum TableTag

@@ -1,10 +1,23 @@
-﻿namespace PdfSharp.Xps.XpsModel
+﻿using System;
+using System.Collections.Generic;
+using System.Text;
+
+namespace PdfSharp.Xps.XpsModel
 {
   /// <summary>
   /// Fills a region with an image.
   /// </summary>
   class ImageBrush : Brush
   {
+    /// <summary>
+    /// Initializes a new instance of the <see cref="ImageBrush"/> class.
+    /// </summary>
+    public ImageBrush()
+    {
+      Opacity = 1;
+      Transform = new MatrixTransform();
+    }
+
     /// <summary>
     /// Defines the uniform transparency of the brush fill. Values range from 0 (fully transparent)
     /// to 1 (fully opaque), inclusive. Values outside of this range are invalid.
@@ -66,5 +79,7 @@
     /// parts in the package [M2.1]. 
     /// </summary>
     public string ImageSource { get; set; }
+
+    public string Describe() => $"ImageBrush:\t{ImageSource}";
   }
 }

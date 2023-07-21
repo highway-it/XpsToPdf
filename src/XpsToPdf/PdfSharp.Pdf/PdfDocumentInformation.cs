@@ -28,6 +28,12 @@
 #endregion
 
 using System;
+using System.Collections;
+using System.Globalization;
+using System.Text;
+using System.IO;
+using PdfSharp.Internal;
+using PdfSharp;
 
 namespace PdfSharp.Pdf
 {
@@ -55,8 +61,8 @@ namespace PdfSharp.Pdf
     /// </summary>
     public string Title
     {
-      get => Elements.GetString(Keys.Title);
-      set => Elements.SetString(Keys.Title, value);
+      get { return Elements.GetString(Keys.Title); }
+      set { Elements.SetString(Keys.Title, value); }
     }
 
     /// <summary>
@@ -64,8 +70,8 @@ namespace PdfSharp.Pdf
     /// </summary>
     public string Author
     {
-      get => Elements.GetString(Keys.Author);
-      set => Elements.SetString(Keys.Author, value);
+      get { return Elements.GetString(Keys.Author); }
+      set { Elements.SetString(Keys.Author, value); }
     }
 
     /// <summary>
@@ -73,8 +79,8 @@ namespace PdfSharp.Pdf
     /// </summary>
     public string Subject
     {
-      get => Elements.GetString(Keys.Subject);
-      set => Elements.SetString(Keys.Subject, value);
+      get { return Elements.GetString(Keys.Subject); }
+      set { Elements.SetString(Keys.Subject, value); }
     }
 
     /// <summary>
@@ -82,8 +88,8 @@ namespace PdfSharp.Pdf
     /// </summary>
     public string Keywords
     {
-      get => Elements.GetString(Keys.Keywords);
-      set => Elements.SetString(Keys.Keywords, value);
+      get { return Elements.GetString(Keys.Keywords); }
+      set { Elements.SetString(Keys.Keywords, value); }
     }
 
     /// <summary>
@@ -91,22 +97,25 @@ namespace PdfSharp.Pdf
     /// </summary>
     public string Creator
     {
-      get => Elements.GetString(Keys.Creator);
-      set => Elements.SetString(Keys.Creator, value);
+      get { return Elements.GetString(Keys.Creator); }
+      set { Elements.SetString(Keys.Creator, value); }
     }
 
     /// <summary>
     /// Gets the producer application (for example, PDFsharp).
     /// </summary>
-    public string Producer => Elements.GetString(Keys.Producer);
+    public string Producer
+    {
+      get { return Elements.GetString(Keys.Producer); }
+    }
 
     /// <summary>
     /// Gets or sets the creation date of the document.
     /// </summary>
     public DateTime CreationDate
     {
-      get => Elements.GetDateTime(Keys.CreationDate, DateTime.Now);
-      set => Elements.SetDateTime(Keys.CreationDate, value);
+      get { return Elements.GetDateTime(Keys.CreationDate, DateTime.Now); }
+      set { Elements.SetDateTime(Keys.CreationDate, value); }
     }
 
     /// <summary>
@@ -114,8 +123,8 @@ namespace PdfSharp.Pdf
     /// </summary>
     public DateTime ModificationDate
     {
-      get => Elements.GetDateTime(Keys.ModDate, DateTime.Now);
-      set => Elements.SetDateTime(Keys.ModDate, value);
+      get { return Elements.GetDateTime(Keys.ModDate, DateTime.Now); }
+      set { Elements.SetDateTime(Keys.ModDate, value); }
     }
 
     // TODO CustomProperties and meta data
@@ -126,7 +135,7 @@ namespace PdfSharp.Pdf
     internal sealed class Keys : KeysBase
     {
       /// <summary>
-      /// (Optional; PDF 1.1) The document’s title.
+      /// (Optional; PDF 1.1) The documentâ€™s title.
       /// </summary>
       [KeyInfo(KeyType.String | KeyType.Optional)]
       public const string Title = "/Title";
@@ -191,9 +200,9 @@ namespace PdfSharp.Pdf
       {
         get
         {
-          if (meta == null)
-            meta = CreateMeta(typeof(Keys));
-          return meta;
+          if (Keys.meta == null)
+            Keys.meta = CreateMeta(typeof(Keys));
+          return Keys.meta;
         }
       }
       static DictionaryMeta meta;
@@ -202,6 +211,9 @@ namespace PdfSharp.Pdf
     /// <summary>
     /// Gets the KeysMeta of this dictionary type.
     /// </summary>
-    internal override DictionaryMeta Meta => Keys.Meta;
+    internal override DictionaryMeta Meta
+    {
+      get { return Keys.Meta; }
+    }
   }
 }

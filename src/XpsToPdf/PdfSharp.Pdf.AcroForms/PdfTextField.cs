@@ -27,8 +27,13 @@
 // DEALINGS IN THE SOFTWARE.
 #endregion
 
+using System;
+using System.Diagnostics;
+using System.Collections;
 using PdfSharp.Drawing;
+using PdfSharp.Pdf.Advanced;
 using PdfSharp.Pdf.Annotations;
+using PdfSharp.Pdf.Internal;
 
 namespace PdfSharp.Pdf.AcroForms
 {
@@ -55,8 +60,8 @@ namespace PdfSharp.Pdf.AcroForms
     /// </summary>
     public string Text
     {
-      get => Elements.GetString(PdfAcroField.Keys.V);
-      set { Elements.SetString(PdfAcroField.Keys.V, value); RenderAppearance(); } //HACK in PdfTextField
+      get { return Elements.GetString(Keys.V); }
+      set { Elements.SetString(Keys.V, value); RenderAppearance(); } //HACK in PdfTextField
     }
 
     /// <summary>
@@ -64,8 +69,8 @@ namespace PdfSharp.Pdf.AcroForms
     /// </summary>
     public XFont Font
     {
-      get => font;
-      set => font = value;
+      get { return this.font; }
+      set { this.font = value; }
     }
     XFont font = new XFont("Courier New", 10);
 
@@ -74,8 +79,8 @@ namespace PdfSharp.Pdf.AcroForms
     /// </summary>
     public XColor ForeColor
     {
-      get => foreColor;
-      set => foreColor = value;
+      get { return this.foreColor; }
+      set { this.foreColor = value; }
     }
     XColor foreColor = XColors.Black;
 
@@ -84,8 +89,8 @@ namespace PdfSharp.Pdf.AcroForms
     /// </summary>
     public XColor BackColor
     {
-      get => backColor;
-      set => backColor = value;
+      get { return this.backColor; }
+      set { this.backColor = value; }
     }
     XColor backColor = XColor.Empty;
 
@@ -95,8 +100,8 @@ namespace PdfSharp.Pdf.AcroForms
     /// <value>The length of the max.</value>
     public int MaxLength
     {
-      get => Elements.GetInteger(Keys.MaxLen);
-      set => Elements.SetInteger(Keys.MaxLen, value);
+      get { return Elements.GetInteger(Keys.MaxLen); }
+      set { Elements.SetInteger(Keys.MaxLen, value); }
     }
 
     /// <summary>
@@ -104,7 +109,7 @@ namespace PdfSharp.Pdf.AcroForms
     /// </summary>
     public bool MultiLine
     {
-      get => (Flags & PdfAcroFieldFlags.Multiline) != 0;
+      get { return (Flags & PdfAcroFieldFlags.Multiline) != 0; }
       set
       {
         if (value)
@@ -119,7 +124,7 @@ namespace PdfSharp.Pdf.AcroForms
     /// </summary>
     public bool Password
     {
-      get => (Flags & PdfAcroFieldFlags.Password) != 0;
+      get { return (Flags & PdfAcroFieldFlags.Password) != 0; }
       set
       {
         if (value)
@@ -136,7 +141,7 @@ namespace PdfSharp.Pdf.AcroForms
     void RenderAppearance()
     {
       PdfRectangle rect = Elements.GetRectangle(PdfAnnotation.Keys.Rect);
-      XForm form = new XForm(document, rect.Size);
+      XForm form = new XForm(this.document, rect.Size);
       XGraphics gfx = XGraphics.FromForm(form);
 
       if (backColor != XColor.Empty)
@@ -153,7 +158,7 @@ namespace PdfSharp.Pdf.AcroForms
       PdfDictionary ap = Elements[PdfAnnotation.Keys.AP] as PdfDictionary;
       if (ap == null)
       {
-        ap = new PdfDictionary(document);
+        ap = new PdfDictionary(this.document);
         Elements[PdfAnnotation.Keys.AP] = ap;
       }
 
@@ -174,7 +179,7 @@ namespace PdfSharp.Pdf.AcroForms
     public new class Keys : PdfAcroField.Keys
     {
       /// <summary>
-      /// (Optional; inheritable) The maximum length of the field’s text, in characters.
+      /// (Optional; inheritable) The maximum length of the fieldâ€™s text, in characters.
       /// </summary>
       [KeyInfo(KeyType.Integer | KeyType.Optional)]
       public const string MaxLen = "/MaxLen";
@@ -186,9 +191,9 @@ namespace PdfSharp.Pdf.AcroForms
       {
         get
         {
-          if (meta == null)
-            meta = CreateMeta(typeof(Keys));
-          return meta;
+          if (Keys.meta == null)
+            Keys.meta = CreateMeta(typeof(Keys));
+          return Keys.meta;
         }
       }
       static DictionaryMeta meta;
@@ -197,6 +202,9 @@ namespace PdfSharp.Pdf.AcroForms
     /// <summary>
     /// Gets the KeysMeta of this dictionary type.
     /// </summary>
-    internal override DictionaryMeta Meta => Keys.Meta;
+    internal override DictionaryMeta Meta
+    {
+      get { return Keys.Meta; }
+    }
   }
 }

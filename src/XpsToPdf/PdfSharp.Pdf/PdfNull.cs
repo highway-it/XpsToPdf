@@ -27,6 +27,12 @@
 // DEALINGS IN THE SOFTWARE.
 #endregion
 
+using System;
+using System.Collections;
+using System.Text;
+using System.IO;
+using PdfSharp.Internal;
+
 namespace PdfSharp.Pdf
 {
   /// <summary>
@@ -48,7 +54,7 @@ namespace PdfSharp.Pdf
       return "null";
     }
 
-    internal override void WriteObject(IO.PdfWriter writer)
+    internal override void WriteObject(PdfSharp.Pdf.IO.PdfWriter writer)
     {
       // Implementet because it must be overridden.
       writer.WriteRaw(" null ");

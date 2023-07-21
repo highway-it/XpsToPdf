@@ -28,6 +28,14 @@
 #endregion
 
 using System;
+using System.Globalization;
+using System.Diagnostics;
+using System.Collections;
+using PdfSharp.Internal;
+using PdfSharp.Drawing;
+using PdfSharp.Pdf;
+using PdfSharp.Pdf.IO;
+using PdfSharp.Pdf.Internal;
 
 namespace PdfSharp.Pdf.Annotations
 {
@@ -55,7 +63,7 @@ namespace PdfSharp.Pdf.Annotations
 
     void Initialize()
     {
-      Elements.SetName(PdfAnnotation.Keys.Subtype, "/Text");
+      Elements.SetName(Keys.Subtype, "/Text");
       // By default make a yellow comment.
       Icon = PdfTextAnnotationIcon.Comment;
       //Color = XColors.Yellow;
@@ -75,8 +83,8 @@ namespace PdfSharp.Pdf.Annotations
     /// </summary>
     public bool Open
     {
-      get => Elements.GetBoolean(Keys.Open);
-      set => Elements.SetBoolean(Keys.Open, value);
+      get { return Elements.GetBoolean(Keys.Open); }
+      set { Elements.SetBoolean(Keys.Open, value); }
     }
 
     /// <summary>
@@ -140,9 +148,9 @@ namespace PdfSharp.Pdf.Annotations
       {
         get
         {
-          if (meta == null)
-            meta = CreateMeta(typeof(Keys));
-          return meta;
+          if (Keys.meta == null)
+            Keys.meta = CreateMeta(typeof(Keys));
+          return Keys.meta;
         }
       }
       static DictionaryMeta meta;
@@ -151,6 +159,9 @@ namespace PdfSharp.Pdf.Annotations
     /// <summary>
     /// Gets the KeysMeta of this dictionary type.
     /// </summary>
-    internal override DictionaryMeta Meta => Keys.Meta;
+    internal override DictionaryMeta Meta
+    {
+      get { return Keys.Meta; }
+    }
   }
 }

@@ -35,7 +35,9 @@ using System.Threading;
 using System.Drawing;
 #endif
 #if WPF
+using System.Windows.Media;
 #endif
+using PdfSharp.Internal;
 
 namespace PdfSharp.Drawing
 {
@@ -125,7 +127,7 @@ namespace PdfSharp.Drawing
       ColorResourceInfo colorInfo = GetColorInfo(knownColor);
 
       // Currently German only
-      if (cultureInfo.TwoLetterISOLanguageName == "de")
+      if (this.cultureInfo.TwoLetterISOLanguageName == "de")
         return colorInfo.NameDE;
 
       return colorInfo.Name;
@@ -341,9 +343,9 @@ namespace PdfSharp.Drawing
       {
         this.knownColor = knownColor;
         this.color = color;
-        Argb = argb;
-        Name = name;
-        NameDE = nameDE;
+        this.Argb = argb;
+        this.Name = name;
+        this.NameDE = nameDE;
       }
       public XKnownColor knownColor;
       public XColor color;

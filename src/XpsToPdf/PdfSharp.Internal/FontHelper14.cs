@@ -91,7 +91,7 @@ namespace PdfSharp.Internal
 
           //double width = descriptor.GlyphIndexToEmfWidth(glyphIndex, font.Size);
           //size.Width += width;
-          width += descriptor.GlyphIndexToWidth(glyphIndex);
+          width += descriptor.GlyphIndexToPdfWidth(glyphIndex);
         }
         size.Width = width * font.Size * (font.Italic ? 1 : 1) / descriptor.UnitsPerEm;
       }

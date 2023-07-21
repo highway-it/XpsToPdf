@@ -1,4 +1,11 @@
-﻿using PdfSharp.Xps.XpsModel;
+﻿using System;
+using System.Diagnostics;
+using System.Collections.Generic;
+using System.Globalization;
+using System.Text;
+using System.Xml;
+using System.IO;
+using PdfSharp.Xps.XpsModel;
 
 namespace PdfSharp.Xps.Parsing
 {
@@ -10,10 +17,10 @@ namespace PdfSharp.Xps.Parsing
     GradientStopCollection ParseGradientStops()
     {
       GradientStopCollection gradientStops = new GradientStopCollection();
-      if (!reader.IsEmptyElement)
+      if (!this.reader.IsEmptyElement)
       {
         MoveToNextElement();
-        while (reader.IsStartElement())
+        while (this.reader.IsStartElement())
         {
           GradientStop gs = ParseGradientStop();
           gradientStops.Add(gs);

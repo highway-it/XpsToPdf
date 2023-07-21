@@ -1,4 +1,10 @@
-﻿using System.Diagnostics;
+﻿using System;
+using System.Diagnostics;
+using System.Collections.Generic;
+using System.Globalization;
+using System.Text;
+using System.Xml;
+using System.IO;
 using PdfSharp.Xps.XpsModel;
 
 namespace PdfSharp.Xps.Parsing
@@ -10,12 +16,12 @@ namespace PdfSharp.Xps.Parsing
     /// </summary>
     FixedDocument ParseFixedDocument()
     {
-      Debug.Assert(reader.Name == "FixedDocument");
-      bool isEmptyElement = reader.IsEmptyElement;
+      Debug.Assert(this.reader.Name == "FixedDocument");
+      bool isEmptyElement = this.reader.IsEmptyElement;
       FixedDocument fdoc = new FixedDocument();
       while (MoveToNextAttribute())
       {
-        switch (reader.Name)
+        switch (this.reader.Name)
         {
           default:
             //UnexpectedAttribute();
@@ -25,19 +31,19 @@ namespace PdfSharp.Xps.Parsing
       if (!isEmptyElement)
       {
         MoveToNextElement();
-        while (reader.IsStartElement())
+        while (this.reader.IsStartElement())
         {
-          switch (reader.Name)
+          switch (this.reader.Name)
           {
             case "PageContent":
               {
-                isEmptyElement = reader.IsEmptyElement;
+                isEmptyElement = this.reader.IsEmptyElement;
                 while (MoveToNextAttribute())
                 {
-                  switch (reader.Name)
+                  switch (this.reader.Name)
                   {
                     case "Source":
-                      fdoc.PageContentUriStrings.Add(reader.Value);
+                      fdoc.PageContentUriStrings.Add(this.reader.Value);
                       break;
 
                     case "Width":
@@ -49,7 +55,7 @@ namespace PdfSharp.Xps.Parsing
                       break;
 
                     default:
-                      UnexpectedAttribute(reader.Name);
+                      UnexpectedAttribute(this.reader.Name);
                       break;
                   }
                 }
@@ -57,7 +63,7 @@ namespace PdfSharp.Xps.Parsing
                 {
                   MoveToNextElement();
                   // Move beyond PageContent.LinkTargets
-                  if (reader.IsStartElement())
+                  if (this.reader.IsStartElement())
                     MoveBeyondThisElement();
                 }
               }

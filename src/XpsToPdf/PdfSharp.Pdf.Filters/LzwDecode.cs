@@ -28,6 +28,8 @@
 #endregion
 
 using System;
+using System.Diagnostics;
+using System.Text;
 using System.IO;
 
 namespace PdfSharp.Pdf.Filters

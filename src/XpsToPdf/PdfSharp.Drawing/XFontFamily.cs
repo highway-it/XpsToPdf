@@ -27,6 +27,9 @@
 // DEALINGS IN THE SOFTWARE.
 #endregion
 
+using System;
+using System.Diagnostics;
+using System.IO;
 #if GDI
 using System.Drawing;
 using System.Drawing.Drawing2D;
@@ -34,6 +37,8 @@ using System.Drawing.Drawing2D;
 #if WPF
 using System.Windows.Media;
 #endif
+using PdfSharp.Pdf;
+using PdfSharp.Fonts.OpenType;
 
 // WPFHACK
 #pragma warning disable 162
@@ -59,14 +64,14 @@ namespace PdfSharp.Drawing
 #endif
 
 #if WPF
-    internal XFontFamily(FontFamily family)
+    internal XFontFamily(System.Windows.Media.FontFamily family)
     {
-      name = family.Source;
+      this.name = family.Source;
       // HACK
-      int idxHash = name.LastIndexOf('#');
+      int idxHash = this.name.LastIndexOf('#');
       if (idxHash > 0)
-        name = name.Substring(idxHash + 1);
-      wpfFamily = family;
+        this.name = this.name.Substring(idxHash + 1);
+      this.wpfFamily = family;
 #if GDI
       this.gdiFamily = new System.Drawing.FontFamily(family.Source);
 #endif
@@ -88,7 +93,7 @@ namespace PdfSharp.Drawing
       this.gdiFamily = new System.Drawing.FontFamily(name);
 #endif
 #if WPF
-      wpfFamily = new FontFamily(name);
+      this.wpfFamily = new System.Windows.Media.FontFamily(name);
 #endif
     }
 
@@ -100,8 +105,10 @@ namespace PdfSharp.Drawing
     /// <summary>
     /// Gets the name of the font family.
     /// </summary>
-    public string Name => name;
-
+    public string Name
+    {
+      get { return this.name; }
+    }
     readonly string name;
 
     /// <summary>
@@ -257,7 +264,6 @@ namespace PdfSharp.Drawing
       XFontFamily[] result;
 #if GDI
       System.Drawing.FontFamily[] families = null;
-      //families = System.Drawing.FontFamily.GetFamilies(graphics.gfx);
       families = System.Drawing.FontFamily.Families;
       int count = families.Length;
       result = new XFontFamily[count];
@@ -287,7 +293,7 @@ namespace PdfSharp.Drawing
     /// <summary>
     /// WPF object.
     /// </summary>
-    internal FontFamily wpfFamily;
+    internal System.Windows.Media.FontFamily wpfFamily;
 #endif
   }
 }

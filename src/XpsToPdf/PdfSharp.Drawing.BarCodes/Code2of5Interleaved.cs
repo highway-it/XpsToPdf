@@ -27,6 +27,10 @@
 // DEALINGS IN THE SOFTWARE.
 #endregion
 
+using System;
+using System.Diagnostics;
+using PdfSharp.Drawing;
+
 namespace PdfSharp.Drawing.BarCodes
 {
   /// <summary>
@@ -100,17 +104,17 @@ namespace PdfSharp.Drawing.BarCodes
       InitRendering(info);
       info.CurrPosInString = 0;
       //info.CurrPos = info.Center - this.size / 2;
-      info.CurrPos = position - CalcDistance(AnchorType.TopLeft, anchor, size);
+      info.CurrPos = position - CodeBase.CalcDistance(AnchorType.TopLeft, this.anchor, this.size);
 
       if (TurboBit)
         RenderTurboBit(info, true);
       RenderStart(info);
-      while (info.CurrPosInString < text.Length)
+      while (info.CurrPosInString < this.text.Length)
         RenderNextPair(info);
       RenderStop(info);
       if (TurboBit)
         RenderTurboBit(info, false);
-      if (TextLocation != TextLocation.None)
+      if (this.TextLocation != TextLocation.None)
         RenderText(info);
 
       gfx.Restore(state);
@@ -134,8 +138,8 @@ namespace PdfSharp.Drawing.BarCodes
        * 
        * Total width = (6 + r + (2 * r + 3) * text.Length) * thin
        */
-      double thinLineAmount = 6 + wideNarrowRatio + (2 * wideNarrowRatio + 3) * text.Length;
-      info.ThinBarWidth = Size.Width / thinLineAmount;
+      double thinLineAmount = 6 + this.wideNarrowRatio + (2 * this.wideNarrowRatio + 3) * this.text.Length;
+      info.ThinBarWidth = this.Size.Width / thinLineAmount;
     }
 
     private void RenderStart(BarCodeRenderInfo info)
@@ -158,8 +162,8 @@ namespace PdfSharp.Drawing.BarCodes
     /// </summary>
     private void RenderNextPair(BarCodeRenderInfo info)
     {
-      int digitForLines = int.Parse(text[info.CurrPosInString].ToString());
-      int digitForGaps = int.Parse(text[info.CurrPosInString + 1].ToString());
+      int digitForLines = int.Parse(this.text[info.CurrPosInString].ToString());
+      int digitForGaps = int.Parse(this.text[info.CurrPosInString + 1].ToString());
       bool[] linesArray = Lines[digitForLines];
       bool[] gapsArray = Lines[digitForGaps];
       for (int idx = 0; idx < 5; ++idx)

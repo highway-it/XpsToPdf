@@ -27,11 +27,14 @@
 // DEALINGS IN THE SOFTWARE.
 #endregion
 
+using System;
+using System.Diagnostics;
 #if GDI
 using System.Drawing;
 using System.Drawing.Drawing2D;
 #endif
 #if WPF
+using System.Windows;
 using System.Windows.Media;
 #endif
 
@@ -63,7 +66,10 @@ namespace PdfSharp.Drawing
     /// <summary>
     /// Gets the underlying WPF path geometry object.
     /// </summary>
-    public PathGeometry WpfPath => path.pathGeometry;
+    public PathGeometry WpfPath
+    {
+      get { return this.path.pathGeometry; }
+    }
 #endif
   }
 }

@@ -28,13 +28,14 @@
 #endregion
 
 using System;
+using System.Diagnostics;
 using System.Collections.Generic;
 #if GDI
 using System.Drawing;
 using System.Drawing.Drawing2D;
 #endif
 #if WPF
-
+using System.Windows.Media;
 #endif
 
 namespace PdfSharp.Drawing
@@ -46,32 +47,35 @@ namespace PdfSharp.Drawing
   {
     public GraphicsStateStack(XGraphics gfx)
     {
-      current = new InternalGraphicsState(gfx);
+      this.current = new InternalGraphicsState(gfx);
     }
 
-    public int Count => stack.Count;
+    public int Count
+    {
+      get { return this.stack.Count; }
+    }
 
     public void Push(InternalGraphicsState state)
     {
-      stack.Push(state);
+      this.stack.Push(state);
       state.Pushed();
     }
 
     public int Restore(InternalGraphicsState state)
     {
-      if (!stack.Contains(state))
+      if (!this.stack.Contains(state))
         throw new ArgumentException("State not on stack.", "state");
       if (state.invalid)
         throw new ArgumentException("State already restored.", "state");
 
       int count = 1;
-      InternalGraphicsState top = (InternalGraphicsState)stack.Pop();
+      InternalGraphicsState top = (InternalGraphicsState)this.stack.Pop();
       top.Popped();
       while (top != state)
       {
         count++;
         state.invalid = true;
-        top = (InternalGraphicsState)stack.Pop();
+        top = (InternalGraphicsState)this.stack.Pop();
         top.Popped();
       }
       state.invalid = true;
@@ -82,9 +86,9 @@ namespace PdfSharp.Drawing
     {
       get
       {
-        if (stack.Count == 0)
-          return current;
-        return stack.Peek();
+        if (this.stack.Count == 0)
+          return this.current;
+        return this.stack.Peek();
       }
     }
     InternalGraphicsState current;

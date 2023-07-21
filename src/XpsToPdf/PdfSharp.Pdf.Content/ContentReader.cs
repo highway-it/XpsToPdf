@@ -27,6 +27,7 @@
 // DEALINGS IN THE SOFTWARE.
 #endregion
 
+using System;
 using PdfSharp.Pdf.Content.Objects;
 
 namespace PdfSharp.Pdf.Content

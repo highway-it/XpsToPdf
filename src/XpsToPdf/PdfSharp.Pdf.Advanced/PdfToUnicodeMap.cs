@@ -28,10 +28,16 @@
 #endregion
 
 using System;
+using System.Diagnostics;
+using System.Collections;
 using System.Collections.Generic;
 using System.Text;
 using System.IO;
+using PdfSharp.Drawing;
+using PdfSharp.Internal;
 using PdfSharp.Fonts;
+using PdfSharp.Fonts.OpenType;
+using PdfSharp.Pdf.Advanced;
 using PdfSharp.Pdf.Filters;
 
 namespace PdfSharp.Pdf.Advanced
@@ -57,8 +63,8 @@ namespace PdfSharp.Pdf.Advanced
     /// </summary>
     public CMapInfo CMapInfo
     {
-      get => cmapInfo;
-      set => cmapInfo = value;
+      get { return this.cmapInfo; }
+      set { this.cmapInfo = value; }
     }
     CMapInfo cmapInfo;
 
@@ -80,7 +86,7 @@ namespace PdfSharp.Pdf.Advanced
 
       Dictionary<int, char> glyphIndexToCharacter = new Dictionary<int, char>();
       int lowIndex = 65536, hiIndex = -1;
-      foreach (KeyValuePair<char, int> entry in cmapInfo.CharacterToGlyphIndex)
+      foreach (KeyValuePair<char, int> entry in this.cmapInfo.CharacterToGlyphIndex)
       {
         int index = (int)entry.Value;
         lowIndex = Math.Min(lowIndex, index);

@@ -28,6 +28,8 @@
 // WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 using System;
+using System.Diagnostics;
+using PdfSharp.Drawing;
 
 namespace PdfSharp.Drawing.BarCodes
 {
@@ -50,7 +52,7 @@ namespace PdfSharp.Drawing.BarCodes
       CalcThinBarWidth(info);
       info.BarHeight = Size.Height;
       // HACK in ThickThinBarCode
-      if (textLocation != TextLocation.None)
+      if (this.textLocation != TextLocation.None)
         info.BarHeight *= 4.0 / 5;
 
 #if DEBUG_
@@ -59,7 +61,7 @@ namespace PdfSharp.Drawing.BarCodes
       XSolidBrush brush = new XSolidBrush(back);
       info.Gfx.DrawRectangle(brush, new XRect(info.Center - this.size / 2, this.size));
 #endif
-      switch (direction)
+      switch (this.direction)
       {
         case CodeDirection.RightToLeft:
           info.Gfx.RotateAtTransform(180, info.Position);
@@ -81,12 +83,12 @@ namespace PdfSharp.Drawing.BarCodes
     /// </summary>
     public override double WideNarrowRatio
     {
-      get => wideNarrowRatio;
+      get { return this.wideNarrowRatio; }
       set
       {
         if (value > 3 || value < 2)
           throw new ArgumentOutOfRangeException("value", BcgSR.Invalid2of5Relation);
-        wideNarrowRatio = value;
+        this.wideNarrowRatio = value;
       }
     }
     internal double wideNarrowRatio = 2.6;
@@ -137,9 +139,9 @@ namespace PdfSharp.Drawing.BarCodes
     {
       if (info.Font == null)
         info.Font = new XFont("Courier New", Size.Height / 6);
-      XPoint center = info.Position + CalcDistance(anchor, AnchorType.TopLeft, size);
+      XPoint center = info.Position + CodeBase.CalcDistance(this.anchor, AnchorType.TopLeft, this.size);
       //center.Y += info.Font.Size;
-      info.Gfx.DrawString(text, info.Font, info.Brush, new XRect(center, Size), XStringFormats.BottomCenter);
+      info.Gfx.DrawString(this.text, info.Font, info.Brush, new XRect(center, Size), XStringFormats.BottomCenter);
     }
 
     /// <summary>
@@ -150,7 +152,7 @@ namespace PdfSharp.Drawing.BarCodes
     internal double GetBarWidth(BarCodeRenderInfo info, bool isThick)
     {
       if (isThick)
-        return info.ThinBarWidth * wideNarrowRatio;
+        return info.ThinBarWidth * this.wideNarrowRatio;
       else
         return info.ThinBarWidth;
     }

@@ -1,4 +1,9 @@
-﻿using PdfSharp.Pdf.Advanced;
+﻿using System;
+using System.Collections.Generic;
+using System.Text;
+using System.IO.Packaging;
+using PdfSharp.Pdf;
+using PdfSharp.Pdf.Advanced;
 
 namespace PdfSharp.Xps.XpsModel
 {
@@ -20,12 +25,15 @@ namespace PdfSharp.Xps.XpsModel
 
     public PdfFont PdfFont
     {
-      get => pdfFont;
-      set => pdfFont = value;
+      get { return this.pdfFont; }
+      set { this.pdfFont = value; }
     }
     PdfFont pdfFont;
 
-    public byte[] FontData => fontData;
+    public byte[] FontData
+    {
+      get { return this.fontData; }
+    }
     byte[] fontData;
   }
 }

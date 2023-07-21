@@ -27,12 +27,21 @@
 // DEALINGS IN THE SOFTWARE.
 #endregion
 
+using System;
+using System.Diagnostics;
+using System.Collections;
+using System.Text;
+using System.IO;
 #if GDI
 using System.Drawing;
 using System.Drawing.Imaging;
 #endif
 #if WPF
+using System.Windows.Media;
 #endif
+using PdfSharp.Drawing;
+using PdfSharp.Fonts.OpenType;
+using PdfSharp.Internal;
 
 namespace PdfSharp.Pdf.Advanced
 {
@@ -86,14 +95,14 @@ namespace PdfSharp.Pdf.Advanced
       //  /SMask /None
       //  /Type /ExtGState
       //>>
-      Elements.SetBoolean(Keys.AIS, false);
-      Elements.SetName(Keys.BM, "/Normal");
+      Elements.SetBoolean(PdfExtGState.Keys.AIS, false);
+      Elements.SetName(PdfExtGState.Keys.BM, "/Normal");
       StrokeAlpha = 1;
       NonStrokeAlpha = 1;
-      Elements.SetBoolean(Keys.op, false);
-      Elements.SetBoolean(Keys.OP, false);
-      Elements.SetBoolean(Keys.SA, true);
-      Elements.SetName(Keys.SMask, "/None");
+      Elements.SetBoolean(PdfExtGState.Keys.op, false);
+      Elements.SetBoolean(PdfExtGState.Keys.OP, false);
+      Elements.SetBoolean(PdfExtGState.Keys.SA, true);
+      Elements.SetName(PdfExtGState.Keys.SMask, "/None");
     }
 
     /// <summary>
@@ -113,15 +122,15 @@ namespace PdfSharp.Pdf.Advanced
       //  /SMask /None
       //  /Type /ExtGState
       //>>
-      Elements.SetBoolean(Keys.AIS, false);
-      Elements.SetName(Keys.BM, "/Normal");
+      Elements.SetBoolean(PdfExtGState.Keys.AIS, false);
+      Elements.SetName(PdfExtGState.Keys.BM, "/Normal");
       StrokeAlpha = 1;
       NonStrokeAlpha = 1;
-      Elements.SetBoolean(Keys.op, true);
-      Elements.SetBoolean(Keys.OP, true);
-      Elements.SetInteger(Keys.OPM, 1);
-      Elements.SetBoolean(Keys.SA, true);
-      Elements.SetName(Keys.SMask, "/None");
+      Elements.SetBoolean(PdfExtGState.Keys.op, true);
+      Elements.SetBoolean(PdfExtGState.Keys.OP, true);
+      Elements.SetInteger(PdfExtGState.Keys.OPM, 1);
+      Elements.SetBoolean(PdfExtGState.Keys.SA, true);
+      Elements.SetName(PdfExtGState.Keys.SMask, "/None");
     }
 
     /// <summary>
@@ -129,7 +138,7 @@ namespace PdfSharp.Pdf.Advanced
     /// </summary>
     public double StrokeAlpha
     {
-      set => Elements.SetReal(Keys.CA, value);
+      set { Elements.SetReal(Keys.CA, value); }
     }
 
     /// <summary>
@@ -137,7 +146,7 @@ namespace PdfSharp.Pdf.Advanced
     /// </summary>
     public double NonStrokeAlpha
     {
-      set => Elements.SetReal(Keys.ca, value);
+      set { Elements.SetReal(Keys.ca, value); }
     }
 
     /// <summary>
@@ -145,7 +154,7 @@ namespace PdfSharp.Pdf.Advanced
     /// </summary>
     public PdfSoftMask SoftMask
     {
-      set => Elements.SetReference(Keys.SMask, value);
+      set { Elements.SetReference(Keys.SMask, value); }
     }
 
     /// <summary>
@@ -161,7 +170,7 @@ namespace PdfSharp.Pdf.Advanced
       public const string Type = "/Type";
 
       /// <summary>
-      /// (Optional; PDF 1.3) The line width (see ìLine Widthî on page 185).
+      /// (Optional; PDF 1.3) The line width (see ‚ÄúLine Width‚Äù on page 185).
       /// </summary>
       [KeyInfo(KeyType.Real | KeyType.Optional)]
       public const string LW = "/LW";
@@ -302,7 +311,7 @@ namespace PdfSharp.Pdf.Advanced
       public const string ca = "/ca";
 
       /// <summary>
-      /// (Optional; PDF 1.4) The alpha source flag (ìalpha is shapeî), specifying whether 
+      /// (Optional; PDF 1.4) The alpha source flag (‚Äúalpha is shape‚Äù), specifying whether 
       /// the current soft mask and alpha constant are to be interpreted as shape values (true)
       /// or opacity values (false).
       /// </summary>
@@ -323,9 +332,9 @@ namespace PdfSharp.Pdf.Advanced
       {
         get
         {
-          if (meta == null)
-            meta = CreateMeta(typeof(Keys));
-          return meta;
+          if (Keys.meta == null)
+            Keys.meta = CreateMeta(typeof(Keys));
+          return Keys.meta;
         }
       }
       static DictionaryMeta meta;
@@ -334,6 +343,9 @@ namespace PdfSharp.Pdf.Advanced
     /// <summary>
     /// Gets the KeysMeta of this dictionary type.
     /// </summary>
-    internal override DictionaryMeta Meta => Keys.Meta;
+    internal override DictionaryMeta Meta
+    {
+      get { return Keys.Meta; }
+    }
   }
 }

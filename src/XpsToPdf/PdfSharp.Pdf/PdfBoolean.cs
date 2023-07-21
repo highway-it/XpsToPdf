@@ -27,7 +27,12 @@
 // DEALINGS IN THE SOFTWARE.
 #endregion
 
+using System;
 using System.Diagnostics;
+using System.Collections;
+using System.Text;
+using System.IO;
+using PdfSharp.Internal;
 using PdfSharp.Pdf.IO;
 
 namespace PdfSharp.Pdf
@@ -56,10 +61,11 @@ namespace PdfSharp.Pdf
     /// <summary>
     /// Gets the value of this instance as boolean value.
     /// </summary>
-    public bool Value =>
-        // This class must behave like a value type. Therefore it cannot be changed (like System.String).
-        value;
-
+    public bool Value
+    {
+      // This class must behave like a value type. Therefore it cannot be changed (like System.String).
+      get { return this.value; }
+    }
     bool value;
 
     /// <summary>
@@ -77,7 +83,7 @@ namespace PdfSharp.Pdf
     /// </summary>
     public override string ToString()
     {
-      return value ? bool.TrueString : bool.FalseString;
+      return this.value ? bool.TrueString : bool.FalseString;
     }
 
     /// <summary>

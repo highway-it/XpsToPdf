@@ -1,4 +1,10 @@
-﻿using System.Diagnostics;
+﻿using System;
+using System.Diagnostics;
+using System.Collections.Generic;
+using System.Globalization;
+using System.Text;
+using System.Xml;
+using System.IO;
 using PdfSharp.Xps.XpsModel;
 
 namespace PdfSharp.Xps.Parsing
@@ -10,52 +16,51 @@ namespace PdfSharp.Xps.Parsing
     /// </summary>
     ImageBrush ParseImageBrush()
     {
-      Debug.Assert(reader.Name == "ImageBrush");
-      bool isEmptyElement = reader.IsEmptyElement;
+      Debug.Assert(this.reader.Name == "ImageBrush");
+      bool isEmptyElement = this.reader.IsEmptyElement;
       ImageBrush brush = new ImageBrush();
-      brush.Opacity = 1;
       while (MoveToNextAttribute())
       {
-        switch (reader.Name)
+        switch (this.reader.Name)
         {
           //case "Name":
           //  //brush.Name = this.rdr.Value;
           //  break;
 
           case "Opacity":
-            brush.Opacity = ParseDouble(reader.Value);
+            brush.Opacity = ParseDouble(this.reader.Value);
             break;
 
           case "Transform":
-            brush.Transform = ParseMatrixTransform(reader.Value);
+            brush.Transform = ParseMatrixTransform(this.reader.Value);
             break;
 
           case "ViewboxUnits":
-            brush.ViewboxUnits = ParseEnum<ViewUnits>(reader.Value);
+            brush.ViewboxUnits = ParseEnum<ViewUnits>(this.reader.Value);
             break;
 
           case "ViewportUnits":
-            brush.ViewportUnits = ParseEnum<ViewUnits>(reader.Value);
+            brush.ViewportUnits = ParseEnum<ViewUnits>(this.reader.Value);
             break;
 
           case "TileMode":
-            brush.TileMode = ParseEnum<TileMode>(reader.Value);
+            brush.TileMode = ParseEnum<TileMode>(this.reader.Value);
             break;
 
           case "Viewbox":
-            brush.Viewbox = Rect.Parse(reader.Value);
+            brush.Viewbox = Rect.Parse(this.reader.Value);
             break;
 
           case "Viewport":
-            brush.Viewport = Rect.Parse(reader.Value);
+            brush.Viewport = Rect.Parse(this.reader.Value);
             break;
 
           case "ImageSource":
-            brush.ImageSource = reader.Value;
+            brush.ImageSource = this.reader.Value;
             break;
 
           case "x:Key":
-            brush.Key = reader.Value;
+            brush.Key = this.reader.Value;
             break;
 
           default:
@@ -66,9 +71,9 @@ namespace PdfSharp.Xps.Parsing
       if (!isEmptyElement)
       {
         MoveToNextElement();
-        while (reader.IsStartElement())
+        while (this.reader.IsStartElement())
         {
-          switch (reader.Name)
+          switch (this.reader.Name)
           {
             case "ImageBrush.Transform":
               MoveToNextElement();

@@ -29,13 +29,20 @@
 
 using System;
 using System.Diagnostics;
+using System.Collections;
+using System.Text;
+using System.IO;
 #if GDI
 using System.Drawing;
 using System.Drawing.Imaging;
 #endif
 #if WPF
+using System.Windows.Media;
 #endif
 using PdfSharp.Drawing;
+using PdfSharp.Fonts.OpenType;
+using PdfSharp.Internal;
+using PdfSharp.Pdf.Internal;
 
 namespace PdfSharp.Pdf.Advanced
 {
@@ -73,9 +80,9 @@ namespace PdfSharp.Pdf.Advanced
     {
       get
       {
-        if (resources == null)
-          resources = (PdfResources)Elements.GetValue(Keys.Resources, VCF.Create);
-        return resources;
+        if (this.resources == null)
+          this.resources = (PdfResources)Elements.GetValue(Keys.Resources, VCF.Create);
+        return this.resources;
       }
     }
     PdfResources resources;
@@ -83,11 +90,14 @@ namespace PdfSharp.Pdf.Advanced
     /// <summary>
     /// Implements the interface because the primary function is internal.
     /// </summary>
-    PdfResources IContentStream.Resources => Resources;
+    PdfResources IContentStream.Resources
+    {
+      get { return Resources; }
+    }
 
     internal string GetFontName(XFont font, out PdfFont pdfFont)
     {
-      pdfFont = document.FontTable.GetFont(font);
+      pdfFont = this.document.FontTable.GetFont(font);
       Debug.Assert(pdfFont != null);
       string name = Resources.AddFont(pdfFont);
       return name;
@@ -100,7 +110,7 @@ namespace PdfSharp.Pdf.Advanced
 
     internal string GetFontName(string idName, byte[] fontData, out PdfFont pdfFont)
     {
-      pdfFont = document.FontTable.GetFont(idName, fontData);
+      pdfFont = this.document.FontTable.GetFont(idName, fontData);
       Debug.Assert(pdfFont != null);
       string name = Resources.AddFont(pdfFont);
       return name;
@@ -116,7 +126,7 @@ namespace PdfSharp.Pdf.Advanced
     /// </summary>
     internal string GetImageName(XImage image)
     {
-      PdfImage pdfImage = document.ImageTable.GetImage(image);
+      PdfImage pdfImage = this.document.ImageTable.GetImage(image);
       Debug.Assert(pdfImage != null);
       string name = Resources.AddImage(pdfImage);
       return name;
@@ -135,7 +145,7 @@ namespace PdfSharp.Pdf.Advanced
     /// </summary>
     internal string GetFormName(XForm form)
     {
-      PdfFormXObject pdfForm = document.FormTable.GetForm(form);
+      PdfFormXObject pdfForm = this.document.FormTable.GetForm(form);
       Debug.Assert(pdfForm != null);
       string name = Resources.AddForm(pdfForm);
       return name;

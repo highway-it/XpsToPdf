@@ -1,4 +1,9 @@
-﻿using System.Diagnostics;
+﻿using System;
+using System.Diagnostics;
+using System.Collections.Generic;
+using System.Globalization;
+using System.Text;
+using System.Xml;
 using PdfSharp.Xps.XpsModel;
 
 namespace PdfSharp.Xps.Parsing
@@ -11,30 +16,30 @@ namespace PdfSharp.Xps.Parsing
     void ParseResourceDictionary(ResourceDictionary dict)
     {
       //Debug.Assert(this.reader.Name == "ResourceDictionary");
-      Debug.Assert(reader.Name.Contains("Resource"));
+      Debug.Assert(this.reader.Name.Contains("Resource"));
       try
       {
-        bool isEmptyElement = reader.IsEmptyElement;
+        bool isEmptyElement = this.reader.IsEmptyElement;
         //ResourceDictionary dict = new ResourceDictionary();
         while (MoveToNextAttribute())
         {
-          switch (reader.Name)
+          switch (this.reader.Name)
           {
             case "Source":
-              dict.Source = reader.Value;
+              dict.Source = this.reader.Value;
               break;
 
             default:
-              UnexpectedAttribute(reader.Name);
+              UnexpectedAttribute(this.reader.Name);
               break;
           }
         }
         if (!isEmptyElement)
         {
           MoveToNextElement();
-          while (reader.IsStartElement())
+          while (this.reader.IsStartElement())
           {
-            switch (reader.Name)
+            switch (this.reader.Name)
             {
               case "ImageBrush":
                 ImageBrush ibrush = ParseImageBrush();

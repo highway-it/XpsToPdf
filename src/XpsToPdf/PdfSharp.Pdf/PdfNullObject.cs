@@ -27,6 +27,12 @@
 // DEALINGS IN THE SOFTWARE.
 #endregion
 
+using System;
+using System.Globalization;
+using System.Collections;
+using System.Text;
+using System.IO;
+using PdfSharp.Internal;
 using PdfSharp.Pdf.IO;
 
 namespace PdfSharp.Pdf
@@ -62,7 +68,7 @@ namespace PdfSharp.Pdf
     }
 
     /// <summary>
-    /// Writes the keyword «null».
+    /// Writes the keyword Â«nullÂ».
     /// </summary>
     internal override void WriteObject(PdfWriter writer)
     {

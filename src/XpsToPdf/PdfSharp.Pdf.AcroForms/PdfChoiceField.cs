@@ -28,6 +28,9 @@
 #endregion
 
 using System;
+using System.Diagnostics;
+using System.Collections;
+using PdfSharp.Pdf.Internal;
 
 namespace PdfSharp.Pdf.AcroForms
 {
@@ -117,7 +120,7 @@ namespace PdfSharp.Pdf.AcroForms
       /// (Required; inheritable) An array of options to be presented to the user. Each element of
       /// the array is either a text string representing one of the available options or a two-element
       /// array consisting of a text string together with a default appearance string for constructing
-      /// the item’s appearance dynamically at viewing time.
+      /// the itemâ€™s appearance dynamically at viewing time.
       /// </summary>
       [KeyInfo(KeyType.Array | KeyType.Optional)]
       public const string Opt = "/Opt";
@@ -148,9 +151,9 @@ namespace PdfSharp.Pdf.AcroForms
       {
         get
         {
-          if (meta == null)
-            meta = CreateMeta(typeof(Keys));
-          return meta;
+          if (Keys.meta == null)
+            Keys.meta = CreateMeta(typeof(Keys));
+          return Keys.meta;
         }
       }
       static DictionaryMeta meta;
@@ -159,6 +162,9 @@ namespace PdfSharp.Pdf.AcroForms
     /// <summary>
     /// Gets the KeysMeta of this dictionary type.
     /// </summary>
-    internal override DictionaryMeta Meta => Keys.Meta;
+    internal override DictionaryMeta Meta
+    {
+      get { return Keys.Meta; }
+    }
   }
 }

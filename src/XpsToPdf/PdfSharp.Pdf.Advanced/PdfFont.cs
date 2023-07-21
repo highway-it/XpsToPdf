@@ -29,8 +29,15 @@
 
 using System;
 using System.Diagnostics;
+using System.Collections;
 using System.Text;
+using System.IO;
+using PdfSharp.Pdf.Advanced;
+using PdfSharp.Drawing;
+using PdfSharp.Fonts.OpenType;
 using PdfSharp.Fonts;
+using PdfSharp.Internal;
+using PdfSharp.Pdf.Filters;
 
 namespace PdfSharp.Pdf.Advanced
 {
@@ -51,10 +58,10 @@ namespace PdfSharp.Pdf.Advanced
     {
       get
       {
-        Debug.Assert(fontDescriptor != null);
+        Debug.Assert(this.fontDescriptor != null);
         //if (this.fontDescriptor2 == null)
         //  this.fontDescriptor2 = (PdfFontDescriptor)Elements.GetValue(Keys.FontDescriptor, VCF.CreateIndirect);
-        return fontDescriptor;
+        return this.fontDescriptor;
       }
     }
     internal PdfFontDescriptor fontDescriptor;
@@ -72,7 +79,10 @@ namespace PdfSharp.Pdf.Advanced
     /// <summary>
     /// Gets a value indicating whether this instance is symbol font.
     /// </summary>
-    public bool IsSymbolFont => fontDescriptor.IsSymbolFont;
+    public bool IsSymbolFont
+    {
+      get { return this.fontDescriptor.IsSymbolFont; }
+    }
 
 #if true_
     public string BaseFont
@@ -107,14 +117,14 @@ namespace PdfSharp.Pdf.Advanced
 
     internal void AddChars(string text)
     {
-      if (cmapInfo != null)
-        cmapInfo.AddChars(text);
+      if (this.cmapInfo != null)
+        this.cmapInfo.AddChars(text);
     }
 
     internal void AddGlyphIndices(string glyphIndices)
     {
-      if (cmapInfo != null)
-        cmapInfo.AddGlyphIndices(glyphIndices);
+      if (this.cmapInfo != null)
+        this.cmapInfo.AddGlyphIndices(glyphIndices);
     }
 
     /// <summary>
@@ -122,8 +132,8 @@ namespace PdfSharp.Pdf.Advanced
     /// </summary>
     internal CMapInfo CMapInfo
     {
-      get => cmapInfo;
-      set => cmapInfo = value;
+      get { return this.cmapInfo; }
+      set { this.cmapInfo = value; }
     }
     internal CMapInfo cmapInfo;
 
@@ -132,8 +142,8 @@ namespace PdfSharp.Pdf.Advanced
     /// </summary>
     internal PdfToUnicodeMap ToUnicodeMap
     {
-      get => toUnicode;
-      set => toUnicode = value;
+      get { return this.toUnicode; }
+      set { this.toUnicode = value; }
     }
     internal PdfToUnicodeMap toUnicode;
 
@@ -182,7 +192,7 @@ namespace PdfSharp.Pdf.Advanced
 
       /// <summary>
       /// (Required except for the standard 14 fonts; must be an indirect reference)
-      /// A font descriptor describing the font’s metrics other than its glyph widths.
+      /// A font descriptor describing the fontâ€™s metrics other than its glyph widths.
       /// Note: For the standard 14 fonts, the entries FirstChar, LastChar, Widths, and 
       /// FontDescriptor must either all be present or all be absent. Ordinarily, they are
       /// absent; specifying them enables a standard font to be overridden.

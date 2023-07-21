@@ -28,13 +28,20 @@
 #endregion
 
 using System;
+using System.Runtime.InteropServices;
+using System.ComponentModel;
+using System.IO;
 #if GDI
 using System.Drawing;
 using System.Drawing.Drawing2D;
 #endif
 #if WPF
+using System.Windows.Media;
 #endif
+using PdfSharp.Internal;
+using PdfSharp.Fonts.OpenType;
 using PdfSharp.Pdf;
+using PdfSharp.Pdf.Advanced;
 
 namespace PdfSharp.Drawing
 {
@@ -50,8 +57,8 @@ namespace PdfSharp.Drawing
     /// </summary>
     public XPdfFontOptions(PdfFontEncoding encoding,  PdfFontEmbedding embedding)
     {
-      fontEncoding = encoding;
-      fontEmbedding = embedding;
+      this.fontEncoding = encoding;
+      this.fontEmbedding = embedding;
     }
 
     /// <summary>
@@ -59,8 +66,8 @@ namespace PdfSharp.Drawing
     /// </summary>
     public XPdfFontOptions(PdfFontEncoding encoding)
     {
-      fontEncoding = encoding;
-      fontEmbedding = PdfFontEmbedding.None;
+      this.fontEncoding = encoding;
+      this.fontEmbedding = PdfFontEmbedding.None;
     }
 
     /// <summary>
@@ -68,8 +75,8 @@ namespace PdfSharp.Drawing
     /// </summary>
     public XPdfFontOptions(PdfFontEmbedding embedding)
     {
-      fontEncoding = PdfFontEncoding.WinAnsi;
-      fontEmbedding = embedding;
+      this.fontEncoding = PdfFontEncoding.WinAnsi;
+      this.fontEmbedding = embedding;
     }
 
     /// <summary>
@@ -82,13 +89,13 @@ namespace PdfSharp.Drawing
     [Obsolete("Use other constructor")]
     XPdfFontOptions(bool embed, bool unicode, string baseFont, string fontFile)
     {
-      fontEmbedding = embed ? PdfFontEmbedding.Always : PdfFontEmbedding.None;
-      fontEncoding = unicode ? PdfFontEncoding.Unicode : PdfFontEncoding.WinAnsi;
+      this.fontEmbedding = embed ? PdfFontEmbedding.Always : PdfFontEmbedding.None;
+      this.fontEncoding = unicode ? PdfFontEncoding.Unicode : PdfFontEncoding.WinAnsi;
       //this.baseFont = baseFont == null ? "" : baseFont;
       //this.fontFile = fontFile == null ? "" : fontFile;
 
-      fontEmbedding = PdfFontEmbedding.Default;
-      fontEncoding = PdfFontEncoding.WinAnsi;
+      this.fontEmbedding = PdfFontEmbedding.Default;
+      this.fontEncoding = PdfFontEncoding.WinAnsi;
     }
 
     /// <summary>
@@ -99,8 +106,8 @@ namespace PdfSharp.Drawing
     [Obsolete("Use other constructor")]
     public XPdfFontOptions(bool unicode, byte[] fontData)
     {
-      fontEmbedding = PdfFontEmbedding.None;
-      fontEncoding = unicode ? PdfFontEncoding.Unicode : PdfFontEncoding.WinAnsi;
+      this.fontEmbedding = PdfFontEmbedding.None;
+      this.fontEncoding = unicode ? PdfFontEncoding.Unicode : PdfFontEncoding.WinAnsi;
       //this.baseFont = "";
       //this.fontFile = "";
       //this.fontData = fontData;
@@ -150,14 +157,19 @@ namespace PdfSharp.Drawing
     /// Gets a value indicating whether the gets embedded in the PDF file.
     /// </summary>
     [Obsolete("Use FontEmbedding")]
-    public bool Embed => fontEmbedding != PdfFontEmbedding.None;
+    public bool Embed
+    {
+      get { return this.fontEmbedding != PdfFontEmbedding.None; }
+    }
     //bool embed;
 
     /// <summary>
     /// Gets a value indicating the font embedding.
     /// </summary>
-    public PdfFontEmbedding FontEmbedding => fontEmbedding;
-
+    public PdfFontEmbedding FontEmbedding
+    {
+      get { return this.fontEmbedding; }
+    }
     PdfFontEmbedding fontEmbedding;
 
     //public bool Subset
@@ -170,42 +182,53 @@ namespace PdfSharp.Drawing
     /// Gets a value indicating whether the font is encoded as Unicode.
     /// </summary>
     [Obsolete("Use FontEncoding")]
-    public bool Unicode => fontEncoding == PdfFontEncoding.Unicode;
+    public bool Unicode
+    {
+      get { return this.fontEncoding == PdfFontEncoding.Unicode; }
+    }
     //bool unicode;
 
 
     /// <summary>
     /// Gets a value indicating how the font is encoded.
     /// </summary>
-    public PdfFontEncoding FontEncoding => fontEncoding;
-
+    public PdfFontEncoding FontEncoding
+    {
+      get { return this.fontEncoding; }
+    }
     PdfFontEncoding fontEncoding;
 
     /// <summary>
     /// Not yet implemented.
     /// </summary>
     [Obsolete("Not yet implemented")]
-    public string BaseFont =>
-        //get { return this.baseFont; }
-        "";
+    public string BaseFont
+    {
+      //get { return this.baseFont; }
+      get { return ""; }
+    }
     //string baseFont = "";
 
     /// <summary>
     /// Not yet implemented.
     /// </summary>
     [Obsolete("Not yet implemented")]
-    public string FontFile =>
-        //get { return this.fontFile; }
-        "";
+    public string FontFile
+    {
+      //get { return this.fontFile; }
+      get { return ""; }
+    }
     //string fontFile = "";
 
     /// <summary>
     /// Gets the font image.
     /// </summary>
     [Obsolete("Not yet implemented")]
-    public byte[] FontData =>
-        //get { return this.fontData; }
-        null;
+    public byte[] FontData
+    {
+      //get { return this.fontData; }
+      get { return null; }
+    }
     //byte[] fontData;
 
     // this is part of XGraphics

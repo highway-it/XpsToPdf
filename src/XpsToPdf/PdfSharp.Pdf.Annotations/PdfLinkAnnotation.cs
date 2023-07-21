@@ -27,6 +27,12 @@
 // DEALINGS IN THE SOFTWARE.
 #endregion
 
+using System;
+using System.Globalization;
+using System.Diagnostics;
+using System.Collections;
+using PdfSharp.Internal;
+using PdfSharp.Pdf;
 using PdfSharp.Pdf.IO;
 using PdfSharp.Pdf.Internal;
 
@@ -48,7 +54,7 @@ namespace PdfSharp.Pdf.Annotations
     /// </summary>
     public PdfLinkAnnotation()
     {
-      Elements.SetName(PdfAnnotation.Keys.Subtype, "/Link");
+      Elements.SetName(Keys.Subtype, "/Link");
     }
 
     /// <summary>
@@ -57,7 +63,7 @@ namespace PdfSharp.Pdf.Annotations
     public PdfLinkAnnotation(PdfDocument document)
       : base(document)
     {
-      Elements.SetName(PdfAnnotation.Keys.Subtype, "/Link");
+      Elements.SetName(Keys.Subtype, "/Link");
     }
 
     /// <summary>
@@ -68,7 +74,7 @@ namespace PdfSharp.Pdf.Annotations
     public static PdfLinkAnnotation CreateDocumentLink(PdfRectangle rect, int destinationPage)
     {
       PdfLinkAnnotation link = new PdfLinkAnnotation();
-      link.linkType = LinkType.Document;
+      link.linkType = PdfLinkAnnotation.LinkType.Document;
       link.Rectangle = rect;
       link.destPage = destinationPage;
       return link;
@@ -83,7 +89,7 @@ namespace PdfSharp.Pdf.Annotations
     public static PdfLinkAnnotation CreateWebLink(PdfRectangle rect, string url)
     {
       PdfLinkAnnotation link = new PdfLinkAnnotation();
-      link.linkType = LinkType.Web;
+      link.linkType = PdfLinkAnnotation.LinkType.Web;
       link.Rectangle = rect;
       link.url = url;
       return link;
@@ -95,7 +101,7 @@ namespace PdfSharp.Pdf.Annotations
     public static PdfLinkAnnotation CreateFileLink(PdfRectangle rect, string fileName)
     {
       PdfLinkAnnotation link = new PdfLinkAnnotation();
-      link.linkType = LinkType.File;
+      link.linkType = PdfLinkAnnotation.LinkType.File;
       // TODO: Adjust bleed box here (if possible)
       link.Rectangle = rect;
       link.url = fileName;
@@ -110,37 +116,37 @@ namespace PdfSharp.Pdf.Annotations
       //  "/Rect[{1} {2} {3} {4}]\n/BS<</Type/Border>>\n/Border[0 0 0]\n/C[0 0 0]\n",
       //  this.ObjectID.ObjectNumber, rect.X1, rect.Y1, rect.X2, rect.Y2);
 
-      if (Elements[PdfAnnotation.Keys.BS] == null)
-        Elements[PdfAnnotation.Keys.BS] = new PdfLiteral("<</Type/Border>>");
+      if (Elements[Keys.BS] == null)
+        Elements[Keys.BS] = new PdfLiteral("<</Type/Border>>");
 
-      if (Elements[PdfAnnotation.Keys.Border] == null)
-        Elements[PdfAnnotation.Keys.Border] = new PdfLiteral("[0 0 0]");
+      if (Elements[Keys.Border] == null)
+        Elements[Keys.Border] = new PdfLiteral("[0 0 0]");
 
-      switch (linkType)
+      switch (this.linkType)
       {
         case LinkType.Document:
           // destIndex > Owner.PageCount can happen rendering pages using PDFsharp directly
-          int destIndex = destPage;
+          int destIndex = this.destPage;
           if (destIndex > Owner.PageCount)
             destIndex = Owner.PageCount;
           destIndex--;
-          dest = Owner.Pages[destIndex];
+          dest = this.Owner.Pages[destIndex];
           //pdf.AppendFormat("/Dest[{0} 0 R/XYZ null null 0]\n", dest.ObjectID);
           Elements[Keys.Dest] = new PdfLiteral("[{0} 0 R/XYZ null null 0]", dest.ObjectNumber);
           break;
 
         case LinkType.Web:
           //pdf.AppendFormat("/A<</S/URI/URI{0}>>\n", PdfEncoders.EncodeAsLiteral(this.url));
-          Elements[PdfAnnotation.Keys.A] = new PdfLiteral("<</S/URI/URI{0}>>", //PdfEncoders.EncodeAsLiteral(this.url));
-            PdfEncoders.ToStringLiteral(url, PdfStringEncoding.WinAnsiEncoding, writer.SecurityHandler));
+          Elements[Keys.A] = new PdfLiteral("<</S/URI/URI{0}>>", //PdfEncoders.EncodeAsLiteral(this.url));
+            PdfEncoders.ToStringLiteral(this.url, PdfStringEncoding.WinAnsiEncoding, writer.SecurityHandler));
           break;
 
         case LinkType.File:
           //pdf.AppendFormat("/A<</Type/Action/S/Launch/F<</Type/Filespec/F{0}>> >>\n", 
           //  PdfEncoders.EncodeAsLiteral(this.url));
-          Elements[PdfAnnotation.Keys.A] = new PdfLiteral("<</Type/Action/S/Launch/F<</Type/Filespec/F{0}>> >>",
+          Elements[Keys.A] = new PdfLiteral("<</Type/Action/S/Launch/F<</Type/Filespec/F{0}>> >>",
             //PdfEncoders.EncodeAsLiteral(this.url));
-            PdfEncoders.ToStringLiteral(url, PdfStringEncoding.WinAnsiEncoding, writer.SecurityHandler));
+            PdfEncoders.ToStringLiteral(this.url, PdfStringEncoding.WinAnsiEncoding, writer.SecurityHandler));
           break;
       }
       base.WriteObject(writer);
@@ -165,11 +171,11 @@ namespace PdfSharp.Pdf.Annotations
       public const string Dest = "/Dest";
 
       /// <summary>
-      /// (Optional; PDF 1.2) The annotation’s highlighting mode, the visual effect to be
+      /// (Optional; PDF 1.2) The annotationâ€™s highlighting mode, the visual effect to be
       /// used when the mouse button is pressed or held down inside its active area:
       /// N (None) No highlighting.
       /// I (Invert) Invert the contents of the annotation rectangle.
-      /// O (Outline) Invert the annotation’s border.
+      /// O (Outline) Invert the annotationâ€™s border.
       /// P (Push) Display the annotation as if it were being pushed below the surface of the page.
       /// Default value: I.
       /// Note: In PDF 1.1, highlighting is always done by inverting colors inside the annotation rectangle.
@@ -179,7 +185,7 @@ namespace PdfSharp.Pdf.Annotations
 
       /// <summary>
       /// (Optional; PDF 1.3) A URI action formerly associated with this annotation. When Web 
-      /// Capture changes and annotation from a URI to a go-to action, it uses this entry to save 
+      /// Capture changes an annotation from a URI to a go-to action, it uses this entry to save 
       /// the data from the original URI action so that it can be changed back in case the target page for 
       /// the go-to action is subsequently deleted.
       /// </summary>
@@ -195,9 +201,9 @@ namespace PdfSharp.Pdf.Annotations
       {
         get
         {
-          if (meta == null)
-            meta = CreateMeta(typeof(Keys));
-          return meta;
+          if (Keys.meta == null)
+            Keys.meta = CreateMeta(typeof(Keys));
+          return Keys.meta;
         }
       }
       static DictionaryMeta meta;
@@ -206,6 +212,9 @@ namespace PdfSharp.Pdf.Annotations
     /// <summary>
     /// Gets the KeysMeta of this dictionary type.
     /// </summary>
-    internal override DictionaryMeta Meta => Keys.Meta;
+    internal override DictionaryMeta Meta
+    {
+      get { return Keys.Meta; }
+    }
   }
 }

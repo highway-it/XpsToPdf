@@ -28,7 +28,9 @@
 #endregion
 
 using System;
+using System.Diagnostics;
 using System.ComponentModel;
+using PdfSharp.Drawing;
 
 namespace PdfSharp.Drawing.BarCodes
 {
@@ -102,7 +104,7 @@ namespace PdfSharp.Drawing.BarCodes
     /// </summary>
     public virtual double WideNarrowRatio
     {
-      get => 0;
+      get { return 0; }
       set { }
     }
 
@@ -111,8 +113,8 @@ namespace PdfSharp.Drawing.BarCodes
     /// </summary>
     public TextLocation TextLocation
     {
-      get => textLocation;
-      set => textLocation = value;
+      get { return this.textLocation; }
+      set { this.textLocation = value; }
     }
     internal TextLocation textLocation;
 
@@ -121,8 +123,8 @@ namespace PdfSharp.Drawing.BarCodes
     /// </summary>
     public int DataLength
     {
-      get => dataLength;
-      set => dataLength = value;
+      get { return this.dataLength; }
+      set { this.dataLength = value; }
     }
     internal int dataLength;
 
@@ -131,8 +133,8 @@ namespace PdfSharp.Drawing.BarCodes
     /// </summary>
     public char StartChar
     {
-      get => startChar;
-      set => startChar = value;
+      get { return this.startChar; }
+      set { this.startChar = value; }
     }
     internal char startChar;
 
@@ -141,8 +143,8 @@ namespace PdfSharp.Drawing.BarCodes
     /// </summary>
     public char EndChar
     {
-      get => endChar;
-      set => endChar = value;
+      get { return this.endChar; }
+      set { this.endChar = value; }
     }
     internal char endChar;
 
@@ -152,17 +154,17 @@ namespace PdfSharp.Drawing.BarCodes
     /// </summary>
     public virtual bool TurboBit
     {
-      get => turboBit;
-      set => turboBit = value;
+      get { return this.turboBit; }
+      set { this.turboBit = value; }
     }
     internal bool turboBit;
 
     internal virtual void InitRendering(BarCodeRenderInfo info)
     {
-      if (text == null)
+      if (this.text == null)
         throw new InvalidOperationException(BcgSR.BarCodeNotSet);
 
-      if (Size.IsEmpty)
+      if (this.Size.IsEmpty)
         throw new InvalidOperationException(BcgSR.EmptyBarCodeSize);
     }
 

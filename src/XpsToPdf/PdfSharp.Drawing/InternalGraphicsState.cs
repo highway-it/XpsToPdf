@@ -27,6 +27,7 @@
 // DEALINGS IN THE SOFTWARE.
 #endregion
 
+using System;
 #if GDI
 using System.Drawing;
 using System.Drawing.Drawing2D;
@@ -114,8 +115,8 @@ namespace PdfSharp.Drawing
     /// </summary>
     public XMatrix Transform
     {
-      get => transform;
-      set => transform = value;
+      get { return this.transform; }
+      set { this.transform = value; }
     }
     XMatrix transform = new XMatrix();  //XMatrix.Identity;
 
@@ -129,18 +130,18 @@ namespace PdfSharp.Drawing
 
     public void Popped()
     {
-      invalid = true;
+      this.invalid = true;
 #if GDI
 #endif
 #if WPF
-      if (gfx.targetContext == XGraphicTargetContext.WPF)
+      if (this.gfx.targetContext == XGraphicTargetContext.WPF)
       {
-        for (int idx = 0; idx < transformPushLevel; idx++)
-          gfx.dc.Pop();
-        transformPushLevel = 0;
-        for (int idx = 0; idx < geometryPushLevel; idx++)
-          gfx.dc.Pop();
-        geometryPushLevel = 0;
+        for (int idx = 0; idx < this.transformPushLevel; idx++)
+          this.gfx.dc.Pop();
+        this.transformPushLevel = 0;
+        for (int idx = 0; idx < this.geometryPushLevel; idx++)
+          this.gfx.dc.Pop();
+        this.geometryPushLevel = 0;
       }
 #endif
     }
@@ -157,15 +158,15 @@ namespace PdfSharp.Drawing
 #if WPF
     public void SetTransform(MatrixTransform transform)
     {
-      gfx.dc.PushTransform(transform);
-      transformPushLevel++;
+      this.gfx.dc.PushTransform(transform);
+      this.transformPushLevel++;
     }
     int transformPushLevel;
 
     public void SetClip(Geometry geometry)
     {
-      gfx.dc.PushClip(geometry);
-      geometryPushLevel++;
+      this.gfx.dc.PushClip(geometry);
+      this.geometryPushLevel++;
     }
     int geometryPushLevel;
 

@@ -33,6 +33,10 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Collections;
+using System.Text;
+using System.IO;
+using PdfSharp.Internal;
 using PdfSharp.Pdf.IO;
 
 namespace PdfSharp.Pdf.Advanced
@@ -68,9 +72,9 @@ namespace PdfSharp.Pdf.Advanced
     public PdfReference(PdfObject pdfObject)
     {
       Debug.Assert(pdfObject.Reference == null, "Must not create iref for an object that already has one.");
-      value = pdfObject;
+      this.value = pdfObject;
 #if UNIQUE_IREF && DEBUG
-      uid = ++counter;
+      this.uid = ++PdfReference.counter;
 #endif
     }
 
@@ -82,7 +86,7 @@ namespace PdfSharp.Pdf.Advanced
       this.objectID = objectID;
       this.position = position;
 #if UNIQUE_IREF && DEBUG
-      uid = ++counter;
+      this.uid = ++PdfReference.counter;
 #endif
     }
 
@@ -95,7 +99,7 @@ namespace PdfSharp.Pdf.Advanced
 
       // Each line must be exactly 20 bytes long, otherwise Acrobat repairs the file.
       string text = String.Format("{0:0000000000} {1:00000} n\n",
-        position, objectID.GenerationNumber); // this.InUse ? 'n' : 'f');
+        this.position, this.objectID.GenerationNumber); // this.InUse ? 'n' : 'f');
       writer.WriteRaw(text);
     }
 
@@ -112,13 +116,13 @@ namespace PdfSharp.Pdf.Advanced
     /// </summary>
     public PdfObjectID ObjectID
     {
-      get => objectID;
+      get { return this.objectID; }
       set
       {
-        if (objectID != value)
+        if (this.objectID != value)
         {
-          objectID = value;
-          if (Document != null)
+          this.objectID = value;
+          if (this.Document != null)
           {
             //PdfXRefTable table = this.Document.xrefTable;
             //table.Remove(this);
@@ -133,20 +137,26 @@ namespace PdfSharp.Pdf.Advanced
     /// <summary>
     /// Gets the object number of the object identifier.
     /// </summary>
-    public int ObjectNumber => objectID.ObjectNumber;
+    public int ObjectNumber
+    {
+      get { return this.objectID.ObjectNumber; }
+    }
 
     /// <summary>
     /// Gets the generation number of the object identifier.
     /// </summary>
-    public int GenerationNumber => objectID.GenerationNumber;
+    public int GenerationNumber
+    {
+      get { return this.objectID.GenerationNumber; }
+    }
 
     /// <summary>
     /// Gets or sets the file position of the related PdfObject.
     /// </summary>
     public int Position
     {
-      get => position;
-      set => position = value;
+      get { return this.position; }
+      set { this.position = value; }
     }
     int position;  // I know it should be long, but I have never seen a 2GB PDF file.
 
@@ -162,11 +172,11 @@ namespace PdfSharp.Pdf.Advanced
     /// </summary>
     public PdfObject Value
     {
-      get => value;
+      get { return this.value; }
       set
       {
         Debug.Assert(value != null, "The value of a PdfReference must never be null.");
-        Debug.Assert(value.Reference == null || ReferenceEquals(value.Reference, this), "The reference of the value must be null or this.");
+        Debug.Assert(value.Reference == null || Object.ReferenceEquals(value.Reference, this), "The reference of the value must be null or this.");
         this.value = value;
         // value must never be null
         value.Reference = this;
@@ -187,8 +197,8 @@ namespace PdfSharp.Pdf.Advanced
     /// </summary>
     public PdfDocument Document
     {
-      get => document;
-      set => document = value;
+      get { return this.document; }
+      set { this.document = value; }
     }
     PdfDocument document;
 
@@ -197,10 +207,13 @@ namespace PdfSharp.Pdf.Advanced
     /// </summary>
     public override string ToString()
     {
-      return objectID.ToString() + " R";
+      return this.objectID.ToString() + " R";
     }
 
-    internal static PdfReferenceComparer Comparer => new PdfReferenceComparer();
+    internal static PdfReferenceComparer Comparer
+    {
+      get { return new PdfReferenceComparer(); }
+    }
 
     /// <summary>
     /// Implements a comparer that compares PdfReference objects by their PdfObjectID.

@@ -1,4 +1,10 @@
-﻿using System.Diagnostics;
+﻿using System;
+using System.Diagnostics;
+using System.Collections.Generic;
+using System.Globalization;
+using System.Text;
+using System.Xml;
+using System.IO;
 using PdfSharp.Xps.XpsModel;
 
 namespace PdfSharp.Xps.Parsing
@@ -10,22 +16,22 @@ namespace PdfSharp.Xps.Parsing
     /// </summary>
     SolidColorBrush ParseSolidColorBrush()
     {
-      Debug.Assert(reader.Name == "SolidColorBrush");
+      Debug.Assert(this.reader.Name == "SolidColorBrush");
       SolidColorBrush brush = new SolidColorBrush();
       while (MoveToNextAttribute())
       {
-        switch (reader.Name)
+        switch (this.reader.Name)
         {
           case "Opacity":
-            brush.Opacity = ParseDouble(reader.Value);
+            brush.Opacity = ParseDouble(this.reader.Value);
             break;
 
           case "Color":
-            brush.Color = Color.Parse(reader.Value);
+            brush.Color = Color.Parse(this.reader.Value);
             break;
 
           case "x:Key":
-            brush.Key = reader.Value;
+            brush.Key = this.reader.Value;
             break;
         }
       }

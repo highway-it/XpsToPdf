@@ -27,6 +27,16 @@
 // DEALINGS IN THE SOFTWARE.
 #endregion
 
+using System;
+using System.Diagnostics;
+using System.Collections;
+using System.Reflection;
+using System.Text;
+using System.IO;
+using PdfSharp.Internal;
+using PdfSharp.Pdf;
+using PdfSharp.Pdf.IO;
+
 namespace PdfSharp.Pdf.Advanced
 {
   /// <summary>
@@ -44,17 +54,26 @@ namespace PdfSharp.Pdf.Advanced
     /// <summary>
     /// Gets the object identifier. Returns PdfObjectID.Empty for direct objects.
     /// </summary>
-    public PdfObjectID ObjectID => obj.ObjectID;
+    public PdfObjectID ObjectID
+    {
+      get { return this.obj.ObjectID; }
+    }
 
     /// <summary>
     /// Gets the object number.
     /// </summary>
-    public int ObjectNumber => obj.ObjectID.ObjectNumber;
+    public int ObjectNumber
+    {
+      get { return this.obj.ObjectID.ObjectNumber; }
+    }
 
     /// <summary>
     /// Gets the generation number.
     /// </summary>
-    public int GenerationNumber => obj.ObjectID.GenerationNumber;
+    public int GenerationNumber
+    {
+      get { return this.obj.ObjectID.GenerationNumber; }
+    }
 
     /// <summary>
     /// Gets the name of the current type.
@@ -64,11 +83,11 @@ namespace PdfSharp.Pdf.Advanced
     {
       get
       {
-        if (obj is PdfArray)
+        if (this.obj is PdfArray)
           return "array";
-        else if (obj is PdfDictionary)
+        else if (this.obj is PdfDictionary)
           return "dictionary";
-        return obj.GetType().Name;
+        return this.obj.GetType().Name;
       }
     }
   }

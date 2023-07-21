@@ -27,6 +27,7 @@
 // DEALINGS IN THE SOFTWARE.
 #endregion
 
+using System;
 #if DEBUG_
 namespace PdfSharp.Fonts
 {

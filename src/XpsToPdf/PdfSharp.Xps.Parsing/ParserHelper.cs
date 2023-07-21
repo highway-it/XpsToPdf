@@ -1,5 +1,8 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Globalization;
+using System.Text;
+using PdfSharp.Xps.XpsModel;
 
 namespace PdfSharp.Xps.Parsing
 {

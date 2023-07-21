@@ -1,4 +1,10 @@
-﻿using System.Diagnostics;
+﻿using System;
+using System.Diagnostics;
+using System.Collections.Generic;
+using System.Globalization;
+using System.Text;
+using System.Xml;
+using System.IO;
 using PdfSharp.Xps.XpsModel;
 
 namespace PdfSharp.Xps.Parsing
@@ -10,39 +16,39 @@ namespace PdfSharp.Xps.Parsing
     /// </summary>
     ArcSegment ParseArcSegment()
     {
-      Debug.Assert(reader.Name == "ArcSegment");
+      Debug.Assert(this.reader.Name == "ArcSegment");
       ArcSegment seg = new ArcSegment();
       seg.IsStroked = true;
       while (MoveToNextAttribute())
       {
-        switch (reader.Name)
+        switch (this.reader.Name)
         {
           case "Point":
-            seg.Point = Point.Parse(reader.Value);
+            seg.Point = Point.Parse(this.reader.Value);
             break;
 
           case "Size":
-            seg.Size = Size.Parse(reader.Value);
+            seg.Size = Size.Parse(this.reader.Value);
             break;
 
           case "RotationAngle":
-            seg.RotationAngle = ParseDouble(reader.Value);
+            seg.RotationAngle = ParseDouble(this.reader.Value);
             break;
 
           case "IsLargeArc":
-            seg.IsLargeArc = ParseBool(reader.Value);
+            seg.IsLargeArc = ParseBool(this.reader.Value);
             break;
 
           case "SweepDirection":
-            seg.SweepDirection = ParseEnum<SweepDirection>(reader.Value);
+            seg.SweepDirection = ParseEnum<SweepDirection>(this.reader.Value);
             break;
 
           case "IsStroked":
-            seg.IsStroked = ParseBool(reader.Value);
+            seg.IsStroked = ParseBool(this.reader.Value);
             break;
 
           default:
-            UnexpectedAttribute(reader.Name);
+            UnexpectedAttribute(this.reader.Name);
             break;
         }
       }

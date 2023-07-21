@@ -29,7 +29,11 @@
 
 using System;
 using System.Diagnostics;
-using System.Globalization;
+using System.Collections;
+using System.Text;
+using System.IO;
+using PdfSharp.Internal;
+using PdfSharp.Pdf.IO;
 
 namespace PdfSharp.Pdf
 {
@@ -47,7 +51,7 @@ namespace PdfSharp.Pdf
     {
       Debug.Assert(objectNumber >= 1, "Object number out of range.");
       this.objectNumber = objectNumber;
-      generationNumber = 0;
+      this.generationNumber = 0;
     }
 
     /// <summary>
@@ -73,8 +77,8 @@ namespace PdfSharp.Pdf
     /// </summary>
     public int ObjectNumber
     {
-      get => objectNumber;
-      set => objectNumber = value;
+      get { return this.objectNumber; }
+      set { this.objectNumber = value; }
     }
     int objectNumber;
 
@@ -83,15 +87,18 @@ namespace PdfSharp.Pdf
     /// </summary>
     public int GenerationNumber
     {
-      get => generationNumber;
-      set => generationNumber = (ushort)value;
+      get { return this.generationNumber; }
+      set { this.generationNumber = (ushort)value; }
     }
     ushort generationNumber;
 
     /// <summary>
     /// Indicates whether this object is an empty object identifier.
     /// </summary>
-    public bool IsEmpty => objectNumber == 0;
+    public bool IsEmpty
+    {
+      get { return this.objectNumber == 0; }
+    }
 
     /// <summary>
     /// Indicates whether this instance and a specified object are equal.
@@ -101,8 +108,8 @@ namespace PdfSharp.Pdf
       if (obj is PdfObjectID)
       {
         PdfObjectID id = (PdfObjectID)obj;
-        if (objectNumber == id.objectNumber)
-          return generationNumber == id.generationNumber;
+        if (this.objectNumber == id.objectNumber)
+          return this.generationNumber == id.generationNumber;
       }
       return false;
     }
@@ -112,7 +119,7 @@ namespace PdfSharp.Pdf
     /// </summary>
     public override int GetHashCode()
     {
-      return objectNumber ^ generationNumber;
+      return this.objectNumber ^ this.generationNumber;
     }
 
     /// <summary>
@@ -136,13 +143,16 @@ namespace PdfSharp.Pdf
     /// </summary>
     public override string ToString()
     {
-      return objectNumber.ToString(CultureInfo.InvariantCulture) + " " + generationNumber.ToString(CultureInfo.InvariantCulture);
+      return this.objectNumber.ToString() + " " + this.generationNumber.ToString();
     }
 
     /// <summary>
     /// Creates an empty object identifier.
     /// </summary>
-    public static PdfObjectID Empty => new PdfObjectID();
+    public static PdfObjectID Empty
+    {
+      get { return new PdfObjectID(); }
+    }
 
     /// <summary>
     /// Compares the current object id with another object.
@@ -152,9 +162,9 @@ namespace PdfSharp.Pdf
       if (obj is PdfObjectID)
       {
         PdfObjectID id = (PdfObjectID)obj;
-        if (objectNumber == id.objectNumber)
-          return generationNumber - id.generationNumber;
-        return objectNumber - id.objectNumber;
+        if (this.objectNumber == id.objectNumber)
+          return this.generationNumber - id.generationNumber;
+        return this.objectNumber - id.objectNumber;
       }
       return 1;
     }

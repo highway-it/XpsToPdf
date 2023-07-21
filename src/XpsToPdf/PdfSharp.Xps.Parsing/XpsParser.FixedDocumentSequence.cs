@@ -1,4 +1,10 @@
-﻿using System.Diagnostics;
+﻿using System;
+using System.Diagnostics;
+using System.Collections.Generic;
+using System.Globalization;
+using System.Text;
+using System.Xml;
+using System.IO;
 using PdfSharp.Xps.XpsModel;
 
 namespace PdfSharp.Xps.Parsing
@@ -10,12 +16,12 @@ namespace PdfSharp.Xps.Parsing
     /// </summary>
     FixedDocumentSequence ParseFixedDocumentSequence()
     {
-      Debug.Assert(reader.Name == "FixedDocumentSequence");
-      bool isEmptyElement = reader.IsEmptyElement;
+      Debug.Assert(this.reader.Name == "FixedDocumentSequence");
+      bool isEmptyElement = this.reader.IsEmptyElement;
       FixedDocumentSequence fdseq = new FixedDocumentSequence();
       while (MoveToNextAttribute())
       {
-        switch (reader.Name)
+        switch (this.reader.Name)
         {
           default:
             //UnexpectedAttribute();
@@ -25,13 +31,13 @@ namespace PdfSharp.Xps.Parsing
       if (!isEmptyElement)
       {
         MoveToNextElement();
-        while (reader.IsStartElement())
+        while (this.reader.IsStartElement())
         {
-          switch (reader.Name)
+          switch (this.reader.Name)
           {
             case "DocumentReference":
               {
-                DocumentReference dref = ParseDocumentReference();
+                PdfSharp.Xps.XpsModel.DocumentReference dref = ParseDocumentReference();
                 //Debug.WriteLine("Path: " + (path.Name != null ? path.Name : ""));
                 fdseq.DocumentReferences.Add(dref);
               }

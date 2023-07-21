@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Diagnostics;
 using System.Globalization;
+using System.Collections.Generic;
+using System.Text;
 using PdfSharp.Internal;
 
 namespace PdfSharp.Xps.XpsModel
@@ -21,13 +23,13 @@ namespace PdfSharp.Xps.XpsModel
 
     public Point TopLeft
     {
-      get => new Point(X, Y);
+      get { return new Point(X, Y); }
       set { X = value.X; Y = value.Y; }
     }
 
     public Size Size
     {
-      get => new Size(Width, Height);
+      get { return new Size(Width, Height); }
       set { Width = value.Width; Height = value.Height; }
     }
 

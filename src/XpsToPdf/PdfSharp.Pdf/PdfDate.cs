@@ -29,6 +29,10 @@
 
 using System;
 using System.Diagnostics;
+using System.Collections;
+using System.Text;
+using System.IO;
+using PdfSharp.Internal;
 using PdfSharp.Pdf.IO;
 
 namespace PdfSharp.Pdf
@@ -65,10 +69,11 @@ namespace PdfSharp.Pdf
     /// <summary>
     /// Gets the value as DateTime.
     /// </summary>
-    public DateTime Value =>
-        // This class must behave like a value type. Therefore it cannot be changed (like System.String).
-        value;
-
+    public DateTime Value
+    {
+      // This class must behave like a value type. Therefore it cannot be changed (like System.String).
+      get { return this.value; }
+    }
     DateTime value;
 
     /// <summary>
@@ -76,8 +81,8 @@ namespace PdfSharp.Pdf
     /// </summary>
     public override string ToString()
     {
-      string delta = value.ToString("zzz").Replace(':', '\'');
-      return String.Format("D:{0:yyyyMMddHHmmss}{1}'", value, delta);
+      string delta = this.value.ToString("zzz").Replace(':', '\'');
+      return String.Format("D:{0:yyyyMMddHHmmss}{1}'", this.value, delta);
     }
 
     /// <summary>

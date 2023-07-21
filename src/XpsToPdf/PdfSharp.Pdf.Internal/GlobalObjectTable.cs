@@ -27,7 +27,17 @@
 // DEALINGS IN THE SOFTWARE.
 #endregion
 
+using System;
 using System.Collections.Generic;
+using System.Diagnostics;
+using System.Collections;
+using System.Globalization;
+using System.Text;
+using System.IO;
+using PdfSharp.Internal;
+using PdfSharp.Pdf;
+using PdfSharp.Pdf.Advanced;
+using PdfSharp.Pdf.IO;
 
 namespace PdfSharp.Pdf.Internal
 {
@@ -42,9 +52,9 @@ namespace PdfSharp.Pdf.Internal
 
     public void AttatchDocument(PdfDocument.DocumentHandle handle)
     {
-      lock (documentHandles)
+      lock (this.documentHandles)
       {
-        documentHandles.Add(handle);
+        this.documentHandles.Add(handle);
       }
 
       //WeakReference weakRef = new WeakReference(document);
@@ -56,27 +66,27 @@ namespace PdfSharp.Pdf.Internal
 
     public void DetatchDocument(PdfDocument.DocumentHandle handle)
     {
-      lock (documentHandles)
+      lock (this.documentHandles)
       {
         // Notify other documents about detach
-        int count = documentHandles.Count;
+        int count = this.documentHandles.Count;
         for (int idx = 0; idx < count; idx++)
         {
-          if (((PdfDocument.DocumentHandle)documentHandles[idx]).IsAlive)
+          if (((PdfDocument.DocumentHandle)this.documentHandles[idx]).IsAlive)
           {
-            PdfDocument target = ((PdfDocument.DocumentHandle)documentHandles[idx]).Target;
+            PdfDocument target = ((PdfDocument.DocumentHandle)this.documentHandles[idx]).Target;
             if (target != null)
               target.OnExternalDocumentFinalized(handle);
           }
         }
 
         // Clean up table
-        for (int idx = 0; idx < documentHandles.Count; idx++)
+        for (int idx = 0; idx < this.documentHandles.Count; idx++)
         {
-          PdfDocument target = ((PdfDocument.DocumentHandle)documentHandles[idx]).Target;
+          PdfDocument target = ((PdfDocument.DocumentHandle)this.documentHandles[idx]).Target;
           if (target == null)
           {
-            documentHandles.RemoveAt(idx);
+            this.documentHandles.RemoveAt(idx);
             idx--;
           }
         }

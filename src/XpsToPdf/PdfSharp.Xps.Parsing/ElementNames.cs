@@ -1,4 +1,8 @@
-﻿namespace PdfSharp.Xps.Parsing
+﻿using System;
+using System.Collections.Generic;
+using System.Text;
+
+namespace PdfSharp.Xps.Parsing
 {
   ///// <summary>
   ///// Names of the XPS classes.

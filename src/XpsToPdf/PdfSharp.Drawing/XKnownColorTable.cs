@@ -27,11 +27,17 @@
 // DEALINGS IN THE SOFTWARE.
 #endregion
 
+using System;
+using System.Globalization;
+using System.ComponentModel;
+using System.Threading;
 #if GDI
 using System.Drawing;
 #endif
 #if WPF
+using System.Windows.Media;
 #endif
+using PdfSharp.Internal;
 
 namespace PdfSharp.Drawing
 {
@@ -41,18 +47,18 @@ namespace PdfSharp.Drawing
 
     public static uint KnownColorToArgb(XKnownColor color)
     {
-      if (colorTable == null)
+      if (XKnownColorTable.colorTable == null)
         InitColorTable();
       if (color <= XKnownColor.YellowGreen)
-        return colorTable[(int)color];
+        return XKnownColorTable.colorTable[(int)color];
       return 0;
     }
 
     public static bool IsKnownColor(uint argb)
     {
-      for (int idx = 0; idx < colorTable.Length; idx++)
+      for (int idx = 0; idx < XKnownColorTable.colorTable.Length; idx++)
       {
-        if (colorTable[idx] == argb)
+        if (XKnownColorTable.colorTable[idx] == argb)
           return true;
       }
       return false;
@@ -60,9 +66,9 @@ namespace PdfSharp.Drawing
 
     public static XKnownColor GetKnownColor(uint argb)
     {
-      for (int idx = 0; idx < colorTable.Length; idx++)
+      for (int idx = 0; idx < XKnownColorTable.colorTable.Length; idx++)
       {
-        if (colorTable[idx] == argb)
+        if (XKnownColorTable.colorTable[idx] == argb)
           return (XKnownColor)idx;
       }
       return (XKnownColor)(-1);
@@ -215,7 +221,7 @@ namespace PdfSharp.Drawing
       colors[139] = 0xFFFFFF00;  // Yellow
       colors[140] = 0xFF9ACD32;  // YellowGreen
 
-      colorTable = colors;
+      XKnownColorTable.colorTable = colors;
     }
   }
 }

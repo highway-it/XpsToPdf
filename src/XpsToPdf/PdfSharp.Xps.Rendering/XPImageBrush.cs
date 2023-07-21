@@ -1,7 +1,15 @@
-﻿using System.Diagnostics;
+﻿using System;
+using System.Diagnostics;
+using System.Collections.Generic;
+using System.Text;
 using PdfSharp.Xps.XpsModel;
+using PdfSharp.Pdf;
 using PdfSharp.Pdf.Advanced;
+using PdfSharp.Pdf.Internal;
 using PdfSharp.Drawing;
+using PdfSharp.Drawing.Pdf;
+
+using BitmapSource = System.Windows.Media.Imaging.BitmapSource;
 
 namespace PdfSharp.Xps.Rendering
 {
@@ -32,7 +40,7 @@ namespace PdfSharp.Xps.Rendering
       //Debug.Assert(Object.Equals(payload, Context.
 
 
-      form = XFormBuilder.FromImageBrush(context, brush);
+      this.form = XFormBuilder.FromImageBrush(context, brush);
 
       // Get the font object.
       // Important: font.PdfFont is not yet defined here on the first call
@@ -42,13 +50,22 @@ namespace PdfSharp.Xps.Rendering
       //XPImage xpImage = new XPImage(bitmapSource);
     }
 
-    XForm Form => form;
+    XForm Form
+    {
+      get { return this.form; }
+    }
     XForm form;
 
-    PdfFormXObject FormXObject => formXObject;
+    PdfFormXObject FormXObject
+    {
+      get { return this.formXObject; }
+    }
     PdfFormXObject formXObject = null;
 
-    PdfTilingPattern Pattern => pattern;
+    PdfTilingPattern Pattern
+    {
+      get { return this.pattern; }
+    }
     PdfTilingPattern pattern = null;
   }
 }

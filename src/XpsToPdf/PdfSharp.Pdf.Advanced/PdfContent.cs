@@ -29,7 +29,13 @@
 
 using System;
 using System.Diagnostics;
+using System.Collections;
+using System.Text;
+using System.IO;
+using PdfSharp.Drawing;
 using PdfSharp.Drawing.Pdf;
+using PdfSharp.Pdf;
+using PdfSharp.Pdf.Internal;
 using PdfSharp.Pdf.Filters;
 using PdfSharp.Pdf.IO;
 
@@ -121,7 +127,7 @@ namespace PdfSharp.Pdf.Advanced
       // prepended or appended. Some nasty PDF tools does not preserve the graphical state correctly.
       // Therefore we try to relieve the problem by surrounding the content stream with push/restore 
       // graphic state operation.
-      if (Stream != null)
+      if (this.Stream != null)
       {
         byte[] value = Stream.Value;
         int length = value.Length;
@@ -142,17 +148,17 @@ namespace PdfSharp.Pdf.Advanced
 
     internal override void WriteObject(PdfWriter writer)
     {
-      if (pdfRenderer != null)
+      if (this.pdfRenderer != null)
       {
         // GetContent also disposes the underlying XGraphics object, if one exists
         //Stream = new PdfStream(PdfEncoders.RawEncoding.GetBytes(this.pdfRenderer.GetContent()), this);
-        pdfRenderer.Close();
-        Debug.Assert(pdfRenderer == null);
+        this.pdfRenderer.Close();
+        Debug.Assert(this.pdfRenderer == null);
       }
 
       if (Stream != null)
       {
-        if (Owner.Options.CompressContentStreams)
+        if (this.Owner.Options.CompressContentStreams)
         {
           Stream.Value = Filtering.FlateDecode.Encode(Stream.Value);
           Elements["/Filter"] = new PdfName("/FlateDecode");
@@ -177,9 +183,9 @@ namespace PdfSharp.Pdf.Advanced
       {
         get
         {
-          if (meta == null)
-            meta = CreateMeta(typeof(Keys));
-          return meta;
+          if (Keys.meta == null)
+            Keys.meta = CreateMeta(typeof(Keys));
+          return Keys.meta;
         }
       }
       static DictionaryMeta meta;
@@ -188,6 +194,9 @@ namespace PdfSharp.Pdf.Advanced
     /// <summary>
     /// Gets the KeysMeta of this dictionary type.
     /// </summary>
-    internal override DictionaryMeta Meta => Keys.Meta;
+    internal override DictionaryMeta Meta
+    {
+      get { return Keys.Meta; }
+    }
   }
 }

@@ -43,7 +43,10 @@ namespace PdfSharp.Drawing
       this.guid = guid;
     }
 
-    internal Guid Guid => guid;
+    internal Guid Guid
+    {
+      get { return this.guid; }
+    }
 
     /// <summary>
     /// Determines whether the specified object is equal to the current object.
@@ -53,7 +56,7 @@ namespace PdfSharp.Drawing
       XImageFormat format = obj as XImageFormat;
       if (format == null)
         return false;
-      return guid == format.guid;
+      return this.guid == format.guid;
     }
 
     /// <summary>
@@ -61,38 +64,56 @@ namespace PdfSharp.Drawing
     /// </summary>
     public override int GetHashCode()
     {
-      return guid.GetHashCode();
+      return this.guid.GetHashCode();
     }
 
     /// <summary>
     /// Gets the Portable Network Graphics (PNG) image format. 
     /// </summary>
-    public static XImageFormat Png => png;
+    public static XImageFormat Png
+    {
+      get { return XImageFormat.png; }
+    }
 
     /// <summary>
     /// Gets the Graphics Interchange Format (GIF) image format.
     /// </summary>
-    public static XImageFormat Gif => gif;
+    public static XImageFormat Gif
+    {
+      get { return XImageFormat.gif; }
+    }
 
     /// <summary>
     /// Gets the Joint Photographic Experts Group (JPEG) image format.
     /// </summary>
-    public static XImageFormat Jpeg => jpeg;
+    public static XImageFormat Jpeg
+    {
+      get { return XImageFormat.jpeg; }
+    }
 
     /// <summary>
     /// Gets the Tag Image File Format (TIFF) image format.
     /// </summary>
-    public static XImageFormat Tiff => tiff;
+    public static XImageFormat Tiff
+    {
+      get { return XImageFormat.tiff; }
+    }
 
     /// <summary>
     /// Gets the Portable Document Format (PDF) image format
     /// </summary>
-    public static XImageFormat Pdf => pdf;
+    public static XImageFormat Pdf
+    {
+      get { return XImageFormat.pdf; }
+    }
 
     /// <summary>
     /// Gets the Windows icon image format.
     /// </summary>
-    public static XImageFormat Icon => icon;
+    public static XImageFormat Icon
+    {
+      get { return XImageFormat.icon; }
+    }
 
     static XImageFormat()
     {

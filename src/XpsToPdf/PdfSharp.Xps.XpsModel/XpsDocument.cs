@@ -1,7 +1,12 @@
 ﻿using System;
+using System.Diagnostics;
+using System.Collections.Generic;
+using System.Globalization;
 using System.IO;
 using System.IO.Packaging;
+using System.Text;
 using System.Xml;
+using PdfSharp.Xps.Parsing;
 
 namespace PdfSharp.Xps.XpsModel
 {
@@ -15,7 +20,7 @@ namespace PdfSharp.Xps.XpsModel
     /// </summary>
     XpsDocument(Stream stream)
     {
-      package = System.IO.Packaging.Package.Open(stream) as ZipPackage;
+      this.package = ZipPackage.Open(stream) as ZipPackage;
       Initialize();
     }
 
@@ -24,7 +29,17 @@ namespace PdfSharp.Xps.XpsModel
     /// </summary>
     XpsDocument(string path)
     {
-      package = System.IO.Packaging.Package.Open(path) as ZipPackage;
+      this.package = ZipPackage.Open(path) as ZipPackage;
+      this.path = path;
+      Initialize();
+    }
+
+    /// <summary>
+    /// Initializes a new instance of the <see cref="XpsDocument"/> class from a path.
+    /// </summary>
+    XpsDocument(string path, FileMode packageMode, FileAccess packageAccess)
+    {
+      this.package = ZipPackage.Open(path, packageMode, packageAccess) as ZipPackage;
       this.path = path;
       Initialize();
     }
@@ -46,32 +61,40 @@ namespace PdfSharp.Xps.XpsModel
     }
 
     /// <summary>
+    /// Opens an XPS document from the specifed path.
+    /// </summary>
+    public static XpsDocument OpenRead(string path)
+    {
+      return new XpsDocument(path, FileMode.Open, FileAccess.Read);
+    }
+
+    /// <summary>
     /// Initializes the primary fixed payload.
     /// </summary>
     void Initialize()
     {
-      parts = package.GetParts();
+      this.parts = this.package.GetParts();
       // Assume only one fixed payload 
-      fpayload = new FixedPayload(this);
+      this.fpayload = new FixedPayload(this);
     }
 
     void IDisposable.Dispose()
     {
-      if (!disposed)
+      if (!this.disposed)
       {
         try
         {
-          parts = null;
-          fpayload = null;
-          if (package != null)
+          this.parts = null;
+          this.fpayload = null;
+          if (this.package != null)
           {
-            package.Close();
-            package = null;
+            this.package.Close();
+            this.package = null;
           }
         }
         finally
         {
-          disposed = true;
+          this.disposed = true;
         }
         GC.SuppressFinalize(this);
       }
@@ -86,13 +109,19 @@ namespace PdfSharp.Xps.XpsModel
       ((IDisposable)this).Dispose();
     }
 
-    internal string Path => path;
+    internal string Path
+    {
+      get { return this.path; }
+    }
     string path;
 
     /// <summary>
     /// Gets the number of fixed documents.
     /// </summary>
-    public int DocumentCount => fpayload.DocumentCount;
+    public int DocumentCount
+    {
+      get { return this.fpayload.DocumentCount; }
+    }
 
     /// <summary>
     /// Gets a read-only collection of the fixed documents of this XPS document.
@@ -101,16 +130,32 @@ namespace PdfSharp.Xps.XpsModel
     {
       get
       {
-        if (documents == null)
-          documents = new FixedDocumentCollection(fpayload);
-        return documents;
+        if (this.documents == null)
+          this.documents = new FixedDocumentCollection(this.fpayload);
+        return this.documents;
       }
     }
     FixedDocumentCollection documents;
 
+    /// <summary>
+    /// Gets the first document document from the fixed document sequence.
+    /// </summary>
+    public FixedDocument GetDocument()
+    {
+      return GetDocument(0);
+    }
+
+    /// <summary>
+    /// Gets the document with the specified index.
+    /// </summary>
+    public FixedDocument GetDocument(int index)
+    {
+      return this.fpayload.GetDocument(index);
+    }
+
     internal XmlTextReader GetPartAsXmlReader(string uri)
     {
-      return GetPartAsXmlReader(package, uri);
+      return GetPartAsXmlReader(this.package, uri);
     }
 
     internal static XmlTextReader GetPartAsXmlReader(ZipPackage package, string uriString)
@@ -120,12 +165,10 @@ namespace PdfSharp.Xps.XpsModel
         uriString = "/" + uriString;
 
       // Documents with relative uri exists.
-      if (uriString.StartsWith("/.."))
-        uriString = uriString.Substring(3);
+      uriString = ResolveAntiMonikerInPath(uriString);
 
-      ZipPackagePart part = package.GetPart(new Uri(uriString, UriKind.Relative)) as ZipPackagePart;
       string xml = String.Empty;
-      using (Stream stream = part.GetStream())
+      using (Stream stream = PartHelper.OpenPartStream(package, new Uri(uriString, UriKind.Relative)))
       {
         using (StreamReader sr = new StreamReader(stream))
         {
@@ -136,9 +179,53 @@ namespace PdfSharp.Xps.XpsModel
       return reader;
     }
 
+    private static string ResolveAntiMonikerInPath(string path)
+    {
+      var elements = new List<string>(path.Split('/'));
+      for (var x = 0; x < elements.Count; x++)
+      {
+        if (elements[x] == "..")
+        {
+          elements.RemoveAt(x);
+          if (x >= 2)
+          {
+            elements.RemoveAt(x - 1);
+            x -= 2;
+          }
+          else
+          {
+            x -= 1;
+          }
+        }
+      }
+      return string.Join("/", elements);
+    }
+
+    private static Uri ResolveAntiMonikerInPath(Uri path)
+    {
+      var elements = new List<string>(path.OriginalString.Split('/'));
+      for (var x = 0; x < elements.Count; x++)
+      {
+        if (elements[x] == "..")
+        {
+          elements.RemoveAt(x);
+          if (x >= 2)
+          {
+            elements.RemoveAt(x - 1);
+            x -= 2;
+          }
+          else
+          {
+            x -= 1;
+          }
+        }
+      }
+      return new Uri(string.Join("/", elements), UriKind.Relative);
+    }
+
     internal byte[] GetPartAsBytes(string uriString)
     {
-      return GetPartAsBytes(package, uriString);
+      return GetPartAsBytes(this.package, uriString);
     }
 
     internal static byte[] GetPartAsBytes(ZipPackage package, string uriString)
@@ -161,32 +248,45 @@ namespace PdfSharp.Xps.XpsModel
       if (uriString.StartsWith("/.."))
         uriString = uriString.Substring(3);
 #endif
-      var part = package.GetPart(target);
+      target = ResolveAntiMonikerInPath(target);
 
-      using (var srcStream = part.GetStream())
+      ZipPackagePart part = package.GetPart(target) as ZipPackagePart;
+
+      byte[] bytes = null;
+      using (Stream stream = part.GetStream())
       {
-          var buffer = new byte[srcStream.Length];
-          using (var dstStream = new MemoryStream(buffer))
+        int length = (int)stream.Length;
+        bytes = new byte[length];
+        int pos = 0;
+        while (pos < length)
+        {
+          int read = stream.Read(bytes, pos, length - pos);
+          if (read <= 0)
           {
-              srcStream.CopyTo(dstStream);
-
-              return buffer;
+            throw new EndOfStreamException();
           }
+          pos += read;
+        }
       }
+      return bytes;
     }
 
     /// <summary>
     /// Gets the underlying ZIP package.
     /// </summary>
-    internal ZipPackage Package => package;
-
+    internal ZipPackage Package
+    {
+      get { return this.package; }
+    }
     ZipPackage package;
 
     /// <summary>
     /// Gets the underlying ZIP package parts collection.
     /// </summary>
-    internal PackagePartCollection Parts => parts;
-
+    internal PackagePartCollection Parts
+    {
+      get { return this.parts; }
+    }
     PackagePartCollection parts;
 
     FixedPayload fpayload;

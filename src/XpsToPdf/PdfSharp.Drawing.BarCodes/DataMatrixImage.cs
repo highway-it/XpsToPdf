@@ -28,12 +28,17 @@
 #endregion
 
 using System;
+using System.Diagnostics;
 #if GDI
 using System.Drawing;
 using System.Drawing.Imaging;
 #endif
 #if WPF
+using System.Windows;
+using System.Windows.Media;
 #endif
+using PdfSharp.Drawing;
+
 
 
 // ========================================================================================
@@ -115,7 +120,7 @@ namespace PdfSharp.Drawing.BarCodes
 
     public XImage DrawMatrix()
     {
-      return CreateImage(DataMatrix(), rows, columns);
+      return CreateImage(DataMatrix(), this.rows, this.columns);
     }
 
     /// <summary>
@@ -123,8 +128,8 @@ namespace PdfSharp.Drawing.BarCodes
     /// </summary>
     internal char[] DataMatrix()
     {
-      int matrixColumns = columns;
-      int matrixRows = rows;
+      int matrixColumns = this.columns;
+      int matrixRows = this.rows;
       Ecc200Block matrix = new Ecc200Block(0, 0, 0, 0, 0, 0, 0);
 
       foreach (Ecc200Block eccmatrix in ecc200Sizes)

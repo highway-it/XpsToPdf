@@ -28,12 +28,15 @@
 #endregion
 
 using System;
+using System.IO;
 #if GDI
 using System.Drawing;
 using System.Drawing.Drawing2D;
 #endif
 #if WPF
+using System.Windows.Media;
 #endif
+using PdfSharp.Internal;
 
 namespace PdfSharp.Drawing
 {
@@ -101,10 +104,10 @@ namespace PdfSharp.Drawing
     /// </summary>
     public XStringAlignment Alignment
     { 
-      get {return alignment;}
+      get {return this.alignment;}
       set
       {
-        alignment = value;
+        this.alignment = value;
 #if GDI
         this.stringFormat.Alignment = (StringAlignment)value;
 #endif
@@ -124,10 +127,10 @@ namespace PdfSharp.Drawing
     /// </summary>
     public XLineAlignment LineAlignment
     { 
-      get {return lineAlignment;}
+      get {return this.lineAlignment;}
       set
       {
-        lineAlignment = value;
+        this.lineAlignment = value;
 #if GDI
         if (value == XLineAlignment.BaseLine)
           this.stringFormat.LineAlignment = StringAlignment.Near;
@@ -219,10 +222,10 @@ namespace PdfSharp.Drawing
     /// </summary>
     public XStringFormatFlags FormatFlags
     {
-      get {return formatFlags;}
+      get {return this.formatFlags;}
       set
       {
-        formatFlags = value;
+        this.formatFlags = value;
 #if GDI
         this.stringFormat.FormatFlags = (StringFormatFlags)value;
 #endif

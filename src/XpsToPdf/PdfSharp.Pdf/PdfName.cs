@@ -30,6 +30,10 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Collections;
+using System.Text;
+using System.IO;
+using PdfSharp.Internal;
 using PdfSharp.Pdf.IO;
 
 namespace PdfSharp.Pdf
@@ -45,7 +49,7 @@ namespace PdfSharp.Pdf
     /// </summary>
     public PdfName()
     {
-      value = "/";  // Empty name.
+      this.value = "/";  // Empty name.
     }
 
     /// <summary>
@@ -66,7 +70,7 @@ namespace PdfSharp.Pdf
     /// </summary>
     public override bool Equals(object obj)
     {
-      return value.Equals(obj);
+      return this.value.Equals(obj);
     }
 
     /// <summary>
@@ -74,16 +78,17 @@ namespace PdfSharp.Pdf
     /// </summary>
     public override int GetHashCode()
     {
-      return value.GetHashCode();
+      return this.value.GetHashCode();
     }
 
     /// <summary>
     /// Gets the name as a string.
     /// </summary>
-    public string Value =>
-        // This class must behave like a value type. Therefore it cannot be changed (like System.String).
-        value;
-
+    public string Value
+    {
+      // This class must behave like a value type. Therefore it cannot be changed (like System.String).
+      get { return this.value; }
+    }
     string value;
 
     /// <summary>
@@ -91,7 +96,7 @@ namespace PdfSharp.Pdf
     /// </summary>
     public override string ToString()
     {
-      return value;
+      return this.value;
     }
 
     /// <summary>
@@ -149,7 +154,10 @@ namespace PdfSharp.Pdf
     /// <summary>
     /// Gets the comparer for this type.
     /// </summary>
-    public static PdfXNameComparer Comparer => new PdfXNameComparer();
+    public static PdfXNameComparer Comparer
+    {
+      get { return new PdfXNameComparer(); }
+    }
 
     /// <summary>
     /// Implements a comparer that compares PdfName objects.

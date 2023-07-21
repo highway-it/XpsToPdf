@@ -29,6 +29,9 @@
 
 using System;
 using System.Collections.Generic;
+using System.Text;
+using System.IO;
+using PdfSharp.Internal;
 
 namespace PdfSharp.Pdf.Advanced
 {
@@ -64,10 +67,10 @@ namespace PdfSharp.Pdf.Advanced
     public string AddFont(PdfFont font)
     {
       string name;
-      if (!resources.TryGetValue(font, out name))
+      if (!this.resources.TryGetValue(font, out name))
       {
         name = NextFontName;
-        resources[font] = name;
+        this.resources[font] = name;
         if (font.Reference == null)
           Owner.irefTable.Add(font);
         Fonts.Elements[name] = font.Reference;
@@ -82,10 +85,10 @@ namespace PdfSharp.Pdf.Advanced
     public string AddImage(PdfImage image)
     {
       string name;
-      if (!resources.TryGetValue(image, out name))
+      if (!this.resources.TryGetValue(image, out name))
       {
         name = NextImageName;
-        resources[image] = name;
+        this.resources[image] = name;
         if (image.Reference == null)
           Owner.irefTable.Add(image);
         XObjects.Elements[name] = image.Reference;
@@ -100,10 +103,10 @@ namespace PdfSharp.Pdf.Advanced
     public string AddForm(PdfFormXObject form)
     {
       string name;
-      if (!resources.TryGetValue(form, out name))
+      if (!this.resources.TryGetValue(form, out name))
       {
         name = NextFormName;
-        resources[form] = name;
+        this.resources[form] = name;
         if (form.Reference == null)
           Owner.irefTable.Add(form);
         XObjects.Elements[name] = form.Reference;
@@ -118,10 +121,10 @@ namespace PdfSharp.Pdf.Advanced
     public string AddExtGState(PdfExtGState extGState)
     {
       string name;
-      if (!resources.TryGetValue(extGState, out name))
+      if (!this.resources.TryGetValue(extGState, out name))
       {
         name = NextExtGStateName;
-        resources[extGState] = name;
+        this.resources[extGState] = name;
         if (extGState.Reference == null)
           Owner.irefTable.Add(extGState);
         ExtGStates.Elements[name] = extGState.Reference;
@@ -136,10 +139,10 @@ namespace PdfSharp.Pdf.Advanced
     public string AddPattern(PdfShadingPattern pattern)
     {
       string name;
-      if (!resources.TryGetValue(pattern, out name))
+      if (!this.resources.TryGetValue(pattern, out name))
       {
         name = NextPatternName;
-        resources[pattern] = name;
+        this.resources[pattern] = name;
         if (pattern.Reference == null)
           Owner.irefTable.Add(pattern);
         Patterns.Elements[name] = pattern.Reference;
@@ -154,10 +157,10 @@ namespace PdfSharp.Pdf.Advanced
     public string AddPattern(PdfTilingPattern pattern)
     {
       string name;
-      if (!resources.TryGetValue(pattern, out name))
+      if (!this.resources.TryGetValue(pattern, out name))
       {
         name = NextPatternName;
-        resources[pattern] = name;
+        this.resources[pattern] = name;
         if (pattern.Reference == null)
           Owner.irefTable.Add(pattern);
         Patterns.Elements[name] = pattern.Reference;
@@ -172,10 +175,10 @@ namespace PdfSharp.Pdf.Advanced
     public string AddShading(PdfShading shading)
     {
       string name;
-      if (!resources.TryGetValue(shading, out name))
+      if (!this.resources.TryGetValue(shading, out name))
       {
         name = NextShadingName;
-        resources[shading] = name;
+        this.resources[shading] = name;
         if (shading.Reference == null)
           Owner.irefTable.Add(shading);
         Shadings.Elements[name] = shading.Reference;
@@ -190,9 +193,9 @@ namespace PdfSharp.Pdf.Advanced
     {
       get
       {
-        if (fonts == null)
-          fonts = (PdfResourceMap)Elements.GetValue(Keys.Font, VCF.Create);
-        return fonts;
+        if (this.fonts == null)
+          this.fonts = (PdfResourceMap)Elements.GetValue(Keys.Font, VCF.Create);
+        return this.fonts;
       }
     }
     PdfResourceMap fonts;
@@ -204,9 +207,9 @@ namespace PdfSharp.Pdf.Advanced
     {
       get
       {
-        if (xObjects == null)
-          xObjects = (PdfResourceMap)Elements.GetValue(Keys.XObject, VCF.Create);
-        return xObjects;
+        if (this.xObjects == null)
+          this.xObjects = (PdfResourceMap)Elements.GetValue(Keys.XObject, VCF.Create);
+        return this.xObjects;
       }
     }
     PdfResourceMap xObjects;
@@ -216,9 +219,9 @@ namespace PdfSharp.Pdf.Advanced
     {
       get
       {
-        if (extGStates == null)
-          extGStates = (PdfResourceMap)Elements.GetValue(Keys.ExtGState, VCF.Create);
-        return extGStates;
+        if (this.extGStates == null)
+          this.extGStates = (PdfResourceMap)Elements.GetValue(Keys.ExtGState, VCF.Create);
+        return this.extGStates;
       }
     }
     PdfResourceMap extGStates;
@@ -228,9 +231,9 @@ namespace PdfSharp.Pdf.Advanced
     {
       get
       {
-        if (colorSpaces == null)
-          colorSpaces = (PdfResourceMap)Elements.GetValue(Keys.ColorSpace, VCF.Create);
-        return colorSpaces;
+        if (this.colorSpaces == null)
+          this.colorSpaces = (PdfResourceMap)Elements.GetValue(Keys.ColorSpace, VCF.Create);
+        return this.colorSpaces;
       }
     }
     PdfResourceMap colorSpaces;
@@ -240,9 +243,9 @@ namespace PdfSharp.Pdf.Advanced
     {
       get
       {
-        if (patterns == null)
-          patterns = (PdfResourceMap)Elements.GetValue(Keys.Pattern, VCF.Create);
-        return patterns;
+        if (this.patterns == null)
+          this.patterns = (PdfResourceMap)Elements.GetValue(Keys.Pattern, VCF.Create);
+        return this.patterns;
       }
     }
     PdfResourceMap patterns;
@@ -252,9 +255,9 @@ namespace PdfSharp.Pdf.Advanced
     {
       get
       {
-        if (shadings == null)
-          shadings = (PdfResourceMap)Elements.GetValue(Keys.Shading, VCF.Create);
-        return shadings;
+        if (this.shadings == null)
+          this.shadings = (PdfResourceMap)Elements.GetValue(Keys.Shading, VCF.Create);
+        return this.shadings;
       }
     }
     PdfResourceMap shadings;
@@ -264,9 +267,9 @@ namespace PdfSharp.Pdf.Advanced
     {
       get
       {
-        if (properties == null)
-          properties = (PdfResourceMap)Elements.GetValue(Keys.Properties, VCF.Create);
-        return properties;
+        if (this.properties == null)
+          this.properties = (PdfResourceMap)Elements.GetValue(Keys.Properties, VCF.Create);
+        return this.properties;
       }
     }
     PdfResourceMap properties;
@@ -279,7 +282,7 @@ namespace PdfSharp.Pdf.Advanced
       get
       {
         string name;
-        while (ExistsResourceNames(name = String.Format("/F{0}", fontNumber++))) { }
+        while (ExistsResourceNames(name = String.Format("/F{0}", this.fontNumber++))) { }
         return name;
       }
     }
@@ -293,7 +296,7 @@ namespace PdfSharp.Pdf.Advanced
       get
       {
         string name;
-        while (ExistsResourceNames(name = String.Format("/I{0}", imageNumber++))) { }
+        while (ExistsResourceNames(name = String.Format("/I{0}", this.imageNumber++))) { }
         return name;
       }
     }
@@ -307,7 +310,7 @@ namespace PdfSharp.Pdf.Advanced
       get
       {
         string name;
-        while (ExistsResourceNames(name = String.Format("/Fm{0}", formNumber++))) { }
+        while (ExistsResourceNames(name = String.Format("/Fm{0}", this.formNumber++))) { }
         return name;
       }
     }
@@ -321,7 +324,7 @@ namespace PdfSharp.Pdf.Advanced
       get
       {
         string name;
-        while (ExistsResourceNames(name = String.Format("/GS{0}", ExtGStateNumber++))) { }
+        while (ExistsResourceNames(name = String.Format("/GS{0}", this.ExtGStateNumber++))) { }
         return name;
       }
     }
@@ -335,7 +338,7 @@ namespace PdfSharp.Pdf.Advanced
       get
       {
         string name;
-        while (ExistsResourceNames(name = String.Format("/Pa{0}", PatternNumber++))) ;
+        while (ExistsResourceNames(name = String.Format("/Pa{0}", this.PatternNumber++))) ;
         return name;
       }
     }
@@ -349,7 +352,7 @@ namespace PdfSharp.Pdf.Advanced
       get
       {
         string name;
-        while (ExistsResourceNames(name = String.Format("/Sh{0}", ShadingNumber++))) ;
+        while (ExistsResourceNames(name = String.Format("/Sh{0}", this.ShadingNumber++))) ;
         return name;
       }
     }
@@ -367,32 +370,32 @@ namespace PdfSharp.Pdf.Advanced
       //  return false;
 
       // Collect all resouce names of all imported resources.
-      if (importedResourceNames == null)
+      if (this.importedResourceNames == null)
       {
-        importedResourceNames = new Dictionary<string, object>();
+        this.importedResourceNames = new Dictionary<string, object>();
 
         if (Elements[Keys.Font] != null)
-          Fonts.CollectResourceNames(importedResourceNames);
+          Fonts.CollectResourceNames(this.importedResourceNames);
 
         if (Elements[Keys.XObject] != null)
-          XObjects.CollectResourceNames(importedResourceNames);
+          XObjects.CollectResourceNames(this.importedResourceNames);
 
         if (Elements[Keys.ExtGState] != null)
-          ExtGStates.CollectResourceNames(importedResourceNames);
+          ExtGStates.CollectResourceNames(this.importedResourceNames);
 
         if (Elements[Keys.ColorSpace] != null)
-          ColorSpaces.CollectResourceNames(importedResourceNames);
+          ColorSpaces.CollectResourceNames(this.importedResourceNames);
 
         if (Elements[Keys.Pattern] != null)
-          Patterns.CollectResourceNames(importedResourceNames);
+          Patterns.CollectResourceNames(this.importedResourceNames);
 
         if (Elements[Keys.Shading] != null)
-          Shadings.CollectResourceNames(importedResourceNames);
+          Shadings.CollectResourceNames(this.importedResourceNames);
 
         if (Elements[Keys.Properties] != null)
-          Properties.CollectResourceNames(importedResourceNames);
+          Properties.CollectResourceNames(this.importedResourceNames);
       }
-      return importedResourceNames.ContainsKey(name);
+      return this.importedResourceNames.ContainsKey(name);
       // This is superfluous because PDFsharp resource names cannot be double.
       // this.importedResourceNames.Add(name, null);
     }
@@ -471,9 +474,9 @@ namespace PdfSharp.Pdf.Advanced
       {
         get
         {
-          if (meta == null)
-            meta = CreateMeta(typeof(Keys));
-          return meta;
+          if (Keys.meta == null)
+            Keys.meta = CreateMeta(typeof(Keys));
+          return Keys.meta;
         }
       }
       static DictionaryMeta meta;
@@ -482,6 +485,9 @@ namespace PdfSharp.Pdf.Advanced
     /// <summary>
     /// Gets the KeysMeta of this dictionary type.
     /// </summary>
-    internal override DictionaryMeta Meta => Keys.Meta;
+    internal override DictionaryMeta Meta
+    {
+      get { return Keys.Meta; }
+    }
   }
 }

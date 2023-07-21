@@ -27,6 +27,8 @@
 // DEALINGS IN THE SOFTWARE.
 #endregion
 
+using System;
+
 #if under_constructioin
 namespace PdfSharp.Drawing.Shapes
 {

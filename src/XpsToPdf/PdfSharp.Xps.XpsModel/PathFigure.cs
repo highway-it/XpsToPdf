@@ -1,4 +1,7 @@
-﻿using PdfSharp.Drawing;
+﻿using System;
+using System.Collections.Generic;
+using System.Text;
+using PdfSharp.Drawing;
 
 namespace PdfSharp.Xps.XpsModel
 {

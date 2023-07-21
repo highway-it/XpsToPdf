@@ -30,6 +30,8 @@
 using System;
 using System.Diagnostics;
 using System.Collections.Generic;
+using PdfSharp.Drawing;
+using PdfSharp.Fonts.OpenType;
 
 namespace PdfSharp.Fonts.OpenType
 {
@@ -40,7 +42,7 @@ namespace PdfSharp.Fonts.OpenType
   {
     FontDataStock()
     {
-      fontDataTable = new Dictionary<string, FontData>();
+      this.fontDataTable = new Dictionary<string, FontData>();
     }
 
     public FontData RegisterFontData(byte[] data)
@@ -49,16 +51,16 @@ namespace PdfSharp.Fonts.OpenType
       string key = String.Format("??{0:X}", checksum);
 
       FontData fontData;
-      if (!fontDataTable.TryGetValue(key, out fontData))
+      if (!this.fontDataTable.TryGetValue(key, out fontData))
       {
         lock (typeof(FontDataStock))
         {
           // may be created by other thread meanwhile
-          if (!fontDataTable.TryGetValue(key, out fontData))
+          if (!this.fontDataTable.TryGetValue(key, out fontData))
           {
             fontData = new FontData(data);
-            fontDataTable.Add(key, fontData);
-            lastEntry = fontData;
+            this.fontDataTable.Add(key, fontData);
+            this.lastEntry = fontData;
           }
         }
       }

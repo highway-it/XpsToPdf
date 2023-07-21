@@ -28,6 +28,9 @@
 #endregion
 
 using System;
+using System.Diagnostics;
+using System.Collections.Generic;
+using System.Text;
 using System.Globalization;
 
 namespace PdfSharp.Internal
@@ -38,9 +41,9 @@ namespace PdfSharp.Internal
   {
     internal char PeekNextCharacter()
     {
-      if (charIndex >= strLen)
+      if (this.charIndex >= this.strLen)
         return 'X';
-      char ch = str[charIndex];
+      char ch = this.str[this.charIndex];
       return ch;
     }
 
@@ -63,9 +66,9 @@ namespace PdfSharp.Internal
 
     internal string GetCurrentToken()
     {
-      if (currentTokenIndex < 0)
+      if (this.currentTokenIndex < 0)
         return null;
-      return str.Substring(currentTokenIndex, currentTokenLength);
+      return this.str.Substring(this.currentTokenIndex, this.currentTokenLength);
     }
 
     internal static char GetNumericListSeparator(IFormatProvider provider)
@@ -80,21 +83,21 @@ namespace PdfSharp.Internal
     void Initialize(string str, char quoteChar, char separator)
     {
       this.str = str;
-      strLen = (str == null) ? 0 : str.Length;
-      currentTokenIndex = -1;
+      this.strLen = (str == null) ? 0 : str.Length;
+      this.currentTokenIndex = -1;
       this.quoteChar = quoteChar;
-      argSeparator = separator;
-      while (charIndex < strLen)
+      this.argSeparator = separator;
+      while (this.charIndex < this.strLen)
       {
-        if (!Char.IsWhiteSpace(this.str, charIndex))
+        if (!Char.IsWhiteSpace(this.str, this.charIndex))
           return;
-        charIndex++;
+        this.charIndex++;
       }
     }
 
     internal void LastTokenRequired()
     {
-      if (charIndex != strLen)
+      if (this.charIndex != this.strLen)
         throw new InvalidOperationException("Extra data encountered"); //SR.Get(SRID.TokenizerHelperExtraDataEncountered, new object[0]));
     }
 
@@ -105,56 +108,56 @@ namespace PdfSharp.Internal
 
     internal bool NextToken(bool allowQuotedToken)
     {
-      return NextToken(allowQuotedToken, argSeparator);
+      return NextToken(allowQuotedToken, this.argSeparator);
     }
 
     internal bool NextToken(bool allowQuotedToken, char separator)
     {
-      currentTokenIndex = -1;
-      foundSeparator = false;
-      if (charIndex >= strLen)
+      this.currentTokenIndex = -1;
+      this.foundSeparator = false;
+      if (this.charIndex >= this.strLen)
         return false;
 
-      char c = str[charIndex];
+      char c = this.str[this.charIndex];
       int charCount = 0;
-      if (allowQuotedToken && c == quoteChar)
+      if (allowQuotedToken && c == this.quoteChar)
       {
         charCount++;
-        charIndex++;
+        this.charIndex++;
       }
-      int index = charIndex;
+      int index = this.charIndex;
       int num3 = 0;
-      while (charIndex < strLen)
+      while (this.charIndex < this.strLen)
       {
-        c = str[charIndex];
+        c = this.str[this.charIndex];
         if (charCount > 0)
         {
-          if (c != quoteChar)
+          if (c != this.quoteChar)
             goto Label_00AA;
 
           charCount--;
           if (charCount != 0)
             goto Label_00AA;
 
-          charIndex++;
+          this.charIndex++;
           break;
         }
         if (char.IsWhiteSpace(c) || c == separator)
         {
           if (c == separator)
-            foundSeparator = true;
+            this.foundSeparator = true;
           break;
         }
       Label_00AA:
-        charIndex++;
+        this.charIndex++;
         num3++;
       }
       if (charCount > 0)
         throw new InvalidOperationException("Missing end quote"); //SR.Get(SRID.TokenizerHelperMissingEndQuote, new object[0]));
       ScanToNextToken(separator);
-      currentTokenIndex = index;
-      currentTokenLength = num3;
-      if (currentTokenLength < 1)
+      this.currentTokenIndex = index;
+      this.currentTokenLength = num3;
+      if (this.currentTokenLength < 1)
         throw new InvalidOperationException("Empty token"); // SR.Get(SRID.TokenizerHelperEmptyToken, new object[0]));
 #if DEBUG_
       string s = GetCurrentToken();
@@ -181,22 +184,22 @@ namespace PdfSharp.Internal
 
     private void ScanToNextToken(char separator)
     {
-      if (charIndex < strLen)
+      if (this.charIndex < this.strLen)
       {
-        char c = str[charIndex];
+        char c = this.str[this.charIndex];
         if (c != separator && !char.IsWhiteSpace(c))
         {
           throw new InvalidOperationException("ExtraDataEncountered"); //SR.Get(SRID.TokenizerHelperExtraDataEncountered, new object[0]));
         }
         int num = 0;
-        while (charIndex < strLen)
+        while (this.charIndex < this.strLen)
         {
-          c = str[charIndex];
+          c = this.str[this.charIndex];
           if (c == separator)
           {
-            foundSeparator = true;
+            this.foundSeparator = true;
             num++;
-            charIndex++;
+            this.charIndex++;
             if (num > 1)
               throw new InvalidOperationException("EmptyToken"); //SR.Get(SRID.TokenizerHelperEmptyToken, new object[0]));
           }
@@ -204,15 +207,18 @@ namespace PdfSharp.Internal
           {
             if (!char.IsWhiteSpace(c))
               break;
-            charIndex++;
+            this.charIndex++;
           }
         }
-        if (num > 0 && charIndex >= strLen)
+        if (num > 0 && this.charIndex >= this.strLen)
           throw new InvalidOperationException("EmptyToken"); // SR.Get(SRID.TokenizerHelperEmptyToken, new object[0]));
       }
     }
 
-    internal bool FoundSeparator => foundSeparator;
+    internal bool FoundSeparator
+    {
+      get { return this.foundSeparator; }
+    }
     private bool foundSeparator;
 
     private char argSeparator;

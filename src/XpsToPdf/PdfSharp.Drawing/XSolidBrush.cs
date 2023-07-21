@@ -28,12 +28,16 @@
 #endregion
 
 using System;
+using System.Diagnostics;
+using System.IO;
 #if GDI
 using System.Drawing;
 #endif
 #if WPF
+using System.Windows;
 using System.Windows.Media;
 #endif
+using PdfSharp.Internal;
 
 namespace PdfSharp.Drawing
 {
@@ -68,7 +72,7 @@ namespace PdfSharp.Drawing
     /// </summary>
     public XSolidBrush(XSolidBrush brush)
     {
-      color = brush.Color;
+      this.color = brush.Color;
     }
 
     /// <summary>
@@ -76,17 +80,17 @@ namespace PdfSharp.Drawing
     /// </summary>
     public XColor Color
     {
-      get { return color; }
+      get { return this.color; }
       set
       {
-        if (immutable)
+        if (this.immutable)
           throw new ArgumentException(PSSR.CannotChangeImmutableObject("XSolidBrush"));
-        color = value;
+        this.color = value;
 #if GDI
         this.gdiDirty = this.gdiDirty || this.color != value;
 #endif
 #if WPF
-        wpfDirty = wpfDirty || color != value;
+        this.wpfDirty = this.wpfDirty || this.color != value;
 #endif
 #if GDI && WPF
         this.gdiDirty = this.wpfDirty = true;
@@ -117,15 +121,15 @@ namespace PdfSharp.Drawing
 #endif
 
 #if WPF
-    internal override Brush RealizeWpfBrush()
+    internal override System.Windows.Media.Brush RealizeWpfBrush()
     {
-      if (wpfDirty)
+      if (this.wpfDirty)
       {
-        if (wpfBrush == null)
-          wpfBrush = new SolidColorBrush(color.ToWpfColor());
+        if (this.wpfBrush == null)
+          this.wpfBrush = new SolidColorBrush(this.color.ToWpfColor());
         else
-          wpfBrush.Color = color.ToWpfColor();
-        wpfDirty = false;
+          this.wpfBrush.Color = this.color.ToWpfColor();
+        this.wpfDirty = false;
       }
 
 #if DEBUG_
@@ -133,7 +137,7 @@ namespace PdfSharp.Drawing
       System.Windows.Media.SolidColorBrush brush1 = new System.Windows.Media.SolidColorBrush(clr); //System.Drawing.Color.FromArgb(128, 128, 0, 0));
       Debug.Assert(this.wpfBrush.Color == brush1.Color);  // Crashes during unit testing
 #endif
-      return wpfBrush;
+      return this.wpfBrush;
     }
 #endif
 

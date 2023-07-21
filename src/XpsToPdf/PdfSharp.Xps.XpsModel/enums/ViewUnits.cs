@@ -1,4 +1,6 @@
-﻿namespace PdfSharp.Xps.XpsModel
+﻿using System;
+
+namespace PdfSharp.Xps.XpsModel
 {
   enum ViewUnits
   {

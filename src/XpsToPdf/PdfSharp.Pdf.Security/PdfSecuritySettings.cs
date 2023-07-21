@@ -27,6 +27,15 @@
 // DEALINGS IN THE SOFTWARE.
 #endregion
 
+using System;
+using System.Diagnostics;
+using System.Collections;
+using PdfSharp.Pdf;
+using PdfSharp.Pdf.Internal;
+using PdfSharp.Pdf.Security;
+using PdfSharp.Internal;
+using PdfSharp.Drawing;
+
 namespace PdfSharp.Pdf.Security
 {
   /// <summary>
@@ -45,8 +54,10 @@ namespace PdfSharp.Pdf.Security
     /// is unprotected or was opened with the owner password. Returns false if the document was opened with the
     /// user password.
     /// </summary>
-    public bool HasOwnerPermissions => hasOwnerPermissions;
-
+    public bool HasOwnerPermissions
+    {
+      get { return this.hasOwnerPermissions; }
+    }
     internal bool hasOwnerPermissions = true;
 
     /// <summary>
@@ -55,8 +66,8 @@ namespace PdfSharp.Pdf.Security
     /// </summary>
     public PdfDocumentSecurityLevel DocumentSecurityLevel
     {
-      get => documentSecurityLevel;
-      set => documentSecurityLevel = value;
+      get { return this.documentSecurityLevel; }
+      set { this.documentSecurityLevel = value; }
     }
     PdfDocumentSecurityLevel documentSecurityLevel;
 
@@ -67,7 +78,7 @@ namespace PdfSharp.Pdf.Security
     /// </summary>
     public string UserPassword
     {
-      set => SecurityHandler.UserPassword = value;
+      set { SecurityHandler.UserPassword = value; }
     }
 
     /// <summary>
@@ -77,7 +88,7 @@ namespace PdfSharp.Pdf.Security
     /// </summary>
     public string OwnerPassword
     {
-      set => SecurityHandler.OwnerPassword = value;
+      set { SecurityHandler.OwnerPassword = value; }
     }
 
     /// <summary>
@@ -85,7 +96,7 @@ namespace PdfSharp.Pdf.Security
     /// </summary>
     internal bool CanSave(ref string message)
     {
-      if (documentSecurityLevel != PdfDocumentSecurityLevel.None)
+      if (this.documentSecurityLevel != PdfDocumentSecurityLevel.None)
       {
         if ((SecurityHandler.userPassword == null || SecurityHandler.userPassword.Length == 0) &&
           (SecurityHandler.ownerPassword == null || SecurityHandler.ownerPassword.Length == 0))
@@ -105,7 +116,7 @@ namespace PdfSharp.Pdf.Security
     /// </summary>
     public bool PermitPrint
     {
-      get => (SecurityHandler.Permission & PdfUserAccessPermission.PermitPrint) != 0;
+      get { return (SecurityHandler.Permission & PdfUserAccessPermission.PermitPrint) != 0; }
       set
       {
         PdfUserAccessPermission permission = SecurityHandler.Permission;
@@ -122,7 +133,7 @@ namespace PdfSharp.Pdf.Security
     /// </summary>
     public bool PermitModifyDocument
     {
-      get => (SecurityHandler.Permission & PdfUserAccessPermission.PermitModifyDocument) != 0;
+      get { return (SecurityHandler.Permission & PdfUserAccessPermission.PermitModifyDocument) != 0; }
       set
       {
         PdfUserAccessPermission permission = SecurityHandler.Permission;
@@ -139,7 +150,7 @@ namespace PdfSharp.Pdf.Security
     /// </summary>
     public bool PermitExtractContent
     {
-      get => (SecurityHandler.Permission & PdfUserAccessPermission.PermitExtractContent) != 0;
+      get { return (SecurityHandler.Permission & PdfUserAccessPermission.PermitExtractContent) != 0; }
       set
       {
         PdfUserAccessPermission permission = SecurityHandler.Permission;
@@ -156,7 +167,7 @@ namespace PdfSharp.Pdf.Security
     /// </summary>
     public bool PermitAnnotations
     {
-      get => (SecurityHandler.Permission & PdfUserAccessPermission.PermitAnnotations) != 0;
+      get { return (SecurityHandler.Permission & PdfUserAccessPermission.PermitAnnotations) != 0; }
       set
       {
         PdfUserAccessPermission permission = SecurityHandler.Permission;
@@ -173,7 +184,7 @@ namespace PdfSharp.Pdf.Security
     /// </summary>
     public bool PermitFormsFill
     {
-      get => (SecurityHandler.Permission & PdfUserAccessPermission.PermitFormsFill) != 0;
+      get { return (SecurityHandler.Permission & PdfUserAccessPermission.PermitFormsFill) != 0; }
       set
       {
         PdfUserAccessPermission permission = SecurityHandler.Permission;
@@ -190,7 +201,7 @@ namespace PdfSharp.Pdf.Security
     /// </summary>
     public bool PermitAccessibilityExtractContent
     {
-      get => (SecurityHandler.Permission & PdfUserAccessPermission.PermitAccessibilityExtractContent) != 0;
+      get { return (SecurityHandler.Permission & PdfUserAccessPermission.PermitAccessibilityExtractContent) != 0; }
       set
       {
         PdfUserAccessPermission permission = SecurityHandler.Permission;
@@ -208,7 +219,7 @@ namespace PdfSharp.Pdf.Security
     /// </summary>
     public bool PermitAssembleDocument
     {
-      get => (SecurityHandler.Permission & PdfUserAccessPermission.PermitAssembleDocument) != 0;
+      get { return (SecurityHandler.Permission & PdfUserAccessPermission.PermitAssembleDocument) != 0; }
       set
       {
         PdfUserAccessPermission permission = SecurityHandler.Permission;
@@ -226,7 +237,7 @@ namespace PdfSharp.Pdf.Security
     /// </summary>
     public bool PermitFullQualityPrint
     {
-      get => (SecurityHandler.Permission & PdfUserAccessPermission.PermitFullQualityPrint) != 0;
+      get { return (SecurityHandler.Permission & PdfUserAccessPermission.PermitFullQualityPrint) != 0; }
       set
       {
         PdfUserAccessPermission permission = SecurityHandler.Permission;
@@ -243,6 +254,9 @@ namespace PdfSharp.Pdf.Security
     /// <summary>
     /// PdfStandardSecurityHandler is the only implemented handler.
     /// </summary>
-    internal PdfStandardSecurityHandler SecurityHandler => document.trailer.SecurityHandler;
+    internal PdfStandardSecurityHandler SecurityHandler
+    {
+      get { return this.document.trailer.SecurityHandler; }
+    }
   }
 }

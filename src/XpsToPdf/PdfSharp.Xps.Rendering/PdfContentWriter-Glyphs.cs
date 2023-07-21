@@ -1,12 +1,15 @@
 ﻿using System;
 using System.Diagnostics;
 using System.Globalization;
+using System.Collections.Generic;
 using System.Text;
 using PdfSharp.Xps.XpsModel;
+using PdfSharp.Pdf;
 using PdfSharp.Internal;
 using PdfSharp.Pdf.Advanced;
 using PdfSharp.Pdf.Internal;
 using PdfSharp.Drawing;
+using PdfSharp.Drawing.Pdf;
 using PdfSharp.Fonts.OpenType;
 
 #pragma warning disable 414, 169, 649 // incomplete code state
@@ -97,7 +100,7 @@ namespace PdfSharp.Xps.Rendering
       //    break;
       //}
 
-      PdfFont realizedFont = graphicsState.realizedFont;
+      PdfFont realizedFont = this.graphicsState.realizedFont;
       Debug.Assert(realizedFont != null);
       realizedFont.AddChars(glyphs.UnicodeString);
 
@@ -238,7 +241,7 @@ namespace PdfSharp.Xps.Rendering
       int glyphIdx = 0;
       bool stop = false;
 
-      PdfFont realizedFont = graphicsState.realizedFont;
+      PdfFont realizedFont = this.graphicsState.realizedFont;
       OpenTypeDescriptor descriptor = realizedFont.FontDescriptor.descriptor;
       int glyphIndex;
 
@@ -315,7 +318,7 @@ namespace PdfSharp.Xps.Rendering
             WriteLiteral("{0:0.####} {1:0.####} Td {2}Tj\n", pos.x, pos.y, outputText.ToString());
 
             double width = descriptor.GlyphIndexToPdfWidth(glyphIndex);
-            if (!DoubleUtil.IsNaN(mapping.AdvanceWidth))
+            if (!PdfSharp.Internal.DoubleUtil.IsNaN(mapping.AdvanceWidth))
               width = mapping.AdvanceWidth * 10;
             pos = new XPoint(accumulatedWidth + width * boldSimulationFactor / 1000 * glyphs.FontRenderingEmSize, 0);
 
@@ -375,7 +378,7 @@ namespace PdfSharp.Xps.Rendering
       int glyphIdx = 0;
       bool stop = false;
 
-      PdfFont realizedFont = graphicsState.realizedFont;
+      PdfFont realizedFont = this.graphicsState.realizedFont;
       OpenTypeDescriptor descriptor = realizedFont.FontDescriptor.descriptor;
       int glyphIndex;
 
@@ -390,6 +393,8 @@ namespace PdfSharp.Xps.Rendering
       int outputGlyphCount = 0;
       bool mustRender = false;
       bool hasOffset = false;
+
+      bool symbol = descriptor != null && descriptor.fontData.cmap.symbol;
 
       do
       {
@@ -465,9 +470,19 @@ namespace PdfSharp.Xps.Rendering
 
           // get index of current glyph
           if (mapping.HasGlyphIndex)
+          {
             glyphIndex = mapping.GlyphIndex;
+          }
+          else if (symbol)
+          {
+            char ch = unicodeString[codeIdx];
+            glyphIndex = ch + (descriptor.fontData.os2.usFirstCharIndex & 0xFF00); // @@@
+            glyphIndex = descriptor.CharCodeToGlyphIndex((char)glyphIndex);
+          }
           else
+          {
             glyphIndex = descriptor.CharCodeToGlyphIndex(unicodeString[codeIdx]);
+          }
 
           // add glyph index to the fonts 'used glyph table'
           realizedFont.AddGlyphIndices(new string((char)glyphIndex, 1));
@@ -495,7 +510,7 @@ namespace PdfSharp.Xps.Rendering
             WriteLiteral("{0:0.####} {1:0.####} Td {2}Tj\n", pos.x, pos.y, outputText.ToString());
 
             double width = descriptor.GlyphIndexToPdfWidth(glyphIndex);
-            if (!DoubleUtil.IsNaN(mapping.AdvanceWidth))
+            if (!PdfSharp.Internal.DoubleUtil.IsNaN(mapping.AdvanceWidth))
               width = mapping.AdvanceWidth * 10;
             pos = new XPoint(accumulatedWidth + width * boldSimulationFactor / 1000 * glyphs.FontRenderingEmSize, 0);
 

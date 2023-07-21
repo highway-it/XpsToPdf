@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Text;
 
 namespace PdfSharp.Xps.XpsModel
 {
@@ -32,9 +33,15 @@ namespace PdfSharp.Xps.XpsModel
       throw new InvalidOperationException();
     }
 
-    public int Count => throw new InvalidOperationException();
+    public int Count
+    {
+      get { throw new InvalidOperationException(); }
+    }
 
-    public bool IsReadOnly => throw new InvalidOperationException();
+    public bool IsReadOnly
+    {
+      get { throw new InvalidOperationException(); }
+    }
 
     public bool Remove(FixedDocument item)
     {
@@ -43,9 +50,9 @@ namespace PdfSharp.Xps.XpsModel
 
     public IEnumerator<FixedDocument> GetEnumerator()
     {
-      int count = fpayload.DocumentCount;
+      int count = this.fpayload.DocumentCount;
       for (int idx = 0; idx < count; idx++)
-        yield return fpayload.GetDocument(idx);
+        yield return this.fpayload.GetDocument(idx);
     }
 
     System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator()

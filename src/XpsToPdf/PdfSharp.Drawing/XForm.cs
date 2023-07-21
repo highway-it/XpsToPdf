@@ -29,6 +29,8 @@
 
 using System;
 using System.Diagnostics;
+using System.Runtime.InteropServices;
+using System.ComponentModel;
 using System.IO;
 #if GDI
 using System.Drawing;
@@ -36,10 +38,16 @@ using System.Drawing.Drawing2D;
 using System.Drawing.Imaging;
 #endif
 #if WPF
+using System.Windows.Media;
 #endif
+using PdfSharp.Internal;
 using PdfSharp.Drawing.Pdf;
+using PdfSharp.Fonts.OpenType;
 using PdfSharp.Pdf;
+using PdfSharp.Pdf.IO;
 using PdfSharp.Pdf.Advanced;
+using PdfSharp.Pdf.Filters;
+using PdfSharp.Pdf.Internal;
 
 namespace PdfSharp.Drawing
 {
@@ -135,13 +143,13 @@ namespace PdfSharp.Drawing
       if (document == null)
         throw new ArgumentNullException("document", "An XPdfForm template must be associated with a document at creation time.");
 
-      formState = FormState.Created;
+      this.formState = FormState.Created;
       this.document = document;
-      pdfForm = new PdfFormXObject(document, this);
+      this.pdfForm = new PdfFormXObject(document, this);
       //this.templateSize = size;
       this.viewBox = viewBox;
       PdfRectangle rect = new PdfRectangle(viewBox);
-      pdfForm.Elements.SetRectangle(PdfFormXObject.Keys.BBox, rect);
+      this.pdfForm.Elements.SetRectangle(PdfFormXObject.Keys.BBox, rect);
     }
 
     /// <summary>
@@ -186,10 +194,10 @@ namespace PdfSharp.Drawing
     /// </summary>
     public void DrawingFinished()
     {
-      if (formState == FormState.Finished)
+      if (this.formState == FormState.Finished)
         return;
 
-      if (formState == FormState.NotATemplate)
+      if (this.formState == FormState.NotATemplate)
         throw new InvalidOperationException("This object is an imported PDF page and you cannot finish drawing on it because you must not draw on it at all.");
 
       Finish();
@@ -200,17 +208,17 @@ namespace PdfSharp.Drawing
     /// </summary>
     internal void AssociateGraphics(XGraphics gfx)
     {
-      if (formState == FormState.NotATemplate)
+      if (this.formState == FormState.NotATemplate)
         throw new NotImplementedException("The current version of PDFsharp cannot draw on an imported page.");
 
-      if (formState == FormState.UnderConstruction)
+      if (this.formState == FormState.UnderConstruction)
         throw new InvalidOperationException("An XGraphics object already exists for this form.");
 
-      if (formState == FormState.Finished)
+      if (this.formState == FormState.Finished)
         throw new InvalidOperationException("After drawing a form it cannot be modified anymore.");
 
-      Debug.Assert(formState == FormState.Created);
-      formState = FormState.UnderConstruction;
+      Debug.Assert(this.formState == FormState.Created);
+      this.formState = FormState.UnderConstruction;
       this.gfx = gfx;
     }
     internal XGraphics gfx;
@@ -262,8 +270,10 @@ namespace PdfSharp.Drawing
     /// <summary>
     /// Gets the owning document.
     /// </summary>
-    internal PdfDocument Owner => document;
-
+    internal PdfDocument Owner
+    {
+      get { return this.document; }
+    }
     PdfDocument document;
 
     /// <summary>
@@ -273,95 +283,119 @@ namespace PdfSharp.Drawing
     {
       get
       {
-        if (document == null)
+        if (this.document == null)
           return PdfColorMode.Undefined;
-        return document.Options.ColorMode;
+        return this.document.Options.ColorMode;
       }
     }
 
     /// <summary>
     /// Gets a value indicating whether this instance is a template.
     /// </summary>
-    internal bool IsTemplate => formState != FormState.NotATemplate;
-
+    internal bool IsTemplate
+    {
+      get { return this.formState != FormState.NotATemplate; }
+    }
     internal FormState formState;
 
     /// <summary>
     /// Get the width of the page identified by the property PageNumber.
     /// </summary>
     [Obsolete("Use either PixelWidth or PointWidth. Temporarily obsolete because of rearrangements for WPF. Currently same as PixelWidth, but will become PointWidth in future releases of PDFsharp.")]
-    public override double Width =>
-        //get { return this.templateSize.width; }
-        viewBox.Width;
+    public override double Width
+    {
+      //get { return this.templateSize.width; }
+      get { return this.viewBox.Width; }
+    }
 
     /// <summary>
     /// Get the width of the page identified by the property PageNumber.
     /// </summary>
     [Obsolete("Use either PixelHeight or PointHeight. Temporarily obsolete because of rearrangements for WPF. Currently same as PixelHeight, but will become PointHeight in future releases of PDFsharp.")]
-    public override double Height =>
-        //get { return this.templateSize.height; }
-        viewBox.height;
+    public override double Height
+    {
+      //get { return this.templateSize.height; }
+      get { return this.viewBox.height; }
+    }
 
     /// <summary>
     /// Get the width in point of this image.
     /// </summary>
-    public override double PointWidth =>
-        //get { return this.templateSize.width; }
-        viewBox.width;
+    public override double PointWidth
+    {
+      //get { return this.templateSize.width; }
+      get { return this.viewBox.width; }
+    }
 
     /// <summary>
     /// Get the height in point of this image.
     /// </summary>
-    public override double PointHeight =>
-        //get { return this.templateSize.height; }
-        viewBox.height;
+    public override double PointHeight
+    {
+      //get { return this.templateSize.height; }
+      get { return this.viewBox.height; }
+    }
 
     /// <summary>
     /// Get the width of the page identified by the property PageNumber.
     /// </summary>
-    public override int PixelWidth =>
-        //get { return (int)this.templateSize.width; }
-        (int)viewBox.width;
+    public override int PixelWidth
+    {
+      //get { return (int)this.templateSize.width; }
+      get { return (int)this.viewBox.width; }
+    }
 
     /// <summary>
     /// Get the height of the page identified by the property PageNumber.
     /// </summary>
-    public override int PixelHeight =>
-        //get { return (int)this.templateSize.height; }
-        (int)viewBox.height;
+    public override int PixelHeight
+    {
+      //get { return (int)this.templateSize.height; }
+      get { return (int)this.viewBox.height; }
+    }
 
     /// <summary>
     /// Get the size of the page identified by the property PageNumber.
     /// </summary>
-    public override XSize Size =>
-        //get { return this.templateSize; }
-        viewBox.Size;
+    public override XSize Size
+    {
+      //get { return this.templateSize; }
+      get { return this.viewBox.Size; }
+    }
     //XSize templateSize;
 
     /// <summary>
     /// Gets the view box of the form.
     /// </summary>
-    public XRect ViewBox => viewBox;
-
+    public XRect ViewBox
+    {
+      get { return this.viewBox; }
+    }
     XRect viewBox;
 
     /// <summary>
     /// Gets 72, the horizontal resolution by design of a form object.
     /// </summary>
-    public override double HorizontalResolution => 72;
+    public override double HorizontalResolution
+    {
+      get { return 72; }
+    }
 
     /// <summary>
     /// Gets 72 always, the vertical resolution by design of a form object.
     /// </summary>
-    public override double VerticalResolution => 72;
+    public override double VerticalResolution
+    {
+      get { return 72; }
+    }
 
     /// <summary>
     /// Gets or sets the bounding box.
     /// </summary>
     public XRect BoundingBox
     {
-      get => boundingBox;
-      set => boundingBox = value; // TODO: pdfForm = null
+      get { return this.boundingBox; }
+      set { this.boundingBox = value; }  // TODO: pdfForm = null
     }
     XRect boundingBox;
 
@@ -370,12 +404,12 @@ namespace PdfSharp.Drawing
     /// </summary>
     public virtual XMatrix Transform
     {
-      get => transform;
+      get { return this.transform; }
       set
       {
-        if (formState == FormState.Finished)
+        if (this.formState == FormState.Finished)
           throw new InvalidOperationException("After a XPdfForm was once drawn it must not be modified.");
-        transform = value;
+        this.transform = value;
       }
     }
     internal XMatrix transform = new XMatrix();  //XMatrix.Identity;
@@ -396,7 +430,10 @@ namespace PdfSharp.Drawing
     /// <summary>
     /// Implements the interface because the primary function is internal.
     /// </summary>
-    PdfResources IContentStream.Resources => Resources;
+    PdfResources IContentStream.Resources
+    {
+      get { return Resources; }
+    }
 
     /// <summary>
     /// Gets the resource name of the specified font within this form.
@@ -404,7 +441,7 @@ namespace PdfSharp.Drawing
     internal string GetFontName(XFont font, out PdfFont pdfFont)
     {
       Debug.Assert(IsTemplate, "This function is for form templates only.");
-      pdfFont = document.FontTable.GetFont(font);
+      pdfFont = this.document.FontTable.GetFont(font);
       Debug.Assert(pdfFont != null);
       string name = Resources.AddFont(pdfFont);
       return name;
@@ -422,7 +459,7 @@ namespace PdfSharp.Drawing
     internal string TryGetFontName(string idName, out PdfFont pdfFont)
     {
       Debug.Assert(IsTemplate, "This function is for form templates only.");
-      pdfFont = document.FontTable.TryGetFont(idName);
+      pdfFont = this.document.FontTable.TryGetFont(idName);
       string name = null;
       if (pdfFont != null)
         name = Resources.AddFont(pdfFont);
@@ -435,7 +472,7 @@ namespace PdfSharp.Drawing
     internal string GetFontName(string idName, byte[] fontData, out PdfFont pdfFont)
     {
       Debug.Assert(IsTemplate, "This function is for form templates only.");
-      pdfFont = document.FontTable.GetFont(idName, fontData);
+      pdfFont = this.document.FontTable.GetFont(idName, fontData);
       //pdfFont = new PdfType0Font(Owner, idName, fontData);
       //pdfFont.Document = this.document;
       Debug.Assert(pdfFont != null);
@@ -454,7 +491,7 @@ namespace PdfSharp.Drawing
     internal string GetImageName(XImage image)
     {
       Debug.Assert(IsTemplate, "This function is for form templates only.");
-      PdfImage pdfImage = document.ImageTable.GetImage(image);
+      PdfImage pdfImage = this.document.ImageTable.GetImage(image);
       Debug.Assert(pdfImage != null);
       string name = Resources.AddImage(pdfImage);
       return name;
@@ -473,9 +510,9 @@ namespace PdfSharp.Drawing
       get
       {
         Debug.Assert(IsTemplate, "This function is for form templates only.");
-        if (pdfForm.Reference == null)
-          document.irefTable.Add(pdfForm);
-        return pdfForm;
+        if (this.pdfForm.Reference == null)
+          this.document.irefTable.Add(this.pdfForm);
+        return this.pdfForm;
       }
     }
 
@@ -485,7 +522,7 @@ namespace PdfSharp.Drawing
     internal string GetFormName(XForm form)
     {
       Debug.Assert(IsTemplate, "This function is for form templates only.");
-      PdfFormXObject pdfForm = document.FormTable.GetForm(form);
+      PdfFormXObject pdfForm = this.document.FormTable.GetForm(form);
       Debug.Assert(pdfForm != null);
       string name = Resources.AddForm(pdfForm);
       return name;
@@ -512,19 +549,28 @@ namespace PdfSharp.Drawing
     /// Gets a value indicating whether this image is cmyk.
     /// </summary>
     /// <value><c>true</c> if this image is cmyk; otherwise, <c>false</c>.</value>
-    public override bool IsCmyk => false; // not supported and not relevant
+    public override bool IsCmyk
+    {
+      get { return false; } // not supported and not relevant
+    }
 
     /// <summary>
     /// Gets a value indicating whether this image is JPEG.
     /// </summary>
     /// <value><c>true</c> if this image is JPEG; otherwise, <c>false</c>.</value>
-    public override bool IsJpeg => base.IsJpeg; // not supported and not relevant
+    public override bool IsJpeg
+    {
+      get { return base.IsJpeg; }// not supported and not relevant
+    }
 
     /// <summary>
     /// Gets the JPEG memory stream (if IsJpeg returns true).
     /// </summary>
     /// <value>The memory.</value>
-    public override MemoryStream Memory => throw new NotImplementedException();
+    public override MemoryStream Memory
+    {
+      get { throw new NotImplementedException(); }
+    }
 #endif
   }
 }

@@ -2,6 +2,7 @@
 using System.Diagnostics;
 using System.Collections.Generic;
 using System.Globalization;
+using System.Text;
 using System.Xml;
 using System.IO;
 using PdfSharp.Xps.XpsModel;
@@ -16,7 +17,7 @@ namespace PdfSharp.Xps.Parsing
   {
     XpsParser(XmlTextReader rdr)
     {
-      reader = rdr;
+      this.reader = rdr;
     }
 
     /// <summary>
@@ -42,7 +43,7 @@ namespace PdfSharp.Xps.Parsing
 
     XpsElement Parse()
     {
-      if (!reader.Read())
+      if (!this.reader.Read())
         return null;
 
       XpsElement element;
@@ -52,10 +53,10 @@ namespace PdfSharp.Xps.Parsing
         GetType();
 #endif
 
-      while (reader.NodeType == XmlNodeType.XmlDeclaration || reader.NodeType == XmlNodeType.Comment)
+      while (this.reader.NodeType == XmlNodeType.XmlDeclaration || this.reader.NodeType == XmlNodeType.Comment)
         MoveBeyondThisElement();
 
-      if (reader.NodeType == XmlNodeType.Element)
+      if (this.reader.NodeType == XmlNodeType.Element)
       {
         element = ParseElement();
       }
@@ -81,11 +82,11 @@ namespace PdfSharp.Xps.Parsing
 
     XpsElement ParseElement()
     {
-      if (reader.NodeType != XmlNodeType.Element)
+      if (this.reader.NodeType != XmlNodeType.Element)
         throw new InvalidOperationException(PSXSR.MustStandOnElement);
 
       XpsElement element = null;
-      switch (reader.Name)
+      switch (this.reader.Name)
       {
         case "Canvas":
           element = ParseCanvas();
@@ -204,7 +205,7 @@ namespace PdfSharp.Xps.Parsing
     /// </summary>
     bool MoveToNextAttribute()
     {
-      return reader.MoveToNextAttribute();
+      return this.reader.MoveToNextAttribute();
     }
 
     /// <summary>
@@ -213,10 +214,10 @@ namespace PdfSharp.Xps.Parsing
     /// </summary>
     bool MoveToNextElement()
     {
-      bool success = reader.Read();
+      bool success = this.reader.Read();
       if (success)
       {
-        XmlNodeType type = reader.MoveToContent();
+        XmlNodeType type = this.reader.MoveToContent();
         Debug.Assert(type == XmlNodeType.Element || type == XmlNodeType.EndElement || type == XmlNodeType.None);
         success = type == XmlNodeType.Element;
       }
@@ -228,24 +229,24 @@ namespace PdfSharp.Xps.Parsing
     /// </summary>
     void MoveBeyondThisElement() // string name, int depth)
     {
-      if (!reader.IsEmptyElement && reader.NodeType != XmlNodeType.Comment)
+      if (!this.reader.IsEmptyElement && this.reader.NodeType != XmlNodeType.Comment)
       {
-        if (reader.NodeType == XmlNodeType.XmlDeclaration)
+        if (this.reader.NodeType == XmlNodeType.XmlDeclaration)
         {
           MoveToNextElement();
           return;
         }
-        else if (reader.NodeType == XmlNodeType.Attribute)
+        else if (this.reader.NodeType == XmlNodeType.Attribute)
         {
-          reader.MoveToElement();
-          if (reader.IsEmptyElement)
+          this.reader.MoveToElement();
+          if (this.reader.IsEmptyElement)
           {
             MoveToNextElement();
             return;
           }
         }
         MoveToNextElement();
-        while (reader.IsStartElement())
+        while (this.reader.IsStartElement())
           MoveBeyondThisElement();
       }
       MoveToNextElement(); // next element
@@ -259,7 +260,7 @@ namespace PdfSharp.Xps.Parsing
     [Conditional("DEBUG")]
     void AssertElement(string name)
     {
-      Debug.Assert(reader.Name == name, PSXSR.UnexpectedElement(reader.Name, name));
+      Debug.Assert(this.reader.Name == name, PSXSR.UnexpectedElement(this.reader.Name, name));
     }
 
     void UnexpectedAttribute(string name)
@@ -275,9 +276,9 @@ namespace PdfSharp.Xps.Parsing
     {
       get
       {
-        if (resourceDictionaryStack == null)
-          resourceDictionaryStack = new ResouceDictionaryStack();
-        return resourceDictionaryStack;
+        if (this.resourceDictionaryStack == null)
+          this.resourceDictionaryStack = new ResouceDictionaryStack();
+        return this.resourceDictionaryStack;
       }
     }
     ResouceDictionaryStack resourceDictionaryStack;
@@ -286,25 +287,25 @@ namespace PdfSharp.Xps.Parsing
     {
       public void Push(ResourceDictionary dic)
       {
-        if (stack == null)
-          stack = new Stack<ResourceDictionary>();
-        stack.Push(dic);
+        if (this.stack == null)
+          this.stack = new Stack<ResourceDictionary>();
+        this.stack.Push(dic);
       }
 
       public ResourceDictionary Pop()
       {
-        return stack.Pop();
+        return this.stack.Pop();
       }
 
       public ResourceDictionary Current
       {
         get
         {
-          if (stack == null)
+          if (this.stack == null)
             return null;
-          if (stack.Count == 0)
+          if (this.stack.Count == 0)
             return null;
-          return stack.Peek();
+          return this.stack.Peek();
         }
       }
 

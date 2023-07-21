@@ -28,7 +28,12 @@
 #endregion
 
 using System;
+using System.Collections;
+using System.Globalization;
+using System.Text;
+using System.IO;
 using PdfSharp.Drawing;
+using PdfSharp.Internal;
 using PdfSharp.Pdf.IO;
 using PdfSharp.Pdf.Internal;
 
@@ -60,7 +65,7 @@ namespace PdfSharp.Pdf
     /// </summary>
     public PdfLiteral(string format, params object[] args)
     {
-      value = PdfEncoders.Format(format, args);
+      this.value = PdfEncoders.Format(format, args);
     }
 
     /// <summary>
@@ -74,10 +79,11 @@ namespace PdfSharp.Pdf
     /// <summary>
     /// Gets the value as litaral string.
     /// </summary>
-    public string Value =>
-        // This class must behave like a value type. Therefore it cannot be changed (like System.String).
-        value;
-
+    public string Value
+    {
+      // This class must behave like a value type. Therefore it cannot be changed (like System.String).
+      get { return this.value; }
+    }
     readonly string value = String.Empty;
 
     /// <summary>
@@ -85,7 +91,7 @@ namespace PdfSharp.Pdf
     /// </summary>
     public override string ToString()
     {
-      return value;
+      return this.value;
     }
 
     internal override void WriteObject(PdfWriter writer)

@@ -28,6 +28,10 @@
 #endregion
 
 using System;
+using System.Diagnostics;
+using System.Collections;
+using PdfSharp.Pdf;
+using PdfSharp.Internal;
 using PdfSharp.Drawing;
 
 namespace PdfSharp.Pdf.Annotations
@@ -85,7 +89,7 @@ namespace PdfSharp.Pdf.Annotations
     /// </summary>
     public PdfAnnotationFlags Flags
     {
-      get => (PdfAnnotationFlags)Elements.GetInteger(Keys.F);
+      get { return (PdfAnnotationFlags)Elements.GetInteger(Keys.F); }
       set
       {
         Elements.SetInteger(Keys.F, (int)value);
@@ -98,8 +102,8 @@ namespace PdfSharp.Pdf.Annotations
     /// </summary>
     public PdfAnnotations Parent
     {
-      get => parent;
-      set => parent = value;
+      get { return this.parent; }
+      set { this.parent = value; }
     }
     PdfAnnotations parent;
 
@@ -109,7 +113,7 @@ namespace PdfSharp.Pdf.Annotations
     /// </summary>
     public PdfRectangle Rectangle
     {
-      get => Elements.GetRectangle(Keys.Rect, true);
+      get { return Elements.GetRectangle(Keys.Rect, true); }
       set
       {
         Elements.SetRectangle(Keys.Rect, value);
@@ -118,13 +122,13 @@ namespace PdfSharp.Pdf.Annotations
     }
 
     /// <summary>
-    /// Gets or sets the text label to be displayed in the title bar of the annotation’s
+    /// Gets or sets the text label to be displayed in the title bar of the annotationâ€™s
     /// pop-up window when open and active. By convention, this entry identifies
     /// the user who added the annotation.
     /// </summary>
     public string Title
     {
-      get => Elements.GetString(Keys.T, true);
+      get { return Elements.GetString(Keys.T, true); }
       set
       {
         Elements.SetString(Keys.T, value);
@@ -138,7 +142,7 @@ namespace PdfSharp.Pdf.Annotations
     /// </summary>
     public string Subject
     {
-      get => Elements.GetString(Keys.Subj, true);
+      get { return Elements.GetString(Keys.Subj, true); }
       set
       {
         Elements.SetString(Keys.Subj, value);
@@ -148,12 +152,12 @@ namespace PdfSharp.Pdf.Annotations
 
     /// <summary>
     /// Gets or sets the text to be displayed for the annotation or, if this type of
-    /// annotation does not display text, an alternate description of the annotation’s
+    /// annotation does not display text, an alternate description of the annotationâ€™s
     /// contents in human-readable form.
     /// </summary>
     public string Contents
     {
-      get => Elements.GetString(Keys.Contents, true);
+      get { return Elements.GetString(Keys.Contents, true); }
       set
       {
         Elements.SetString(Keys.Contents, value);
@@ -188,7 +192,7 @@ namespace PdfSharp.Pdf.Annotations
       set
       {
         // TODO: an array.SetColor(clr) function may be useful here
-        PdfArray array = new PdfArray(Owner, new PdfReal[] 
+        PdfArray array = new PdfArray(this.Owner, new PdfReal[] 
           { new PdfReal(value.R / 255.0), new PdfReal(value.G / 255.0), new PdfReal(value.B / 255.0) });
         Elements[Keys.C] = array;
         Elements.SetDateTime(Keys.M, DateTime.Now);
@@ -245,9 +249,9 @@ namespace PdfSharp.Pdf.Annotations
 
       /// <summary>
       /// (Optional) Text to be displayed for the annotation or, if this type of annotation
-      /// does not display text, an alternate description of the annotation’s contents
+      /// does not display text, an alternate description of the annotationâ€™s contents
       /// in human-readable form. In either case, this text is useful when
-      /// extracting the document’s contents in support of accessibility to users with
+      /// extracting the documentâ€™s contents in support of accessibility to users with
       /// disabilities or for other purposes.
       /// </summary>
       [KeyInfo(KeyType.TextString | KeyType.Optional)]
@@ -279,7 +283,7 @@ namespace PdfSharp.Pdf.Annotations
 
       /// <summary>
       /// (Optional; PDF 1.2) A border style dictionary specifying the characteristics of
-      /// the annotation’s border.
+      /// the annotationâ€™s border.
       /// </summary>
       [KeyInfo("1.2", KeyType.Dictionary | KeyType.Optional)]
       public const string BS = "/BS";
@@ -294,14 +298,14 @@ namespace PdfSharp.Pdf.Annotations
 
       /// <summary>
       /// (Required if the appearance dictionary AP contains one or more subdictionaries; PDF 1.2)
-      /// The annotation’s appearance state, which selects the applicable appearance stream from 
+      /// The annotationâ€™s appearance state, which selects the applicable appearance stream from 
       /// an appearance subdictionary.
       /// </summary>
       [KeyInfo("1.2", KeyType.Dictionary | KeyType.Optional)]
       public const string AS = "/AS";
 
       /// <summary>
-      /// (Optional) An array specifying the characteristics of the annotation’s border.
+      /// (Optional) An array specifying the characteristics of the annotationâ€™s border.
       /// The border is specified as a rounded rectangle.
       /// In PDF 1.0, the array consists of three numbers defining the horizontal corner 
       /// radius, vertical corner radius, and border width, all in default user space units.
@@ -322,9 +326,9 @@ namespace PdfSharp.Pdf.Annotations
       /// (Optional; PDF 1.1) An array of three numbers in the range 0.0 to 1.0, representing
       /// the components of a color in the DeviceRGB color space. This color is used for the
       /// following purposes:
-      /// • The background of the annotation’s icon when closed
-      /// • The title bar of the annotation’s pop-up window
-      /// • The border of a link annotation
+      /// â€¢ The background of the annotationâ€™s icon when closed
+      /// â€¢ The title bar of the annotationâ€™s pop-up window
+      /// â€¢ The border of a link annotation
       /// </summary>
       [KeyInfo("1.1", KeyType.Array | KeyType.Optional)]
       public const string C = "/C";
@@ -344,7 +348,7 @@ namespace PdfSharp.Pdf.Annotations
       // ----- Excerpt of entries specific to markup annotations ----------------------------------
 
       /// <summary>
-      /// (Optional; PDF 1.1) The text label to be displayed in the title bar of the annotation’s
+      /// (Optional; PDF 1.1) The text label to be displayed in the title bar of the annotationâ€™s
       /// pop-up window when open and active. By convention, this entry identifies
       /// the user who added the annotation.
       /// </summary>
@@ -365,8 +369,8 @@ namespace PdfSharp.Pdf.Annotations
       /// the annotation is opened.
       /// The specified value is not used if the annotation has an appearance stream; in that
       /// case, the appearance stream must specify any transparency. (However, if the viewer
-      /// regenerates the annotation’s appearance stream, it may incorporate the CA value
-      /// into the stream’s content.)
+      /// regenerates the annotationâ€™s appearance stream, it may incorporate the CA value
+      /// into the streamâ€™s content.)
       /// The implicit blend mode is Normal.
       /// Default value: 1.0.
       /// </summary>

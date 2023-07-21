@@ -1,4 +1,9 @@
-﻿using PdfSharp.Drawing;
+﻿using System;
+using System.Diagnostics;
+using System.Collections.Generic;
+using System.Text;
+using System.Globalization;
+using PdfSharp.Drawing;
 
 namespace PdfSharp.Xps.XpsModel
 {

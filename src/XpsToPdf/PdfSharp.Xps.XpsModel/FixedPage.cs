@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Text;
 
 namespace PdfSharp.Xps.XpsModel
 {
@@ -20,8 +22,8 @@ namespace PdfSharp.Xps.XpsModel
     /// </summary>
     public string UriString
     {
-      get => uriString;
-      internal set => uriString = value;
+      get { return this.uriString; }
+      internal set { this.uriString = value; }
     }
     string uriString;
 
@@ -30,8 +32,8 @@ namespace PdfSharp.Xps.XpsModel
     /// </summary>
     public FixedDocument Document
     {
-      get => document;
-      internal set => document = value;
+      get { return this.document; }
+      internal set { this.document = value; }
     }
     FixedDocument document;
 
@@ -55,7 +57,10 @@ namespace PdfSharp.Xps.XpsModel
     /// <summary>
     /// Gets the width of the page in point (1/72 of an inch).
     /// </summary>
-    public double PointWidth => Width * 3 / 4;
+    public double PointWidth 
+    {
+      get { return Width * 3 / 4; }
+    }
 
     /// <summary>
     /// Height of the page, expressed as a real number in units of the effective coordinate space.
@@ -65,7 +70,10 @@ namespace PdfSharp.Xps.XpsModel
     /// <summary>
     /// Gets the height of the page in point (1/72 of an inch).
     /// </summary>
-    public double PointHeight => Height * 3 / 4;
+    public double PointHeight
+    {
+      get { return Height * 3 / 4; }
+    }
 
     /// <summary>
     /// Specifies the area of the page containing imageable content that is to be fit within the 

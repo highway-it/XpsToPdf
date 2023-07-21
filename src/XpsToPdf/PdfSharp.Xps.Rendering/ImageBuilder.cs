@@ -1,5 +1,14 @@
-﻿using System.Diagnostics;
+﻿using System;
+using System.Diagnostics;
+using System.Collections.Generic;
+using System.Text;
 using PdfSharp.Xps.XpsModel;
+using PdfSharp.Pdf;
+using PdfSharp.Pdf.Advanced;
+using PdfSharp.Pdf.Internal;
+using PdfSharp.Drawing;
+using PdfSharp.Drawing.Pdf;
+
 using BitmapSource = System.Windows.Media.Imaging.BitmapSource;
 
 namespace PdfSharp.Xps.Rendering
@@ -30,7 +39,7 @@ namespace PdfSharp.Xps.Rendering
       // Get the font object.
       // Important: font.PdfFont is not yet defined here on the first call
       string uriString = brush.ImageSource;
-      BitmapSource bitmapSource = payload.GetImage(uriString);
+      BitmapSource bitmapSource = payload.GetImage(PathHelper.Combine(fpage.UriString + "/", uriString));
 
       XPImage xpImage = new XPImage(bitmapSource);
 

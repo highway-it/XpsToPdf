@@ -1,4 +1,11 @@
-﻿using PdfSharp.Xps.XpsModel;
+﻿using System;
+using System.Diagnostics;
+using System.Collections.Generic;
+using System.Globalization;
+using System.Text;
+using System.Xml;
+using System.IO;
+using PdfSharp.Xps.XpsModel;
 
 namespace PdfSharp.Xps.Parsing
 {
@@ -12,18 +19,18 @@ namespace PdfSharp.Xps.Parsing
       GradientStop gs = new GradientStop();
       while (MoveToNextAttribute())
       {
-        switch (reader.Name)
+        switch (this.reader.Name)
         {
           case "Color":
-            gs.Color = Color.Parse(reader.Value);
+            gs.Color = Color.Parse(this.reader.Value);
             break;
 
           case "Offset":
-            gs.Offset = ParseDouble(reader.Value);
+            gs.Offset = ParseDouble(this.reader.Value);
             break;
 
           default:
-            UnexpectedAttribute(reader.Name);
+            UnexpectedAttribute(this.reader.Name);
             break;
         }
       }
